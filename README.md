@@ -1,17 +1,34 @@
-A functional tree data structure library.
+# A functional tree data structure library.
 
-Core principles:
+## Core principles:
 
  * Referential transparency
  * Zero state
  * Immutable data structures
 
-Secondary design goals:
+## Secondary design goals:
 
- * Object parsing is pluggable
- * Tree walking logic is pluggable
- * Sane defaults for all actions
+ * All logical operations are pluggable
+ * Sane defaults for all operations
+ * Not a complete dog on performance tests
  * AMD compatible
+
+## Purpose:
+
+Complexity kills, and state is its weapon of choice. Between data
+bound to DOM nodes, unexpected global variables, various libraries'
+internal states, and the mess of magic used to hide it all from you,
+there's a headache of unknown to keep track of.
+
+This library implements tree behaviors for arbitrary data while
+maintaining no state whatsoever. This has a number of benefits in general.
+
+ * state can be managed directly by your application in plain sight
+ * all functions are referentially transparent
+ * the library lends itself immediately to parallelization (theoretically)
+ * tests are very easy to implement
+
+
 
 --------------------------------------------------------------------------------
 
