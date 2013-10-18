@@ -1,69 +1,106 @@
-# A functional tree data structure library.
+# A tree data structure library for Javascript
 
-## Core principles:
+## Purpose:
+
+> "Computing's core challenge is how not to make a mess of it."
+> *--Edsger W. Dijkstra, [EWD1243][EWD1243]*
+
+Between data bound to DOM nodes, global scope abuse, various
+libraries' internal states, and the vast surfeit of magical
+abstractions used to hide it all from you -- Javascript development
+can be a headache.
+
+This library provides a standalone tree model implementation as well
+as a pluggable tree behavior for your own data structures. It does
+this without maintaining any internal state. This has a number of
+benefits:
+
+ * all state can be managed directly by *your* application
+ * all functions are [referentially transparent][REFTRAN]
+ * all operations are idempotent.
+ * tests can be implemented simply
+ * the library should perform identically in parallel environments
+
+
+## Core development principles:
 
  * Referential transparency
- * Zero state
  * Immutable data structures
+ * Zero internal state
+ * Zero side effects
 
 ## Secondary design goals:
 
  * All logical operations are pluggable
  * Sane defaults for all operations
  * Not a complete dog on performance tests
- * AMD compatible
-
-## Purpose:
-
-Complexity kills, and state is its weapon of choice. Between data
-bound to DOM nodes, unexpected global variables, various libraries'
-internal states, and the mess of magic used to hide it all from you,
-there's a headache of unknown to keep track of.
-
-This library implements tree behaviors for arbitrary data while
-maintaining no state whatsoever. This has a number of benefits in general.
-
- * state can be managed directly by your application in plain sight
- * all functions are referentially transparent
- * the library lends itself immediately to parallelization (theoretically)
- * tests are very easy to implement
-
+ * AMD, Node, and global-script compatible
 
 
 --------------------------------------------------------------------------------
 
 ## Dependencies
 
-Underscore.js
+[Underscore.js][_]
+
+## Additional Development Dependencies
+
+[docco][]
+
+--------------------------------------------------------------------------------
+
+## Building
+
+TODO
 
 --------------------------------------------------------------------------------
 
 ## Defaults
+
+In absence of your own callbacks supplied to the `inflate`, `deflate`,
+`walk`, and `delete` methods (or a `defaults` object given to
+`_tree.inflate`), the following methods are used by default.
+
 
 ```
 {
     'inflate': _tree.inflate.byKey()
 	, 'deflate': _tree.deflate.toKey()
 	, 'walk': _tree.walk.dfpre
-	, 'deleteRecursive': true
+	, 'deleteRecursive': false
 }
 ```
 
 --------------------------------------------------------------------------------
 
-## Simple Example
+## Simple Usage Example
 
 ```
-var Lineage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]}
-var tree = _tree.inflate(Lineage);
-tree = _tree.addChild(tree, _tree.root(tree), {'name': 'Kim Kil Wam'});
-_tree.walk(tree, function(node) {
-    if (_.has(node), 'parent') {
-		console.log(node.data.name, 'is the child of', node.parent.data.name);
-	} else {
-		console.log(node.data.name, 'origin unknown');
-	}
+var Patronage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]}
+var FamilyTree = _tree.inflate(Patronage);
+
+// Wrong! You need to save the return value.
+FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
+
+// Right
+FamilyTree = FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
+
+// Print the tree, with everyone's name and father
+FamilyTree.walk(function(node) {
+    var origin = 'origin unknown';
+    if (_.has(node), 'parent'))
+        origin = 'is the child of ' + node.parent.data.name;
+    console.log(node.data.name, origin);
 });
+
+// Throws an error. Recursive deletion needs to be made explicit ...
+FamilyTree.delete(FamilyTree.root())
+// ... like this ...
+FamilyTree.delete(FamilyTree.root(), true)
+// ... or using the `_tree` methods directly
+_tree.delete(FamilyTree, _tree.root(FamilyTree), true);
+
+
 ```
 
 
@@ -72,8 +109,8 @@ _tree.walk(tree, function(node) {
 
 ## API for a _Tree.Node Object
 
-### `_tree.Node.parent`
-### `_tree.Node.children`
+### `_tree.Node.parent()`
+### `_tree.Node.children()`
 
 
 --------------------------------------------------------------------------------
@@ -81,12 +118,15 @@ _tree.walk(tree, function(node) {
 ## API for a _Tree Object
 
 
-## `_tree.inflate(Object [, Defaults [, Method]])`
+## `_tree.inflate(Object [, Method [, Defaults]])`
 
-Parses an arbitrary object into a _tree data structure. If you supply
-Defaults, they will be used in all subsequent tree function for this
-tree. Optionally, you can also include a custom inflate method that
-accepts your object and returns a _tree data structure.
+Parses an arbitrary object into a `_tree` data structure. If you
+supply a Defaults object -- format shown above -- they will supply the
+default methods in all tree functions for this tree.
+
+If you need more control over the parsing of your object, you can
+supply a custom inflate method that accepts your object and returns a
+`_tree` data structure.
 
 Builtin inflate methods:
 
@@ -316,3 +356,7 @@ thrown if the node has any children.
 
 
 
+[EWD1243]: http://www.cs.utexas.edu/users/EWD/transcriptions/EWD12xx/EWD1243.html
+[REFTRAN]: https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)
+[_]: http://underscorejs.org/
+[docco]: http://jashkenas.github.io/docco/
