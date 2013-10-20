@@ -5,11 +5,6 @@
 > "Computing's core challenge is how not to make a mess of it."
 > *--Edsger W. Dijkstra, [EWD1243][EWD1243]*
 
-Between data bound to DOM nodes, global scope abuse, various
-libraries' internal states, and the vast surfeit of magical
-abstractions used to hide it all from you -- Javascript development
-can be a headache.
-
 This library provides a standalone tree model implementation as well
 as a pluggable tree behavior for your own data structures. It does
 this without maintaining any internal state. This has a number of
@@ -31,9 +26,9 @@ benefits:
 
 ## Secondary design goals:
 
- * All logical operations are pluggable
- * Sane defaults for all operations
- * Not a complete dog on performance tests
+ * All logical operations have pluggable behaviors
+ * All operations have sane defaults
+ * Performance isn't impractically bad
  * AMD, Node, and global-script compatible
 
 
@@ -55,37 +50,19 @@ TODO
 
 --------------------------------------------------------------------------------
 
-## Defaults
-
-In absence of your own callbacks supplied to the `inflate`, `deflate`,
-`walk`, and `delete` methods (or a `defaults` object given to
-`_tree.inflate`), the following methods are used by default.
-
-
-```
-{
-    'inflate': _tree.inflate.byKey()
-	, 'deflate': _tree.deflate.toKey()
-	, 'walk': _tree.walk.dfpre
-	, 'deleteRecursive': false
-}
-```
-
---------------------------------------------------------------------------------
-
 ## Simple Usage Example
 
 ```
-var Patronage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]}
-var FamilyTree = _tree.inflate(Patronage);
+var Patronage, FamilyTree;
 
-// Wrong! You need to save the return value.
-FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
+Patronage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]};
+FamilyTree = _tree.inflate(Patronage);
 
-// Right
+// FamilyTree is immutable. You need to capture the return value to
+// see your changes.
 FamilyTree = FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
 
-// Print the tree, with everyone's name and father
+// Log the tree, with everyone's name and their father's name
 FamilyTree.walk(function(node) {
     var origin = 'origin unknown';
     if (_.has(node), 'parent'))
@@ -94,16 +71,34 @@ FamilyTree.walk(function(node) {
 });
 
 // Throws an error. Recursive deletion needs to be made explicit ...
-FamilyTree.delete(FamilyTree.root())
+FamilyTree = FamilyTree.delete(FamilyTree.root())
 // ... like this ...
-FamilyTree.delete(FamilyTree.root(), true)
+FamilyTree = FamilyTree.delete(FamilyTree.root(), true)
 // ... or using the `_tree` methods directly
-_tree.delete(FamilyTree, _tree.root(FamilyTree), true);
+FamilyTree = _tree.delete(FamilyTree, _tree.root(FamilyTree), true);
 
 
 ```
 
 
+
+--------------------------------------------------------------------------------
+
+## Defaults
+
+Without defining your own defaults or callbacks for the `inflate`,
+`deflate`, `walk`, and `delete` methods, the following methods are
+used by default:
+
+
+```
+{
+    'inflate': _tree.inflate.byKey()
+    , 'deflate': _tree.deflate.toKey()
+    , 'walk': _tree.walk.dfpre
+    , 'deleteRecursive': false
+}
+```
 
 --------------------------------------------------------------------------------
 
