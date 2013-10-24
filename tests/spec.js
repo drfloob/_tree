@@ -9,6 +9,24 @@ describe("The _tree module", function () {
     });
 });
 
+describe("Node ids", function () {
+    it('are working in general', function () {
+        var tree = _tree.inflate({n: 1});
+        expect(tree.root().__id).not.toBe(null);
+        expect(tree.root().__id).toEqual(1);
+    });
+    it("are unique after initial tree inflation", function () {
+        var tree, ids;
+        tree = _tree.inflate({n: 1, k: [{n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}, {n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}]},
+                                 _tree.inflate.byKey('k'));
+        ids = [];
+        tree.walk(function (n) {
+            ids.push(n.__id);
+        });
+        expect(ids).toEqual(_.uniq(ids));
+    });
+});
+
 describe("_tree.create", function () {
     var tree;
     beforeEach(function () {
