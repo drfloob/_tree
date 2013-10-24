@@ -9,12 +9,69 @@ describe("The _tree module", function () {
     });
 });
 
-describe("_tree.inflate", function() {
-    describe(".byKey", function(){
-        it("is the default", function(){
-            var tree = _tree.inflate({n: 1, children: [{n: 2}]});
-            var root = tree.root();
-            console.log(root);
+describe("_tree.create", function () {
+    var tree;
+    beforeEach(function () {
+        tree = _tree.create();
+    });
+    it("returns something that smells like a tree", function () {
+        expect(tree.root).toEqual(jasmine.any(Function));
+        expect(tree.root().data).toEqual(jasmine.any(Function));
+        expect(tree.root().__tree).toEqual(tree);
+    });
+
+    it("is equivalent to a _tree.inflate call", function () {
+        var infTree = _tree.inflate();
+        // Right now, we can only sniff at it
+        // TODO: implement _tree.equals
+        
+        expect(infTree.defaults).toEqual(tree.defaults);
+
+        expect(infTree.root().__id).toEqual(tree.root().__id);
+
+        expect(infTree.root().data()).toEqual(tree.root().data());
+        expect(infTree.root().data()).toBeUndefined();
+
+        expect(infTree.root().children()).toEqual(tree.root().children());
+        expect(infTree.root().children()).toEqual([]);
+    });
+    describe("with an inflate method default", function () {
+
+        beforeEach(function () {
+            tree = _tree.create({inflate: _tree.inflate.byKey('k')});
+        });
+
+        it("returns something that smells like a tree", function () {
+            expect(tree.root).toEqual(jasmine.any(Function));
+            expect(tree.root().data).toEqual(jasmine.any(Function));
+            expect(tree.root().__tree).toEqual(tree);
+        });
+
+        it("inflates one child correctly", function () {
+            var newTree = tree.root().addChild({'hork': 'dork'});
+            expect(newTree === tree).toBeFalsy();
+
+            expect(newTree.root().children().length).toBe(1);
+            expect(tree.root().children().length).toBe(0);
+
+            expect(newTree.root().children()[0].data().hork).toBeDefined();
+        });
+
+        it("has a root that can accept data", function () {
+            var newTree = tree.root().data("test");
+            expect(newTree === tree).toBeFalsy();
+            expect(newTree.root().data()).toEqual("test");
+            expect(tree.root().data()).toBeUndefined();
+        });
+    });
+});
+
+describe("_tree.inflate", function () {
+    describe(".byKey", function () {
+        it("is the default", function () {
+            var tree, root;
+            tree = _tree.inflate({n: 1, children: [{n: 2}]});
+            root = tree.root();
             expect(root.data().n).toBe(1);
             expect(root.children().length).toBe(1);
             expect(root.children()[0].data().n).toBe(2);
@@ -53,8 +110,38 @@ describe("Node ids", function() {
         var ids = [];
         tree.walk(function(n){
             ids.push(n.__id);
+
+describe("_tree.findNode", function () {
+    describe("on an empty tree", function () {
+        var tree;
+        beforeEach(function () {
+            tree = _tree.create();
         });
-        expect(ids).toEqual(_.uniq(ids));
+        
+        it("doesn't find the root node from a different tree", function() {
+            var tmpTree, tmpNode;
+            tmpTree = _tree.create();
+            tmpNode = tmpTree.root();
+            
+            expect(tree.findNode(tmpNode)).toBe(false);
+        });
+
+        it("finds the root node from a clone", function() {
+            var tmpTree, tmpNode;
+            tmpTree = tree.root().data("new data");
+            tmpNode = tmpTree.root();
+            
+            // TODO: implement _node.equals
+            expect(tree.findNode(tmpNode) === tree.root()).toBeTruthy();
+        });
+
+        it("doesn't find non-existant children in a clone", function() {
+            var tmpTree, tmpNode;
+            tmpTree = tree.root().addChild("test data");
+            tmpNode = tmpTree.root().children()[0];
+            
+            expect(tree.findNode(tmpNode)).toBe(false);
+        });
     });
 });
 
