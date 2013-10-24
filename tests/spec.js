@@ -10,8 +10,8 @@ describe("The _tree module", function () {
 });
 
 
-describe("an inflated tree", function () {
-    describe("using all tree defaults", function () {
+describe("Inflating a tree", function () {
+    describe("with default settings", function () {
         describe("from an empty object", function () {
             var tree;
             beforeEach(function () {
