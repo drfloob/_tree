@@ -40,6 +40,7 @@ describe("Inflating a tree", function () {
 
             it("is frozen", function () {
                 expect(Object.isFrozen(tree)).toBe(true);
+                expect(Object.isFrozen(tree.root())).toBe(true);
 
                 var modRoot = function () {
                     tree.root = null;

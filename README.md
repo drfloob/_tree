@@ -241,9 +241,8 @@ Walks a tree, executing a callback function on every node
 encountered. The default walk method is a depth first, pre-order
 traversal.
 
-Optionally, you can include a custom walk method that accepts a tree
-and defines (given methods attached to `this`) a partial ordering of
-nodes to walk next.
+Optionally, you can include a custom walk method that accepts a node
+and declares which nodes to walk next, in which order.
 
 Builtin walk methods:
 
@@ -252,23 +251,22 @@ Builtin walk methods:
  * `_tree.walk.bfpre`: breadth first pre-order
  * `_tree.walk.bfpost`: breadth first post-order
 
-If you define your own walk method, when it is called, `this` will
-be bound to:
+The walk method is recursively called for every node in the tree with
+`this` bound to the following:
 
-#### `this.queue([_tree.Node])`
+#### `this.exec()`
 
-Visit these nodes next, as in a depth first traversal.
+Executes the callback function for the current node.
 
 #### `this.push([_tree.Node])`
 
-Visit these nodes last, as in a breadth first traversal.
+Adds Nodes to the *front* of the list of Nodes to visit.
 
-#### `this.insert([_tree.Node], Function)`
+#### `this.queue([_tree.Node])`
 
-Inserts the Nodes in arbitrary positions in the list of Nodes to
-visit, according to the provided function. The function receives an
-immutable copy of the list of Nodes to visit and returns a new list of
-nodes to visit. `this` is bound to the current node being visited.
+Adds Nodes to the *end* of the list of Nodes to visit.
+
+
 
 
 ### Examples:
@@ -277,8 +275,9 @@ nodes to visit. `this` is bound to the current node being visited.
 ```
 var MyTree = _tree.inflate(['hi', ['emacs']], _tree.inflate.byAdjacencyList)
 var MyVisitor = function(node) {console.log(node.data)}
-_tree.walk(MyTree, MyVisitor, function(NodeList) {
-    return this.children.concat(NodeList);
+_tree.walk(MyTree, MyVisitor, function(Node) {
+    this.exec(Node);
+    this.visit(Node.children());
 })
 ```
 OR
