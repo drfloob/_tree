@@ -240,27 +240,18 @@ describe("An inflated tree", function () {
 
 
 
+describe("_node.parent", function () {
+    it("returns undefined for root nodes", function () {
+        var tree = _tree.create();
+        expect(tree.root().parent()).toBeUndefined();
+    });
 
+    it("finds the root from its children", function () {
+        var tree = _tree.inflate([1, [2,3]], _tree.inflate.byAdjacencyList);
+        expect(tree.root().children()[0].parent()).toBe(tree.root());
+        expect(tree.root().children()[1].parent()).toBe(tree.root());
 
-(function () {
-    var jasmineEnv, htmlReporter, currentWindowOnload;
-
-    jasmineEnv = jasmine.getEnv();
-
-    htmlReporter = new jasmine.HtmlReporter();
-    jasmineEnv.addReporter(htmlReporter);
-
-    jasmineEnv.specFilter = function (spec) {
-        return htmlReporter.specFilter(spec);
-    };
-
-    currentWindowOnload = window.onload;
-    window.onload = function () {
-        if (currentWindowOnload) {
-            currentWindowOnload();
-        }
-
-        document.querySelector('.version').innerHTML = jasmineEnv.versionString();
-        jasmineEnv.execute();
-    };
-}());
+        // extra sanity check for inflate.byAdjacencyList
+        expect(tree.root().parent()).toBeUndefined();
+    });
+});
