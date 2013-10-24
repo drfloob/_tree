@@ -1,5 +1,5 @@
 /*jslint nomen: true, todo: true */
-/*global window, document, jasmine, describe, it, expect, beforeEach, _tree */
+/*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _ */
 
 'use strict';
 
@@ -95,39 +95,27 @@ describe("_tree.inflate", function () {
             expect(root.children()[0].data().n).toBe(2);
             expect(root.children()[0].children().length).toBe(0);
         });
-        it("works with default child attribute name", function(){
-            var tree = _tree.inflate({n: 1, children: [{n: 2}]}, _tree.inflate.byKey());
-            var root = tree.root();
-            console.log(root);
+        it("works with default child attribute name", function () {
+            var tree, root;
+            tree = _tree.inflate({n: 1, children: [{n: 2}]}, _tree.inflate.byKey());
+            root = tree.root();
             expect(root.data().n).toBe(1);
             expect(root.children().length).toBe(1);
             expect(root.children()[0].data().n).toBe(2);
             expect(root.children()[0].children().length).toBe(0);
         });
-        it("works with different child attribute names", function(){
-            var tree = _tree.inflate({n: 1, k: [{n: 2}]}, _tree.inflate.byKey('k'));
-            var root = tree.root();
-            console.log(root);
+        it("works with different child attribute names", function () {
+            var tree, root;
+            tree = _tree.inflate({n: 1, k: [{n: 2}]}, _tree.inflate.byKey('k'));
+            root = tree.root();
             expect(root.data().n).toBe(1);
             expect(root.children().length).toBe(1);
             expect(root.children()[0].data().n).toBe(2);
             expect(root.children()[0].children().length).toBe(0);
         });
-    })
+    });
 });
 
-describe("Node ids", function() {
-    it('are working in general', function() {
-        var tree = _tree.inflate({n: 1});
-        expect(tree.root().__id).not.toBe(null);
-        expect(tree.root().__id).toEqual(1);
-    });
-    it("are unique after initial tree inflation", function() {
-        var tree = _tree.inflate({n: 1, k: [{n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}, {n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}]},
-                                 _tree.inflate.byKey('k'));
-        var ids = [];
-        tree.walk(function(n){
-            ids.push(n.__id);
 
 describe("_tree.findNode", function () {
     describe("on an empty tree", function () {
@@ -202,7 +190,7 @@ describe("An inflated tree", function () {
             });
         });
 
-        describe("from a simple object", function() {
+        describe("from a simple object", function () {
             var tree, data;
             beforeEach(function () {
                 data = {'name': 'hork'};
@@ -232,11 +220,11 @@ describe("An inflated tree", function () {
                 expect(modRoot).toThrow();
             });
 
-            it("does not have its data frozen", function() {
+            it("does not have its data frozen", function () {
                 expect(Object.isFrozen(tree.root().data())).toBe(false);
             });
 
-            it("is unaware of changes in its linked data", function() {
+            it("is unaware of changes in its linked data", function () {
                 data.b = "test";
                 expect(tree.root().data().b).toEqual("test");
 
