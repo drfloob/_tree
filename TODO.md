@@ -31,10 +31,15 @@
  * jslint from the command line
  * minify (and gzip) from the command line
  * jasmine test from the cmd line
+ * get continuous integration setup
+ * get test coverage info setup
 
 # Nice-to-haves
 
  * implement more tree builtin behaviors
    - balanced binary tree
    - red black tree
+ * implement a tree visualizer
+ * wire up some examples in jsfiddle
+
 
