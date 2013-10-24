@@ -40,8 +40,7 @@ describe("_tree.create", function () {
 
     it("is equivalent to a _tree.inflate call", function () {
         var infTree = _tree.inflate();
-        // Right now, we can only sniff at it
-        // TODO: implement _tree.equals
+        // Right now, we can only sniff at identity
         
         expect(infTree.defaults).toEqual(tree.defaults);
 
@@ -137,7 +136,6 @@ describe("_tree.findNode", function () {
             tmpTree = tree.root().data("new data");
             tmpNode = tmpTree.root();
             
-            // TODO: implement _node.equals
             expect(tree.findNode(tmpNode) === tree.root()).toBeTruthy();
         });
 

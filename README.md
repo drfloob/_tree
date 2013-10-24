@@ -42,11 +42,6 @@ number of benefits:
 
 [docco][]
 
---------------------------------------------------------------------------------
-
-## Building
-
-TODO
 
 --------------------------------------------------------------------------------
 
@@ -307,23 +302,6 @@ _tree.walk(MyTree, MyVisitor, _tree.walk.dfpost)
 
 
 ## `_tree.root(_tree)`
-
-
-## `_tree.add(_tree, Value [, IsGoodHereFunction [, WalkFunction]])`
-
-Inserts a node into the tree. The location of the new node is
-determined by the `IsGoodHereFunction` executed for each on a walk of
-the tree. When the `IsGoodHereFunction` returns a position, the walk
-is finished. An optional walk function can be supplied.
-
-`IsGoodHereFunction` must return one of:
-
- * `false`: keep walking
- * `'before'`: insert as sibling before the current node
- * `'after'`: insert as sibling after the current node
- * `'child'`: insert as the last child of the current node
- 
- TODO: create builtin balanced binary tree method
 
 
 ## `_tree.addChild(_tree, ParentNode, Value)`
