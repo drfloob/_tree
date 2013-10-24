@@ -3,12 +3,12 @@
 ## Purpose:
 
 > "Computing's core challenge is how not to make a mess of it."
-> *--Edsger W. Dijkstra, [EWD1243][EWD1243]*
+> *--Edsger W. Dijkstra, [EWD1243][]*
 
 This library provides a standalone tree model implementation as well
 as a pluggable tree behavior for your own data structures. It does
-this without maintaining any internal state. This has a number of
-benefits:
+this without maintaining any internal state. This design choice has a
+number of benefits:
 
  * all state can be managed directly by *your* application
  * all functions are [referentially transparent][REFTRAN]
@@ -58,8 +58,9 @@ var Patronage, FamilyTree;
 Patronage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]};
 FamilyTree = _tree.inflate(Patronage);
 
-// FamilyTree is immutable. You need to capture the return value to
-// see your changes.
+// FamilyTree is immutable. You need to capture the return value to //
+see your changes. If nothing holds a reference to the old tree, it
+will be garbage collected.
 FamilyTree = FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
 
 // Log the tree, with everyone's name and their father's name
@@ -70,11 +71,11 @@ FamilyTree.walk(function(node) {
     console.log(node.data.name, origin);
 });
 
-// Throws an error. Recursive deletion needs to be made explicit ...
+// Throws an error. Recursive deletion needs to be made explicit.
 FamilyTree = FamilyTree.delete(FamilyTree.root())
-// ... like this ...
+// This is the explicit version.
 FamilyTree = FamilyTree.delete(FamilyTree.root(), true)
-// ... or using the `_tree` methods directly
+// You can also use the `_tree` methods directly.
 FamilyTree = _tree.delete(FamilyTree, _tree.root(FamilyTree), true);
 
 
@@ -102,10 +103,14 @@ used by default:
 
 --------------------------------------------------------------------------------
 
-## API for a _Tree.Node Object
+## API for Node Objects
 
 ### `_tree.Node.parent()`
 ### `_tree.Node.children()`
+### `_tree.Node.data()`
+### `_tree.Node.delete()`
+### `_tree.Node.addChild()`
+### `_tree.Node.addChildTree()`
 
 
 --------------------------------------------------------------------------------
