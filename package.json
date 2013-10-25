@@ -8,13 +8,20 @@
         "test": "tests"
     },
     "scripts": {
-        "test": "./node_modules/jasmine-node/bin/jasmine-node tests/"
+        "test": "./node_modules/jasmine-node/bin/jasmine-node tests/",
+        "build": "uglifyjs _tree.js -c --mangle --comments \"/\\(c\\)/\" -o _tree.min.js --source-map _tree.min.js.map",
+        "docs": "docco _tree.js",
+        "lint": "./node_modules/nodelint/nodelint _tree.js tests/ --config .nodelint"
+    },
+    "dependencies": {
+        "underscore": ">=1.5.2"
     },
     "devDependencies": {
-        "underscore": ">=1.5.2",
         "docco": ">=0.6.2",
-        "jasmine-node": ">=1.11.0"
-},
-"author": "A. J. Heller",
-"license": "MIT"
+        "jasmine-node": ">=1.11.0",
+        "uglify-js": ">=2.4.1",
+        "nodelint": ">0.0.0"
+    },
+    "author": "A. J. Heller",
+    "license": "MIT"
 }
