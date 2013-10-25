@@ -1,9 +1,8 @@
-/*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _ */
-
+/*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _*/
 'use strict';
 
-var _tree = require("../lib/_tree")
-var _ = require("underscore")
+var _tree = require("_tree"),
+    _ = require("underscore");
 
 describe("The _tree module", function () {
     it("is defined", function () {
@@ -19,7 +18,14 @@ describe("Node ids", function () {
     });
     it("are unique after initial tree inflation", function () {
         var tree, ids;
-        tree = _tree.inflate({n: 1, k: [{n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}, {n: 1, k: [{n: 1, k: []}, {n: 1, k: []}]}]},
+        tree = _tree.inflate({n: 1, k: [
+            {n: 1, k: [
+                {n: 1, k: []}, {n: 1, k: []}
+            ]},
+            {n: 1, k: [
+                {n: 1, k: []}, {n: 1, k: []}
+            ]}
+        ]},
                                  _tree.inflate.byKey('k'));
         ids = [];
         tree.walk(function (n) {
@@ -43,7 +49,7 @@ describe("_tree.create", function () {
     it("is equivalent to a _tree.inflate call", function () {
         var infTree = _tree.inflate();
         // Right now, we can only sniff at identity
-        
+
         expect(infTree.defaults).toEqual(tree.defaults);
 
         expect(infTree.root().__id).toEqual(tree.root().__id);
@@ -124,28 +130,28 @@ describe("_tree.findNode", function () {
         beforeEach(function () {
             tree = _tree.create();
         });
-        
-        it("doesn't find the root node from a different tree", function() {
+
+        it("doesn't find the root node from a different tree", function () {
             var tmpTree, tmpNode;
             tmpTree = _tree.create();
             tmpNode = tmpTree.root();
-            
+
             expect(tree.findNode(tmpNode)).toBe(false);
         });
 
-        it("finds the root node from a clone", function() {
+        it("finds the root node from a clone", function () {
             var tmpTree, tmpNode;
             tmpTree = tree.root().data("new data");
             tmpNode = tmpTree.root();
-            
+
             expect(tree.findNode(tmpNode) === tree.root()).toBeTruthy();
         });
 
-        it("doesn't find non-existant children in a clone", function() {
+        it("doesn't find non-existant children in a clone", function () {
             var tmpTree, tmpNode;
             tmpTree = tree.root().addChild("test data");
             tmpNode = tmpTree.root().children()[0];
-            
+
             expect(tree.findNode(tmpNode)).toBe(false);
         });
     });
@@ -247,7 +253,7 @@ describe("_node.parent", function () {
     });
 
     it("finds the root from its children", function () {
-        var tree = _tree.inflate([1, [2,3]], _tree.inflate.byAdjacencyList);
+        var tree = _tree.inflate([1, [2, 3]], _tree.inflate.byAdjacencyList);
         expect(tree.root().children()[0].parent()).toBe(tree.root());
         expect(tree.root().children()[1].parent()).toBe(tree.root());
 

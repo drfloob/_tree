@@ -2,7 +2,7 @@
 
 'use strict';
 
-var _tree = require("../lib/_tree")
+var _tree = require("_tree");
 
 describe("_tree.walk", function () {
 
@@ -16,7 +16,7 @@ describe("_tree.walk", function () {
         describe("with method _tree.walk.dfpre", function () {
             it("finds only the root node", function () {
                 var ids = [];
-                tree.walk(function(n){ ids.push(n.__id); }, _tree.walk.dfpre);
+                tree.walk(function (n) { ids.push(n.__id); }, _tree.walk.dfpre);
 
                 expect(ids.length).toBe(1);
                 expect(ids[0]).toBe(1);
@@ -26,7 +26,7 @@ describe("_tree.walk", function () {
         describe("with method _tree.walk.dfpost", function () {
             it("finds only the root node", function () {
                 var ids = [];
-                tree.walk(function(n){ ids.push(n.__id); }, _tree.walk.dfpost);
+                tree.walk(function (n) { ids.push(n.__id); }, _tree.walk.dfpost);
 
                 expect(ids.length).toBe(1);
                 expect(ids[0]).toBe(1);
@@ -36,7 +36,7 @@ describe("_tree.walk", function () {
         describe("with method _tree.walk.bfpre", function () {
             it("finds only the root node", function () {
                 var ids = [];
-                tree.walk(function(n){ ids.push(n.__id); }, _tree.walk.bfpre);
+                tree.walk(function (n) { ids.push(n.__id); }, _tree.walk.bfpre);
 
                 expect(ids.length).toBe(1);
                 expect(ids[0]).toBe(1);
@@ -46,7 +46,7 @@ describe("_tree.walk", function () {
         describe("with method _tree.walk.bfpost", function () {
             it("finds only the root node", function () {
                 var ids = [];
-                tree.walk(function(n){ ids.push(n.__id); }, _tree.walk.bfpost);
+                tree.walk(function (n) { ids.push(n.__id); }, _tree.walk.bfpost);
 
                 expect(ids.length).toBe(1);
                 expect(ids[0]).toBe(1);
@@ -61,38 +61,39 @@ describe("_tree.walk", function () {
         var tree;
 
         beforeEach(function () {
-            tree = _tree.inflate([1, [2, 3, [4,5], 6, [7, [8, 9], 10, [11, [12]]]]], _tree.inflate.byAdjacencyList);
+            tree = _tree.inflate([1, [2, 3, [4, 5], 6, [7, [8, 9], 10, [11, [12]]]]],
+                                 _tree.inflate.byAdjacencyList);
         });
 
         describe("with method _tree.walk.dfpre", function () {
             it("finds all nodes in the correct order", function () {
                 var vals = [];
-                tree.walk(function(n){ vals.push(n.data()); }, _tree.walk.dfpre);
-                expect(vals).toEqual([1,2,3,4,5,6,7,8,9,10,11,12]);
+                tree.walk(function (n) { vals.push(n.data()); }, _tree.walk.dfpre);
+                expect(vals).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
             });
         });
 
         describe("with method _tree.walk.dfpost", function () {
             it("finds all nodes in the correct order", function () {
                 var vals = [];
-                tree.walk(function(n){ vals.push(n.data()); }, _tree.walk.dfpost);
-                expect(vals).toEqual([2,4,5,3,8,9,7,12,11,10,6,1]);
+                tree.walk(function (n) { vals.push(n.data()); }, _tree.walk.dfpost);
+                expect(vals).toEqual([2, 4, 5, 3, 8, 9, 7, 12, 11, 10, 6, 1]);
             });
         });
 
         describe("with method _tree.walk.bfpre", function () {
             it("finds all nodes in the correct order", function () {
                 var vals = [];
-                tree.walk(function(n){ vals.push(n.data()); }, _tree.walk.bfpre);
-                expect(vals).toEqual([1,2,3,6,4,5,7,10,8,9,11,12]);
+                tree.walk(function (n) { vals.push(n.data()); }, _tree.walk.bfpre);
+                expect(vals).toEqual([1, 2, 3, 6, 4, 5, 7, 10, 8, 9, 11, 12]);
             });
         });
 
         describe("with method _tree.walk.bfpost", function () {
             it("finds all nodes in the correct order", function () {
                 var vals = [];
-                tree.walk(function(n){ vals.push(n.data()); }, _tree.walk.bfpost);
-                expect(vals).toEqual([12,8,9,11,4,5,7,10,2,3,6,1]);
+                tree.walk(function (n) { vals.push(n.data()); }, _tree.walk.bfpost);
+                expect(vals).toEqual([12, 8, 9, 11, 4, 5, 7, 10, 2, 3, 6, 1]);
             });
         });
 
