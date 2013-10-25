@@ -44,7 +44,17 @@ THE SOFTWARE.
 }(this, function (_) {
     'use strict';
 
-    var _tree, _node, Tree, Node, __defaults, nextTreeId = 1;
+    var _tree, _node, Tree, Node, __defaults;
+
+
+    // A rfc4122-compatible GUID generator, from
+    // [broofa](http://stackoverflow.com/a/2117523)
+    function uuid () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        });
+    }
 
     // Before returning a mutable cloned tree, it needs to be
     // frozen. And all the nodes need a reference to their proper
@@ -474,7 +484,7 @@ THE SOFTWARE.
     // The definition of an immutable Tree object.
     Tree = function (Defaults, Obj, Method, nextId) {
         this.defaults = Defaults;
-        this.__id = nextTreeId++;
+        this.__id = uuid();
         this.__nextNodeId = nextId || 1;
 
         // `Obj` is inflated via `Method`, if supplied
@@ -490,7 +500,6 @@ THE SOFTWARE.
     // modifications in `_tree`.
     Tree.clone = function (tree) {
         var newTree = new Tree(tree.defaults);
-        nextTreeId--;
         newTree.__root = Node.clone(newTree, tree.root());
         newTree.__id = tree.__id;
         return newTree;

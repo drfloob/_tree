@@ -7,7 +7,6 @@
  * Implement _node.contains
  * Implement _node.sample (what should that even do?)
  * Make _tree.__* properties truly private (they're already frozen; make them non-enumerable)
- * Eliminate _tree's internal nextTreeId state. Replace with some functional uniker.
  * Decide on an error practice; Normalize codebase and make errors explicit in the API.
  * Change the name of _tree.inflate.byAdjacencyList to not be misleading.
  * Error (or whatever) if adjacency list has root siblings.
