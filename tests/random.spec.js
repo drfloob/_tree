@@ -1,7 +1,9 @@
-/*jslint nomen: true, todo: true */
 /*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _ */
 
 'use strict';
+
+var _tree = require("../lib/_tree")
+var _ = require("underscore")
 
 describe("The _tree module", function () {
     it("is defined", function () {

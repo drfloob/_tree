@@ -1,0 +1,20 @@
+{
+    "name": "_tree",
+    "version": "0.1.0",
+    "description": "A tree data structure and tree behavior library for Javascript",
+    "keywords": ["tree", "data structure", "model", "wrapper", "graph"],
+    "main": "_tree.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "test": "./node_modules/jasmine-node/bin/jasmine-node tests/"
+    },
+    "devDependencies": {
+        "underscore": ">=1.5.2",
+        "docco": ">=0.6.2",
+        "jasmine-node": ">=1.11.0"
+},
+"author": "A. J. Heller",
+"license": "MIT"
+}

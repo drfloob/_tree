@@ -1,5 +1,9 @@
 /*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _ */
 
+'use strict';
+
+var _tree = require("../lib/_tree")
+
 describe("_tree.walk", function () {
 
     describe("on an empty tree", function () {
