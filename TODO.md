@@ -22,17 +22,11 @@
  * Setup independent performance tests
  * Setup performance comparisons between libraries
 
-# Docs
-
- * build docco docs from the cmdline
-
 # Infrastructure
 
- * jslint from the command line
- * minify (and gzip) from the command line
- * jasmine test from the cmd line
  * get continuous integration setup
  * get test coverage info setup
+ * setup one-step build to halt on lint errors, build docs, and run tests
 
 # Nice-to-haves
 
