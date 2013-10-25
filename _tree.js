@@ -64,6 +64,7 @@ THE SOFTWARE.
         function __finalizeMutableChildNodes(node) {
             node.__tree = tree;
             Object.freeze(node);
+            Object.freeze(node.__children);
             _.each(node.children(), __finalizeMutableChildNodes);
         }
 

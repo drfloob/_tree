@@ -1,4 +1,4 @@
-/*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _*/
+/*global jasmine, describe, it, expect, beforeEach, _tree, _*/
 'use strict';
 
 var _tree = require("_tree"),
@@ -58,7 +58,7 @@ describe("_tree.create", function () {
         expect(infTree.root().data()).toBeUndefined();
 
         expect(infTree.root().children()).toEqual(tree.root().children());
-        expect(infTree.root().children()).toEqual([]);
+        expect(infTree.root().children()).toEqual(Object.freeze([]));
     });
     describe("with an inflate method default", function () {
 
@@ -182,7 +182,7 @@ describe("An inflated tree", function () {
             });
 
             it("has a root with no children", function () {
-                expect(tree.root().children()).toEqual([]);
+                expect(tree.root().children()).toEqual(Object.freeze([]));
             });
 
             it("is frozen", function () {
@@ -213,7 +213,7 @@ describe("An inflated tree", function () {
             });
 
             it("has a root with no children", function () {
-                expect(tree.root().children()).toEqual([]);
+                expect(tree.root().children()).toEqual(Object.freeze([]));
             });
 
             it("is frozen", function () {
@@ -236,7 +236,7 @@ describe("An inflated tree", function () {
 
                 data.children = [{"name": "newKid"}];
                 expect(tree.root().data().children.length).toEqual(1);
-                expect(tree.root().children()).toEqual([]);
+                expect(tree.root().children()).toEqual(Object.freeze([]));
             });
 
         });
