@@ -1,34 +1,34 @@
 /*
-    Copyright (c) 2013 A. J. Heller
-    _tree.js is provided under the MIT License.
-
-    Permission is hereby granted, free of charge, to any person
-    obtaining a copy of this software and associated documentation
-    files (the "Software"), to deal in the Software without
-    restriction, including without limitation the rights to use, copy,
-    modify, merge, publish, distribute, sublicense, and/or sell copies
-    of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be
-    included in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-    DEALINGS IN THE SOFTWARE.
+    _tree.js 0.1.0
+    (c) 2013 A. J. Heller
+    _tree.js may be freely distributed under the MIT License.
 */
-/*global define */
-/*jslint nomen: true, todo: true */
+/*
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-// [UMD/returnExports.js][returnExports] setup for AMD, Node.js, and
-// Global usages.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.  
+*/
+
+// [UMD/returnExports.js](https://github.com/umdjs/umd/blob/master/returnExports.js)
+// setup for AMD, Node.js, and Global usages.
 (function (root, factory) {
     'use strict';
+    var define;
+
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['underscore'], factory);
@@ -46,13 +46,31 @@
 
     var _tree, _node, Tree, Node, __defaults, nextTreeId = 1;
 
-    // This is the API definition for the main tree object.
+    // Before returning a mutable cloned tree, it needs to be
+    // frozen. And all the nodes need a reference to their proper
+    // tree.
+    function __finalizeMutableTreeClone(tree) {
+
+        function __finalizeMutableChildNodes(node) {
+            node.__tree = tree;
+            Object.freeze(node);
+            _.each(node.children(), __finalizeMutableChildNodes);
+        }
+
+        Object.freeze(tree);
+        __finalizeMutableChildNodes(tree.root());
+    }
+
+
+    // ## "Headers"
+    
+    // This is the `_tree` API
     _tree = {
-        // API-only methods
+        // These two are API-only methods, not mixed in to `Tree` objects.
         'inflate': null,
         'create': null,
 
-        // Instance and API methods
+        // And there are all both instance and API methods
         'deflate': null,
         'defaults': null,
         'walk': null,
@@ -64,7 +82,7 @@
         'sample': null
     };
 
-    // And this is the API definition for each node in the tree.
+    // This is the `Node` API for each node in a `_tree`.
     _node = {
         'delete': null,
         'addChild': null,
@@ -75,71 +93,69 @@
     };
 
 
-
-
-    // # Public API
+    // # Public API Implementation
     //
     // This next chunk of code defines the public methods of the _tree
     // library, beginning with its main entrypoints.
+    
 
-
-    // ### _tree.inflate and _tree.create
+    // ### _tree.inflate
     // 
     // Inflate parses tree-like data into a `_tree` data structure for
     // you to work with. It does so without modifying your object
     // whatsoever, and can handle any tree data structure you can
     // define.
+    //
+    // You can specify the default behaviour of your tree via the
+    // `Defaults` argument. Anything you don't specify will take the
+    // standard default options.
+    //
+    // Inflate handles all forms of tree-like data by making the
+    // object parsing logic fully pluggable. You can define your own
+    // `Method`, or use one of the handful of built-ins.
     _tree.inflate = function (obj, Method, Defaults) {
-
-        // You can specify the default behaviour of your tree via the
-        // Defaults argument. Anything you don't specify will use the
-        // standard default.
         Defaults = _.defaults(_.clone(Defaults || {}), __defaults);
 
-        // Inflate can handle arbitrary forms of tree-like data by
-        // allowing you to define your own object parsing
-        // method. There are also a handful of built-in methods you
-        // can choose from.
-        // 
-        // This method is also made the default inflater for
-        // subsequent parsing (like in _node.addChild)
         Method = Defaults.inflate = Method || Defaults.inflate;
 
-        // console.log('inflating', obj);
         var tree = new Tree(Defaults, obj, Method);
         __finalizeMutableTreeClone(tree);
         return tree;
     };
 
 
-    // This creates an empty tree from scratch. Tree-wide defaults can
+    // ### _tree.create
+    // 
+    // This creates an empty tree from scratch. Tree-wide `Defaults` can
     // also be set here.
     _tree.create = function (Defaults) {
         return _tree.inflate(null, null, Defaults);
     };
 
 
-    /**
-     * The canonical representation of trees in Javascript can be
-     * parsed by this method. It inflates chains of objects where
-     * children are specified as a arrays bound to some property of
-     * the parent object (usually the 'children' property)
-     *
-     * For example, it parses an object like this:
-     *     {'name': parent, 
-     *      'children': [
-     *          {'name': 'child1'}, 
-     *          {'name': 'child2', 'children': [
-     *              {'name': 'child3'}]
-     *          }]
-     *     }
-     *
-     * into a tree like this:
-     *     parent
-     *         child1
-     *         child2
-     *             child3
-     */
+    // ### _tree.inflate.byKey
+    // 
+    // Maybe the most natural representation of trees in Javascript
+    // can be parsed by this method. It inflates chains of objects
+    // that have child arrays bound to some property of the parent
+    // object (usually 'children')
+    //
+    // For example, it parses an object like this:
+    //
+    //     {'name': parent, 
+    //      'children': [
+    //          {'name': 'child1'}, 
+    //          {'name': 'child2', 'children': [
+    //              {'name': 'child3'}]
+    //          }]
+    //     }
+    //
+    // into a tree like this:
+    //
+    //     parent
+    //         child1
+    //         child2
+    //             child3
     _tree.inflate.byKey = function (Key) {
         Key = Key || "children";
         return function (Obj) {
@@ -151,52 +167,53 @@
     };
 
 
-    /**
-     * This inflation method parses a wonky sort of array, wherein
-     * every entry is either a node, or an array containing the
-     * children of the previous node. This is mabye better seen than
-     * described.
-     *
-     * It parses an array like this:
-     *     ['parent', ['child1', 'child2', ['child3']]]
-     *
-     * into a tree like this:
-     *     parent
-     *         child1
-     *         child2
-     *             child3
-     */
+    // ### _tree.inflate.byAdjacencyList
+    //
+    // This inflation method parses a wonky sort of array, wherein
+    // every entry is either a node, or an array containing the
+    // children of the previous node. An example to clarify:
+    //
+    // It parses an array like this:
+    //
+    //     ['parent', ['child1', 'child2', ['child3']]]
+    //
+    // into a tree like this:
+    //
+    //     parent
+    //         child1
+    //         child2
+    //             child3
     _tree.inflate.byAdjacencyList = function (Obj) {
-        var kids, tmpObj;
+        var kids, tmpObj, i;
         this.emit(_.first(Obj));
         if (Obj.length > 1 && _.isArray(Obj[1])) {
             kids = Obj[1];
-            for (var i = 0; i < kids.length; i++) {
+            for (i = 0; i < kids.length; i++) {
                 tmpObj = [kids[i]];
-                if (kids.length > 1 && _.isArray(kids[i+1])) {
-                    tmpObj.push(kids[i+1]);
+                if (kids.length > 1 && _.isArray(kids[i + 1])) {
+                    tmpObj.push(kids[i + 1]);
                     i++;
                 }
-                // var e = new Error();
-                // console.log('Obj', Obj);
-                // console.log('tmpObj', tmpObj, e.stack);
                 this.children([tmpObj]);
             }
         }
     };
 
 
-    /**
-     * If your tree only keeps data for leaf nodes, you can use this
-     * inflation method to parse arrays like this:
-     *     [[child1, [child3]]]
-     *
-     * into trees like this:
-     *     <no data>
-     *         child1
-     *         <no data>
-     *             child3
-     */
+    // ### _tree.inflate.onlyLeavesList
+    //
+    // If your tree only keeps data for leaf nodes, you can use this
+    // inflation method to parse arrays like this:
+    //
+    //     [[child1, [child3]]]
+    //
+    // into trees like this:
+    //
+    //     <no data>
+    //         child1
+    //         <no data>
+    //             child3
+    //
     _tree.inflate.onlyLeavesList = function (Obj) {
         if (_.isArray(_.first(Obj))) {
             this.children(_.first(Obj));
@@ -206,17 +223,20 @@
     };
 
 
-    // A getter for the root of the tree. The root is just a node like
-    // any other.
+    // ### _tree.root
+    //
+    // A getter for the root `Node` of the tree.
     _tree.root = function (Tree) {
         return Tree.__root;
     };
 
 
-    // Find a node in a tree by id correlation, and returns the Node
-    // or `false` if no match was found. This can be used to find a
-    // matching node in a cloned tree from another clone's Node, since
-    // ids are designed to be invariant across tree clones.
+    // ### _tree.findNode
+    //
+    // Find a node in a tree by internal id correlation, and return
+    // the Node or `false` if no match was found. This can be used to
+    // find a matching node in a cloned tree, since ids are designed
+    // to be invariant across clones.
     _tree.findNode = function (tree, Node) {
         if (Node.__tree.__id !== tree.__id) {
             return false;
@@ -231,61 +251,85 @@
     };
 
 
-    // This method is the workhorse of the application. It allows you
-    // to walk the tree in arbitrary ways, and execute a callback for
-    // every node in the order you specify.
+    // ### _tree.walk
+    //
+    // This method is the workhorse of the library. It allows you to
+    // walk the tree in arbitrary ways (specified by `Method`), and
+    // execute `Callback` for every node in the order you specify.
     _tree.walk = function (Tree, Callback, Method) {
         Method = Method || Tree.defaults.walk;
-        var _this, qs = [], recurList = [];
+        var _this, qs = [], recurList = [], tmpNode;
 
-        // In your Method callback, `this` will be bound to this
-        // object. To see how it's used, scan the builtin walk methods
-        // defined below.
+        // In `Method`, `this` will be bound to the following object. To
+        // see how it's used, scan the built-in walk methods below.
         _this = {
-            // Adds nodes to the end of the list
+
+            // Adds nodes to the end of the callback list.
             'queue': function (Nodes) {
                 qs = qs.concat(Nodes);
             },
-            // Adds nodes to the front of the list
+
+            // Adds nodes to the front of the callback list.
             'push': function (Nodes) {
                 qs = Nodes.concat(qs);
             },
-            // recurses immediately on the set of nodes
+
+            // Recurses immediately on the set of nodes.
             'recurse': function (Nodes) {
                 _.each(Nodes, function (n) {
                     Method.call(_this, n);
                 });
             },
-            // Adds a set of nodes to the *end* of a list of nodes to
-            // recurse on.
-            'queueRecurse': function(Nodes) {
+
+            // Adds a set of nodes to the end of a list of nodes to
+            // recurse on next.
+            //
+            // Note that a `pushRecurse` method isn't needed because
+            // `_this.recurse` effectively does the same thing as
+            // pushing the set of Nodes to the front of the visitation
+            // list.
+            'queueRecurse': function (Nodes) {
                 recurList = recurList.concat(Nodes);
             }
-            // Note that pushRecurse isn't needed because
-            // _this.recurse effectively pushes the set of Nodes to
-            // the front of the visitation list.
         };
 
+        // Before executing any callbacks, an ordered list of nodes
+        // (`qs`) is generated. In some cases, `Method` many not be
+        // able to evaluate all nodes in one pass, so `recurList` is
+        // used to track which nodes to visit in the next pass.  It
+        // can take as many passes as required.
         Method.call(_this, Tree.root());
         while (recurList.length > 0) {
-            var tmpNode = recurList.shift()
+            tmpNode = recurList.shift();
             Method.call(_this, tmpNode);
         }
+        // Finally, `Callback` is called for each node, in order.
         _.each(qs, Callback);
     };
 
 
+    // ### _tree.walk.dfpre
+    //
+    // The is the implementation of the built-in depth-first,
+    // pre-order traversal algorithm. It is setup as the default walk
+    // method.
     _tree.walk.dfpre = function (Node) {
         this.queue(Node);
         this.recurse(Node.children());
     };
 
+    // ### _tree.walk.dfpost
+    //
+    // Depth-first, post-order traversal algorithm.
     _tree.walk.dfpost = function (Node) {
         this.recurse(Node.children());
         this.queue(Node);
     };
 
 
+    // ### _tree.walk.bfpre
+    //
+    // Breadth-first, pre-order traversal algorithm.
     _tree.walk.bfpre = function (Node) {
         if (!Node.parent()) {
             this.queue([Node]);
@@ -294,6 +338,9 @@
         this.recurse(Node.children());
     };
 
+    // ### _tree.walk.bfpost
+    //
+    // Breadth-first, post-order traversal algorithm.
     _tree.walk.bfpost = function (Node) {
         if (!Node.parent()) {
             this.push([Node]);
@@ -306,29 +353,31 @@
 
 
 
-
-
     _tree.deflate = function () {};
     _tree.deflate.toKey = function () {};
 
 
 
 
-    // ## Node definition
-
-
+    // ### _node.data
+    //
     // The data method is both a getter and setter, depending on how
-    // it's used.
+    // it's used. 
+    //
+    // If Obj isn't submitted, it's used as a getter.
+    // 
+    // Otherwise, it's used as a setter. Setting the data on a node
+    // triggers the creation of a tree clone. Modifications are done
+    // to the mutable clone, and the entire tree is returned after
+    // being made immutable.
     _node.data = function (tree, node, Obj) {
+
         if (!Obj) {
-            // If Obj isn't submitted, it's used as a getter.
             return node.__data;
         }
 
         var newTree, newNode;
 
-        // Otherwise, it's used as a setter. Setting the data on a
-        // node triggers the creation of a whole new tree.
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(node);
         if (!newNode) {
@@ -339,23 +388,25 @@
         return newTree;
     };
 
+    // ### _node.children
+    // 
     // A simple getter for node children.
     _node.children = function (tree, node) {
         return node.__children || [];
     };
 
 
+    // ### _node.addChild
+    // 
     // To add a child node, an object representing the node data is
-    // parsed as if it were a new tree and then added as the last
-    // child of the parent.
-    //
-    // Returns a new Tree
+    // parsed as if it were a new tree and then appended to the end of
+    // the children array.
     _node.addChild = function (tree, ParentNode, Obj, Method) {
         Method = Method || tree.defaults.inflate;
         var childTree, newTree, newNode;
         childTree = new Tree(tree.defaults, Obj, Method, tree.__nextNodeId);
 
-        // Mutable Magic
+        // Here lies the mutable magic!
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(ParentNode);
         if (!newNode) {
@@ -366,45 +417,48 @@
         newTree.__nextNodeId = childTree.__nextNodeId;
 
         __finalizeMutableTreeClone(newTree);
+
+        // As with all `_node` editing methods, a newly-cloned tree
+        // is returned.
         return newTree;
     };
 
 
-    // Returns the node's parent, or undefined
-    _node.parent = function(tree, node) {
+    // ### _node.parent
+    // 
+    // Returns the node's parent, or `undefined`
+    _node.parent = function (tree, node) {
         return node.__parent;
-    }
-
-
+    };
 
 
 
     // ## INTERNAL
     //
-    // The next chunk of code is entirely made up of internal
-    // functions and private static data.
+    // The next chunk of code consists entirely of internal functions
+    // and private static data.
+    
 
-
-    // Dev notes: Raw object state that needs to be monitored
-    // _tree: [__root]
-    // _node: [__tree, __children]
-
+    // `__inflate` provides the general logic behind object
+    // inflation/parsing/deserialization.
     function __inflate(tree, Object, Method) {
         var thisnode = new Node(tree), _this;
         tree.__root = thisnode;
 
+        // When `Method` is called to navigate the submitted tree-like
+        // object, `this` is set to the following object.
         _this = {
+
             // Sets data on the current node
             emit: function (Data) {
                 thisnode.__data = Data;
             },
-            // Calling this immediately processes a set of
-            // to-be-parsed child node objects
+
+            // Calling this immediately processes a set of child node
+            // objects.
             children: function (Nodes) {
-                // console.log('childrening', Nodes, tree)
                 _.each(Nodes, function (kidObj) {
                     var kidTree = new Tree(tree.defaults, kidObj, Method, tree.__nextNodeId);
-                    // console.log('kidTree', kidTree);
                     thisnode.__children.push(kidTree.root());
                     kidTree.root().__parent = thisnode;
                     tree.__nextNodeId = kidTree.__nextNodeId;
@@ -412,9 +466,7 @@
             }
         };
 
-        // console.log('before inflating', thisnode)
         Method.call(_this, Object);
-        // console.log('after inflating', thisnode)
         return thisnode;
     }
 
@@ -425,16 +477,17 @@
         this.__id = nextTreeId++;
         this.__nextNodeId = nextId || 1;
 
+        // `Obj` is inflated via `Method`, if supplied
         if (!!Obj && !!Method) {
-            // Obj is inflated via Method, if supplied
-            // console.log('inflating', Obj, 'with method', Method);
             this.__root = __inflate(this, Obj, Method);
         } else {
             this.__root = new Node(this);
         }
     };
+
     // A static copy constructor which takes a(n) (im)mutable tree and
-    // returns a mutable clone.
+    // returns a mutable clone. This provides the base for all
+    // modifications in `_tree`.
     Tree.clone = function (tree) {
         var newTree = new Tree(tree.defaults);
         nextTreeId--;
@@ -443,17 +496,15 @@
         return newTree;
     };
 
+    // Most public API methods are mixed in to `Tree.prototype` here,
+    // partially bound so that the first argument is already set to
+    // the `Tree` instance the method is bound to.
     _.chain(_tree)
         .omit(['inflate', 'clone', 'create'])
         .each(function (fn, key) {
-            // Most public API methods are mixed in to Tree.prototype
-            // here, partially bound so that the first argument is
-            // already set to the Tree instance.
-
             Tree.prototype[key] = function () {
                 if (_.isNull(fn)) {
                     throw new Error("Tree method not yet implemented: " + key);
-                    // console.log('tree null fn', key);
                 }
                 return _.partial(fn, this).apply(this, _.toArray(arguments));
             };
@@ -468,6 +519,9 @@
         this.__id = tree.__nextNodeId;
         tree.__nextNodeId = tree.__nextNodeId + 1;
     };
+    // A static copy constructor for `Node` objects, much like
+    // `Tree.clone`, but recursive. All child nodes are cloned as
+    // well.
     Node.clone = function (newTree, node) {
         var newNode = new Node(newTree);
         newNode.__data = node.__data;
@@ -475,32 +529,16 @@
         newNode.__id = node.__id;
         return newNode;
     };
+    // Similarly, the `Node` public API is mixed in to the
+    // `Node.prototype`. All methods require both a `Tree` and `Node`
+    // reference, so both are bound to the methods beforehand.
     _.each(_node, function (fn, key) {
         Node.prototype[key] = function () {
-            // Similarly, the Node public API is bound to the
-            // prototype of each Node.
             return _.partial(fn, this.__tree, this).apply(this, _.toArray(arguments));
         };
     });
 
-
-    // Before returning a mutable cloned tree, it needs to be
-    // frozen. Additionally, all the nodes need a reference to their
-    // tree.
-    function __finalizeMutableTreeClone(tree) {
-
-        function __finalizeMutableChildNodes(node) {
-            // console.log(node, Object.isFrozen(node));
-            node.__tree = tree;
-            Object.freeze(node);
-            _.each(node.children(), __finalizeMutableChildNodes);
-        }
-
-        Object.freeze(tree);
-        __finalizeMutableChildNodes(tree.root());
-    }
-
-
+    // Finally, we setup some library-wide defaults.
     __defaults =  {
         'inflate': _tree.inflate.byKey(),
         'deflate': _tree.deflate.toKey(),
@@ -508,10 +546,6 @@
         'deleteRecursive': true
     };
 
-
+    // And we're done.
     return _tree;
 }));
-
-/*
-[returnExports]: https://github.com/umdjs/umd/blob/master/returnExports.js
-*/
