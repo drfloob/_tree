@@ -365,13 +365,6 @@ THE SOFTWARE.
     };
 
 
-
-    _tree.deflate = function () {};
-    _tree.deflate.toKey = function () {};
-
-
-
-
     // ### _node.data
     //
     // The data method is both a getter and setter, depending on how

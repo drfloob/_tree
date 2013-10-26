@@ -1,21 +1,23 @@
 # Implementation
 
- * Implement _tree.deflate
  * Implement _tree.equals
  * Implement _node.equals
  * Implement _node.delete
  * Implement _node.findByData
- * Implement _node.contains (what should that even do?)
- * Implement _node.sample (what should that even do?)
- * Make _tree.__* and _node.__* properties truly private (they're already frozen; make them non-enumerable)
- * Decide on an error practice; Normalize codebase and make errors explicit in the API.
- * Change the name of _tree.inflate.byAdjacencyList to not be misleading.
+ * Make _tree.__* and _node.__* properties truly private (they're
+   already frozen; make them non-enumerable)
+ * Decide on an error practice; Normalize codebase and make errors
+   explicit in the API.
+ * Change the name of _tree.inflate.byAdjacencyList to not be
+   misleading.
  * Error (or whatever) if adjacency list has root siblings.
 
 # Tests
 
  * refactor spec.js into multiple files
-
+ * see if required includes can be required automatically for each
+   file in the test suite (rather than explicitly as they are now)
+ 
 # Quality
 
  * Find a performance testing framework
@@ -26,7 +28,10 @@
 
  * get continuous integration setup
  * get test coverage info setup
- * setup one-step build to halt on lint errors, build docs, and run tests
+ * setup one-step build to halt on lint errors, build docs, and run
+   tests
+ * build, docs, lint, and test with grunt
+ * implement file versioning with grunt-version
 
 # Nice-to-haves
 
@@ -34,6 +39,6 @@
    - balanced binary tree
    - red black tree
  * implement a tree visualizer
- * wire up some examples in jsfiddle
+ * wire up some visual examples in jsfiddle
 
 
