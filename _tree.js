@@ -545,7 +545,6 @@ THE SOFTWARE.
     // Finally, we setup some library-wide defaults.
     __defaults =  {
         'inflate': _tree.inflate.byKey(),
-        'deflate': _tree.deflate.toKey(),
         'walk': _tree.walk.dfpre,
         'deleteRecursive': true
     };
