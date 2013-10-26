@@ -84,7 +84,6 @@ THE SOFTWARE.
 
         // The rest are used as `_tree` API methods and as `Tree`
         // instance methods.
-        'deflate': null,
         'defaults': null,
         'walk': null,
         'root': null,

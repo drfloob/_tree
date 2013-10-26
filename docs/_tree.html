@@ -237,8 +237,7 @@ instance methods.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="string">'deflate'</span>: <span class="literal">null</span>,
-        <span class="string">'defaults'</span>: <span class="literal">null</span>,
+            <div class="content"><div class='highlight'><pre>        <span class="string">'defaults'</span>: <span class="literal">null</span>,
         <span class="string">'walk'</span>: <span class="literal">null</span>,
         <span class="string">'root'</span>: <span class="literal">null</span>,
         <span class="string">'add'</span>: <span class="literal">null</span>,
@@ -728,12 +727,7 @@ method.</p>
         <span class="keyword">var</span> rev = _.clone(Node.children());
         rev.reverse();
         <span class="keyword">this</span>.queueRecurse(rev);
-    };
-
-
-
-    _tree.deflate = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>};
-    _tree.deflate.toKey = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>};</pre></div></div>
+    };</pre></div></div>
             
         </li>
         
@@ -1118,7 +1112,6 @@ reference, so both are bound to the methods beforehand.</p>
             
             <div class="content"><div class='highlight'><pre>    __defaults =  {
         <span class="string">'inflate'</span>: _tree.inflate.byKey(),
-        <span class="string">'deflate'</span>: _tree.deflate.toKey(),
         <span class="string">'walk'</span>: _tree.walk.dfpre,
         <span class="string">'deleteRecursive'</span>: <span class="literal">true</span>
     };</pre></div></div>

@@ -83,14 +83,13 @@ FamilyTree = _tree.delete(FamilyTree, _tree.root(FamilyTree), true);
 ## Defaults
 
 Without defining your own defaults or callbacks for the `inflate`,
-`deflate`, `walk`, and `delete` methods, the following methods are
-used by default:
+`walk`, and `delete` methods, the following methods are used by
+default:
 
 
 ```
 {
     'inflate': _tree.inflate.byKey()
-    , 'deflate': _tree.deflate.toKey()
     , 'walk': _tree.walk.dfpre
     , 'deleteRecursive': false
 }
@@ -209,23 +208,6 @@ OR
 var MyObject = [['hi', ['emacs']]]
 var MyTree = _tree.inflate(MyObject, _tree.inflate.onlyLeavesList)
 ```
-
-
-
-
-## `_tree.deflate(_tree [, Method])`
-
-Serializes a tree into a form of your choosing. You can inflate a tree
-in from format and deflate to another quick easily.
-
-Optionally, you can include a custom deflate method that accepts a
-tree and returns a serialized object of your design.
-
-Builtin deflate methods:
-
- * `_tree.deflate.toAdjacencyList`
- * `_tree.deflate.toKey([Key])`: key defaults to `'children'`
- * `_tree.deflate.toOnlyLeavesList`
 
 
 
