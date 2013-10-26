@@ -77,11 +77,13 @@ THE SOFTWARE.
     
     // This is the `_tree` API
     _tree = {
-        // These two are API-only methods, not mixed in to `Tree` objects.
+        // These two methods are used in the `_tree` API only, and are
+        // not mixed in to `Tree` objects.
         'inflate': null,
         'create': null,
 
-        // And there are all both instance and API methods
+        // The rest are used as `_tree` API methods and as `Tree`
+        // instance methods.
         'deflate': null,
         'defaults': null,
         'walk': null,
@@ -123,7 +125,7 @@ THE SOFTWARE.
     //
     // Inflate handles all forms of tree-like data by making the
     // object parsing logic fully pluggable. You can define your own
-    // `Method`, or use one of the handful of built-ins.
+    // parsing `Method`, or use one of the handful of built-ins.
     _tree.inflate = function (obj, Method, Defaults) {
         Defaults = _.defaults(_.clone(Defaults || {}), __defaults);
 
@@ -417,7 +419,6 @@ THE SOFTWARE.
         var childTree, newTree, newNode;
         childTree = new Tree(tree.defaults, Obj, Method, tree.__nextNodeId);
 
-        // Here lies the mutable magic!
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(ParentNode);
         if (!newNode) {

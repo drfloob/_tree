@@ -1,5 +1,4 @@
-/*global window, document, jasmine, describe, it, expect, beforeEach, _tree, _ */
-
+/*global jasmine, describe, it, expect, beforeEach, _tree, _ */
 'use strict';
 
 var _tree = require("_tree");

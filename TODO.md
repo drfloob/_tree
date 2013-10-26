@@ -4,7 +4,8 @@
  * Implement _tree.equals
  * Implement _node.equals
  * Implement _node.delete
- * Implement _node.contains
+ * Implement _node.findByData
+ * Implement _node.contains (what should that even do?)
  * Implement _node.sample (what should that even do?)
  * Make _tree.__* and _node.__* properties truly private (they're already frozen; make them non-enumerable)
  * Decide on an error practice; Normalize codebase and make errors explicit in the API.
