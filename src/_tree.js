@@ -19,12 +19,12 @@ THE SOFTWARE.
 */
 
 /* jshint -W071 */
+/* global define */
 
 // [UMD/returnExports.js](https://github.com/umdjs/umd/blob/master/returnExports.js)
 // setup for AMD, Node.js, and Global usages.
 (function (root, factory) {
     'use strict';
-    var define;
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -43,7 +43,6 @@ THE SOFTWARE.
     'use strict';
 
     var _tree, _node, Tree, Node, __defaults;
-
 
     // A rfc4122-compatible GUID generator, from
     // [broofa](http://stackoverflow.com/a/2117523)

@@ -1,19 +1,23 @@
-/*global require, describe, it, expect */
-'use strict';
+/*global define, describe, it, expect */
 
-var _tree = require('_tree');
+define(['_tree'], function (_tree) {
+    'use strict';
 
-describe('_node.children', function () {
-    it('is immutable', function () {
+    describe('_node.children', function () {
+        it('is immutable', function () {
 
-        var tree, kids, tmpLen;
-        tree = _tree.inflate({a: 1, children: [{a: 2}]});
-        expect(Object.isFrozen(tree.root().children())).toBeTruthy();
+            var tree, kids, tmpLen;
+            tree = _tree.inflate({a: 1, children: [{a: 2}]});
+            expect(Object.isFrozen(tree.root().children())).toBeTruthy();
 
-        kids = tree.root().children();
-        
-        tmpLen = kids.length;
-        kids.push(2);
-        expect(tmpLen).toEqual(kids.length);
+            kids = tree.root().children();
+            
+            tmpLen = kids.length;
+            kids.push(2);
+            expect(tmpLen).toEqual(kids.length);
+            expect(kids[1]).toBeUndefined();
+            expect(kids[1]).not.toBe(2);
+        });
     });
 });
+
