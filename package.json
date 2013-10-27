@@ -1,7 +1,7 @@
 {
     "name": "_tree",
     "version": "0.1.0",
-    "description": "A tree data structure and tree behavior library for Javascript",
+    "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
     "keywords": ["tree", "data structure", "model", "wrapper", "graph"],
     "main": "_tree.js",
     "directories": {
@@ -14,13 +14,18 @@
         "lint": "./node_modules/nodelint/nodelint _tree.js tests/ --config .nodelint"
     },
     "dependencies": {
-        "underscore": ">=1.5.2"
+        "underscore": "~1.5.2"
     },
     "devDependencies": {
-        "docco": ">=0.6.2",
-        "jasmine-node": ">=1.11.0",
-        "uglify-js": ">=2.4.1",
-        "nodelint": ">0.0.0"
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.7.0",
+        "grunt-contrib-uglify": "~0.2.4",
+        "grunt-compare-size": "~0.4.0",
+        "grunt-contrib-jshint": "~0.7.0",
+        "grunt-jasmine": "~0.1.0",
+        "jasmine-reporters": "~0.2.1",
+        "grunt-docco": "~0.3.0",
+        "requirejs": "~2.1.9"
     },
     "author": "A. J. Heller",
     "license": "MIT"
