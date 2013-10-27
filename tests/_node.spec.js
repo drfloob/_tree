@@ -1,11 +1,10 @@
-/*global jasmine, describe, it, expect, beforeEach, _tree, _*/
+/*global require, describe, it, expect */
 'use strict';
 
-var _tree = require("_tree"),
-    _ = require("underscore");
+var _tree = require('_tree');
 
-describe("_node.children", function () {
-    it("is immutable", function () {
+describe('_node.children', function () {
+    it('is immutable', function () {
 
         var tree, kids, tmpLen;
         tree = _tree.inflate({a: 1, children: [{a: 2}]});
