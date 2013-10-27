@@ -1,0 +1,23 @@
+{
+    "bitwise": true,
+    "curly": true,
+    "eqeqeq": true,
+    "forin": true,
+    "freeze": true,
+    "immed": true,
+    "indent": 4,
+    "latedef": true,
+    "maxcomplexity": 10,
+    "maxdepth": 4,
+    "maxstatements": 20,
+    "newcap": true,
+    "noempty": true,
+    "noarg": true,
+    "nonew": true,
+    "onevar": true,
+    "quotmark": "single",
+    "strict": true,
+    "trailing": true,
+    "undef": true,
+    "unused": true
+}

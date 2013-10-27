@@ -23,6 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.  
 */
 
+/* jshint -W071 */
+
 // [UMD/returnExports.js](https://github.com/umdjs/umd/blob/master/returnExports.js)
 // setup for AMD, Node.js, and Global usages.
 (function (root, factory) {
@@ -36,6 +38,7 @@ THE SOFTWARE.
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
+        /* global module, require */
         module.exports = factory(require('underscore'));
     } else {
         // Browser globals (root is window)
@@ -51,7 +54,10 @@ THE SOFTWARE.
     // [broofa](http://stackoverflow.com/a/2117523)
     function uuid () {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            /* jshint bitwise:false */
+            // Bitwise logic is intentional here.
             var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+            /* jshint bitwise:true */
             return v.toString(16);
         });
     }
@@ -169,7 +175,7 @@ THE SOFTWARE.
     //         child2
     //             child3
     _tree.inflate.byKey = function (Key) {
-        Key = Key || "children";
+        Key = Key || 'children';
         return function (Obj) {
             this.emit(Obj);
             if (_.has(Obj, Key)) {
@@ -386,7 +392,7 @@ THE SOFTWARE.
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(node);
         if (!newNode) {
-            throw new Error(["Internal Error: Node not found in new tree", node, newTree]);
+            throw new Error(['Internal Error: Node not found in new tree', node, newTree]);
         }
         newNode.__data = Obj;
         __finalizeMutableTreeClone(newTree);
@@ -414,7 +420,7 @@ THE SOFTWARE.
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(ParentNode);
         if (!newNode) {
-            throw new Error(["Internal Error: Node not found in new tree", ParentNode, newTree]);
+            throw new Error(['Internal Error: Node not found in new tree', ParentNode, newTree]);
         }
         newNode.__children.push(childTree.root());
         childTree.root().__parent = newNode;
@@ -507,7 +513,7 @@ THE SOFTWARE.
         .each(function (fn, key) {
             Tree.prototype[key] = function () {
                 if (_.isNull(fn)) {
-                    throw new Error("Tree method not yet implemented: " + key);
+                    throw new Error('Tree method not yet implemented: ' + key);
                 }
                 return _.partial(fn, this).apply(this, _.toArray(arguments));
             };
