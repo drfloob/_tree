@@ -1,6 +1,5 @@
 # Implementation
 
- * create a new tree from the node of another tree.
  * move a node from one spot to another.
  * Make _tree.__* and _node.__* properties truly private (they're
    already frozen; make them non-enumerable)

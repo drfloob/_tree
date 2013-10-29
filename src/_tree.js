@@ -491,6 +491,8 @@ THE SOFTWARE.
         return newTree;
     };
 
+
+
     // A simple getter for node children.
     Node.prototype.children = function () {
         return this.__children || [];
@@ -507,7 +509,7 @@ THE SOFTWARE.
     // parsed as if it were a new tree and then appended to the end of
     // the children array. Remember that a newly-cloned tree is
     // returned, *not* a `Node`.
-    Node.prototype.addChild = function (childObj, inflateMethod) {
+    Node.prototype.parseAndAddChild = function (childObj, inflateMethod) {
         inflateMethod = inflateMethod || this.__tree.defaults.inflate;
         var childTree, newTree, newNode, tree;
         tree = this.__tree;

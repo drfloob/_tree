@@ -29,7 +29,7 @@ define(['_tree', 'underscore'], function (_tree, _) {
 
             it('does not find non-existant children in a clone', function () {
                 var tmpTree, tmpNode;
-                tmpTree = tree.root().addChild('test data');
+                tmpTree = tree.root().parseAndAddChild('test data');
                 tmpNode = tmpTree.root().children()[0];
 
                 expect(tree.findNode(tmpNode)).toBe(false);

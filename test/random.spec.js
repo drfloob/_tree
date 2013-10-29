@@ -73,7 +73,7 @@ define(['_tree', 'underscore'], function (_tree, _) {
             });
 
             it('inflates one child correctly', function () {
-                var newTree = tree.root().addChild({'hork': 'dork'});
+                var newTree = tree.root().parseAndAddChild({'hork': 'dork'});
                 expect(newTree === tree).toBeFalsy();
 
                 expect(newTree.root().children().length).toBe(1);
