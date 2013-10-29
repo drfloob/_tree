@@ -3,7 +3,7 @@
 define(['_tree'], function (_tree) {
     'use strict';
 
-    describe('_tree.findByData', function () {
+    describe('_tree.findNodeByData', function () {
         describe('on an empty tree', function () {
             var tree;
             beforeEach(function () {
@@ -11,19 +11,19 @@ define(['_tree'], function (_tree) {
             });
 
             it('finds nothing when searching for nothing', function () {
-                expect(tree.findByData()).toBeFalsy();
+                expect(tree.findNodeByData()).toBeFalsy();
             });
 
             it('finds nothing when searching for null', function () {
-                expect(tree.findByData(null)).toBeFalsy();
+                expect(tree.findNodeByData(null)).toBeFalsy();
             });
 
             it('finds nothing when searching for the root id', function () {
-                expect(tree.findByData(0)).toBeFalsy();
+                expect(tree.findNodeByData(0)).toBeFalsy();
             });
 
             it('finds nothing when searching for the tree itself', function () {
-                expect(tree.findByData(tree)).toBeFalsy();
+                expect(tree.findNodeByData(tree)).toBeFalsy();
             });
         });
 
@@ -35,23 +35,23 @@ define(['_tree'], function (_tree) {
             });
 
             it('finds nothing when searching for nothing', function () {
-                expect(tree.findByData()).toBeFalsy();
+                expect(tree.findNodeByData()).toBeFalsy();
             });
 
             it('finds nothing when searching for null', function () {
-                expect(tree.findByData(null)).toBeFalsy();
+                expect(tree.findNodeByData(null)).toBeFalsy();
             });
 
             it('finds nothing when searching for the root id', function () {
-                expect(tree.findByData(0)).toBeFalsy();
+                expect(tree.findNodeByData(0)).toBeFalsy();
             });
 
             it('finds nothing when searching for the tree itself', function () {
-                expect(tree.findByData(tree)).toBeFalsy();
+                expect(tree.findNodeByData(tree)).toBeFalsy();
             });
             
             it('finds the root node when searching for it', function () {
-                expect(tree.findByData('funky')).toBe(tree.root());
+                expect(tree.findNodeByData('funky')).toBe(tree.root());
             });
 
         });
@@ -71,36 +71,36 @@ define(['_tree'], function (_tree) {
             
 
             it('finds unique data just fine', function () {
-                expect(tree.findByData({name: 'pops'})).toBe(tree.root());
+                expect(tree.findNodeByData({name: 'pops'})).toBe(tree.root());
             });
 
             it('finds the leftmost matching child by default', function () {
-                var node = tree.findByData({'name': 'jr'});
+                var node = tree.findNodeByData({'name': 'jr'});
                 expect(node).toBe(tree.root().children()[0]);
                 expect(node).not.toBe(tree.root().children()[1]);
             });
 
             it('finds the leftmost matching descendent by default', function () {
-                var node = tree.findByData({name: 'gjr'});
+                var node = tree.findNodeByData({name: 'gjr'});
                 expect(node).toBe(tree.root().children()[0].children()[0]);
                 expect(node).not.toBe(tree.root().children()[1].children()[0]);
                 expect(node).not.toBe(tree.root().children()[2]);
             });
 
             it('finds the shallowest matching child using breadth-first, preorder search', function () {
-                var node = tree.findByData({name: 'gjr'}, tree.walk.bfpre);
+                var node = tree.findNodeByData({name: 'gjr'}, tree.walk.bfpre);
                 expect(node).toBe(tree.root().children()[2]);
                 expect(node).not.toBe(tree.root().children()[0].children()[0]);
                 expect(node).not.toBe(tree.root().children()[1].children()[0]);
             });
 
             it('finds the leftmost matching child on the deepest level using breadth-first, postorder search', function () {
-                var node = tree.findByData({name: 'gjr'}, tree.walk.bfpost);
+                var node = tree.findNodeByData({name: 'gjr'}, tree.walk.bfpost);
                 expect(node).toBe(tree.root().children()[0].children()[0]);
                 expect(node).not.toBe(tree.root().children()[1].children()[0]);
                 expect(node).not.toBe(tree.root().children()[2]);
 
-                node = tree.findByData({name: 'jr'}, tree.walk.bfpost);
+                node = tree.findNodeByData({name: 'jr'}, tree.walk.bfpost);
                 expect(node).toBe(tree.root().children()[0]);
                 expect(node).not.toBe(tree.root().children()[1]);
             });

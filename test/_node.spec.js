@@ -41,7 +41,7 @@ define(['_tree'], function (_tree) {
             var newTree = tree.root().children()[2].delete();
             expect(newTree.root().data()).toEqual({name: 'pops'});
             expect(newTree.root().children().length).toBe(2);
-            expect(newTree.findByData({name: 'gjrx'})).toEqual(false);
+            expect(newTree.findNodeByData({name: 'gjrx'})).toEqual(false);
         });
 
         it('can delete a child node with children', function () {
@@ -50,19 +50,19 @@ define(['_tree'], function (_tree) {
             expect(newTree.root().data()).toEqual({name: 'pops'});
             expect(newTree.root().children().length).toBe(2);
 
-            expect(newTree.findByData({name: 'jr1'})).toBe(false);
-            expect(newTree.findByData({name: 'gjr1'})).toBe(false);
+            expect(newTree.findNodeByData({name: 'jr1'})).toBe(false);
+            expect(newTree.findNodeByData({name: 'gjr1'})).toBe(false);
 
-            expect(newTree.findByData({name: 'jr2'})).not.toBe(false);
-            expect(newTree.findByData({name: 'gjr2'})).not.toBe(false);
+            expect(newTree.findNodeByData({name: 'jr2'})).not.toBe(false);
+            expect(newTree.findNodeByData({name: 'gjr2'})).not.toBe(false);
         });
 
         it('rearranges the children array', function () {
             var newTree = tree.root().children()[0].delete();
 
             expect(newTree.root().children().length).toBe(2);
-            expect(newTree.findByData({name: 'jr1'})).toBe(false);
-            expect(newTree.findByData({name: 'jr2'})).toBe(newTree.root().children()[0]);
+            expect(newTree.findNodeByData({name: 'jr1'})).toBe(false);
+            expect(newTree.findNodeByData({name: 'jr2'})).toBe(newTree.root().children()[0]);
         });
 
         it('can delete everything but the root', function () {

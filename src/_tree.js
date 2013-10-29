@@ -301,7 +301,7 @@ THE SOFTWARE.
 
     // Matches a node by its data using deep comparison *without*
     // object equality, via `_.isEqual(node.data(), data)`
-    Tree.prototype.findByData = function (data, walkMethod) {
+    Tree.prototype.findNodeByData = function (data, walkMethod) {
         if (_.isUndefined(data)) {
             return false;
         }
