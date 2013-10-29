@@ -245,6 +245,7 @@ THE SOFTWARE.
     Tree.clone = function (tree) {
         var newTree = new Tree(tree.defaults);
         newTree.__root = Node.clone(newTree, tree.root());
+        newTree.__nextNodeId = tree.__nextNodeId;
         newTree.__id = tree.__id;
         return newTree;
     };
@@ -442,6 +443,18 @@ THE SOFTWARE.
     }
 
 
+    Tree.prototype.moveNode = function (movingNode, toParent) {
+        var newTree;
+
+        // returns a new `Tree` created by 
+        // 
+        //  * deleting the `movingNode`, 
+        //  * finding the destination parent node in the new `Tree` context, and
+        //  * adding the `movingNode` as a child
+        return movingNode.delete()
+            .findNode(toParent)
+            .addChildNode(movingNode);
+    };
 
     // # Node
     
@@ -464,12 +477,15 @@ THE SOFTWARE.
     Node.clone = function (newTree, node, differentId) {
         var newNode = new Node(newTree);
         newNode.__data = node.__data;
-        // newNode.__children = _.map(node.children(), _.partial(Node.clone, newTree));
+
         newNode.__children = _.map(node.children(), function(c) { return Node.clone(newTree, c, differentId); });
+        _.each(newNode.__children, function(c) {c.__parent = newNode;});
+
         if (!differentId) {
             newNode.__id = node.__id;
             newTree.__nextNodeId--;
         }
+
         return newNode;
     };
 
@@ -558,13 +574,14 @@ THE SOFTWARE.
 
     Node.prototype.addChildNode = function(node) {
         var newTree, newParentNode, nodeClone;
-        newTree = Tree.clone(this.__tree);
+
+        newTree = Tree.clone(this.tree());
         newParentNode = newTree.findNode(this);
         if (!newParentNode) {
             throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
         }
 
-        newTree.__nextNodeId = this.__tree.__nextNodeId;
+        newTree.__nextNodeId = this.tree().__nextNodeId;
         nodeClone = Node.clone(newTree, node, true);
         newParentNode.__children.push(nodeClone);
         nodeClone.__parent = newParentNode;

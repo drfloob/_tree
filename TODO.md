@@ -29,5 +29,6 @@
    - red black tree
  * implement a tree visualizer
  * wire up some visual examples in jsfiddle
+ * benchmark uuid vs _.uniqueId
 
 

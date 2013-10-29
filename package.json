@@ -1,6 +1,6 @@
 {
   "name": "_tree",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
   "keywords": [
     "tree",
