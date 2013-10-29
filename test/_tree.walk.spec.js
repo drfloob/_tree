@@ -98,6 +98,41 @@ define(['_tree'], function (_tree) {
                 });
             });
 
+
+            describe('starting from non-root', function () {
+                it('throws if node does not exist', function () {
+                    var otherTree = _tree.create(),
+                    rt = otherTree.root();
+                    
+                    expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre, rt)).toThrow();
+                });
+
+                it('walks the root fine', function () {
+                    var vals = [];
+                    tree.walk(function (n) { vals.push(n.data()); }, tree.walk.dfpre, tree.root());
+                    expect(vals).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+                });
+
+                it('walks a single node', function () {
+                    var vals = [];
+                    tree.walk(function (n) { vals.push(n.data()); }, tree.walk.dfpre, tree.root().children()[0]);
+                    expect(vals).toEqual([2]);
+                });
+
+                it('walks a subtree', function () {
+                    var vals = [];
+                    tree.walk(function (n) { vals.push(n.data()); }, tree.walk.dfpre, tree.root().children()[1]);
+                    expect(vals).toEqual([3, 4, 5]);
+                });
+
+                it('walks a different subtree', function () {
+                    var vals = [];
+                    tree.walk(function (n) { vals.push(n.data()); }, tree.walk.dfpre, tree.root().children()[2]);
+                    expect(vals).toEqual([6, 7, 8, 9, 10, 11, 12]);
+                });
+
+            });
+
         });
 
     });

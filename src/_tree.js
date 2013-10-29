@@ -332,9 +332,17 @@ THE SOFTWARE.
     // This method is the workhorse of the library. It allows you to
     // walk the tree in arbitrary ways (specified by `walkMethod`), and
     // execute `Callback` for every node in the order you specify.
-    Tree.prototype.walk = function (Callback, walkMethod) {
+    Tree.prototype.walk = function (Callback, walkMethod, startNode) {
         walkMethod = walkMethod || this.defaults.walk;
         var _this, qs = [], recurList = [], tmpNode;
+
+        if (startNode) {
+            if (!this.containsNode(startNode)) {
+                throw new Error("startNode does not exist in the tree");
+            }
+        } else {
+            startNode = this.root();
+        }
 
         // In `walkMethod`, `this` will be bound to the following
         // object. To see how it's used, scan the built-in walk
@@ -367,7 +375,7 @@ THE SOFTWARE.
         // able to evaluate all nodes in one pass, so `recurList` is
         // used to track which nodes to visit in the next pass.  It
         // can take as many passes as required.
-        walkMethod.call(_this, this.root());
+        walkMethod.call(_this, startNode);
         while (recurList.length > 0) {
             tmpNode = recurList.shift();
             walkMethod.call(_this, tmpNode);
