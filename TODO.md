@@ -1,6 +1,7 @@
 # Implementation
 
- * Implement _node.delete
+ * create a new tree from the node of another tree.
+ * move a node from one spot to another.
  * Make _tree.__* and _node.__* properties truly private (they're
    already frozen; make them non-enumerable)
  * Decide on an error practice; Normalize codebase and make errors
@@ -20,7 +21,6 @@
 
  * get continuous integration setup
  * get test coverage info setup
- * integrate docco with grunt, add to build
 
 # Nice-to-haves
 
