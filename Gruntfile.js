@@ -65,13 +65,9 @@ module.exports = function(grunt) {
             }
         },
         benchmark: {
-            options: {
-                maxTime: 1
-            },
-            all: {
-                src: ['benchmark/**/*.js'],
-                dest: 'benchmark/results.csv'
-            }
+            all: { src: ['benchmark/**/*.js'] },
+            object: { src: ['benchmark/**/object_*.js'] },
+            adjList: { src: ['benchmark/**/adjList_*.js'] }
         }
     });
     
