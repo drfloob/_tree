@@ -516,6 +516,19 @@ THE SOFTWARE.
         return this.__parent;
     };
 
+    // A simple getter for the node's tree. `_tree` is intended for
+    // internal use. Presumably, client code will know which tree a
+    // node is in, but it may be useful to client code.
+    Node.prototype.tree = function () {
+        return this.__tree;
+    };
+
+    // A simple getter for the node's id. `__id` is intended for
+    // internal use, but may also be valuable to client code.
+    Node.prototype.id = function () {
+        return this.__id;
+    };
+
 
     // To add a child node, an object representing the node data is
     // parsed as if it were a new tree and then appended to the end of
