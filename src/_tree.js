@@ -87,8 +87,7 @@ THE SOFTWARE.
         'defaults': null,
         'walk': null,
         'root': null,
-        'add': null,
-        'find': null,
+        'findNode': null,
         'equals': null,
         'contains': null,
         'sample': null
@@ -503,12 +502,12 @@ THE SOFTWARE.
     // partially bound so that the first argument is already set to
     // the `Tree` instance the method is bound to.
     _.chain(_tree)
-        .omit(['inflate', 'clone', 'create'])
+        .omit(['inflate', 'clone', 'create', 'defaults'])
         .each(function (fn, key) {
+            if (_.isNull(fn)) {
+                throw new Error('Tree method not yet implemented: ' + key);
+            }
             Tree.prototype[key] = function () {
-                if (_.isNull(fn)) {
-                    throw new Error('Tree method not yet implemented: ' + key);
-                }
                 return _.partial(fn, this).apply(this, _.toArray(arguments));
             };
         });

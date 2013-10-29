@@ -15,8 +15,6 @@
 # Tests
 
  * refactor spec.js into multiple files
- * see if required includes can be required automatically for each
-   file in the test suite (rather than explicitly as they are now)
  
 # Quality
 
@@ -28,10 +26,7 @@
 
  * get continuous integration setup
  * get test coverage info setup
- * setup one-step build to halt on lint errors, build docs, and run
-   tests
- * build, docs, lint, and test with grunt
- * implement file versioning with grunt-version
+ * integrate docco with grunt, add to build
 
 # Nice-to-haves
 
