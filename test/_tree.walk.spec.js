@@ -20,7 +20,7 @@ define(['_tree'], function (_tree) {
                     tree.walk(function (n) { ids.push(n.__id); }, tree.walk.dfpre);
 
                     expect(ids.length).toBe(1);
-                    expect(ids[0]).toBe(1);
+                    expect(ids[0]).toBe(0);
                 });
             });
 
@@ -30,7 +30,7 @@ define(['_tree'], function (_tree) {
                     tree.walk(function (n) { ids.push(n.__id); }, tree.walk.dfpost);
 
                     expect(ids.length).toBe(1);
-                    expect(ids[0]).toBe(1);
+                    expect(ids[0]).toBe(0);
                 });
             });
 
@@ -40,7 +40,7 @@ define(['_tree'], function (_tree) {
                     tree.walk(function (n) { ids.push(n.__id); }, tree.walk.bfpre);
 
                     expect(ids.length).toBe(1);
-                    expect(ids[0]).toBe(1);
+                    expect(ids[0]).toBe(0);
                 });
             });
 
@@ -50,7 +50,7 @@ define(['_tree'], function (_tree) {
                     tree.walk(function (n) { ids.push(n.__id); }, tree.walk.bfpost);
 
                     expect(ids.length).toBe(1);
-                    expect(ids[0]).toBe(1);
+                    expect(ids[0]).toBe(0);
                 });
             });
 

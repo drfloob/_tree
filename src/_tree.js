@@ -208,7 +208,7 @@ THE SOFTWARE.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
         this.defaults = defaults;
         this.__id = uuid();
-        this.__nextNodeId = nextNodeId || 1;
+        this.__nextNodeId = nextNodeId || 0;
 
         // `obj` is inflated via `inflateMethod`, if supplied
         if (!!obj && !!inflateMethod) {

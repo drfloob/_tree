@@ -14,7 +14,7 @@ define(['_tree', 'underscore'], function (_tree, _) {
         it('are working in general', function () {
             var tree = _tree.inflate({n: 1});
             expect(tree.root().__id).not.toBe(null);
-            expect(tree.root().__id).toEqual(1);
+            expect(tree.root().__id).toEqual(0);
         });
         it('are unique after initial tree inflation', function () {
             var tree, ids;
