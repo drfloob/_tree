@@ -200,6 +200,19 @@ THE SOFTWARE.
 
 
 
+    // This allows the creation of a new tree from a given `Node`. The
+    // new tree is considered to *not be* a clone of the node's
+    // original tree.
+    _tree.fromNode = function (node, defaults) {
+        if (! (node instanceof Node)) {
+            throw new Error("invalid node: " + JSON.stringify(node));
+        }
+        defaults = _.defaults(_.clone(defaults || {}), node.__tree.__defaults);
+        var tree = new Tree(defaults);
+        tree.__root = Node.clone(tree, node);
+        __finalizeMutableTreeClone(tree);
+        return tree;
+    }
 
 
     // # Tree
