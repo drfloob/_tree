@@ -55,6 +55,14 @@ module.exports = function(grunt) {
                     }
                 }
             }
+        },
+        docco: {
+            main: {
+                src: ['src/**/*.js'],
+                options: {
+                    output: 'docs/'
+                }
+            }
         }
     });
     
@@ -65,10 +73,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-jsonlint');
+    grunt.loadNpmTasks('grunt-docco');
 
 
     grunt.registerTask('test', ['connect:test', 'jasmine']);
-    grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine', 'uglify', 'compare_size']);
+    grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine', 'uglify', 'compare_size', 'docco']);
 
     grunt.registerTask('default', ['build']);
 
