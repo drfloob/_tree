@@ -123,40 +123,6 @@ define(['_tree', 'underscore'], function (_tree, _) {
         });
     });
 
-
-    describe('_tree.findNode', function () {
-        describe('on an empty tree', function () {
-            var tree;
-            beforeEach(function () {
-                tree = _tree.create();
-            });
-
-            it('does not find the root node from a different tree', function () {
-                var tmpTree, tmpNode;
-                tmpTree = _tree.create();
-                tmpNode = tmpTree.root();
-
-                expect(tree.findNode(tmpNode)).toBe(false);
-            });
-
-            it('finds the root node from a clone', function () {
-                var tmpTree, tmpNode;
-                tmpTree = tree.root().data('new data');
-                tmpNode = tmpTree.root();
-
-                expect(tree.findNode(tmpNode) === tree.root()).toBeTruthy();
-            });
-
-            it('does not find non-existant children in a clone', function () {
-                var tmpTree, tmpNode;
-                tmpTree = tree.root().addChild('test data');
-                tmpNode = tmpTree.root().children()[0];
-
-                expect(tree.findNode(tmpNode)).toBe(false);
-            });
-        });
-    });
-
     describe('An inflated tree', function () {
         describe('with default settings', function () {
             describe('from an empty object', function () {

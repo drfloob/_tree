@@ -60,9 +60,18 @@ define(['_tree'], function (_tree) {
         describe('with non-unique data', function () {
             var tree;
             beforeEach(function () {
-                tree = _tree.inflate([{'name': 'pops'}, [{'name': 'jr'}, {'name': 'jr'}]], _tree.inflate.byAdjacencyList);
+                tree = _tree.inflate(
+                    [{name: 'pops'}, [
+                        {name: 'jr'}, [{name: 'gjr'}], 
+                        {name: 'jr'}, [{name: 'gjr'}],
+                        {name: 'gjr'}]],
+                    _tree.inflate.byAdjacencyList);
             });
+            
 
+            it('finds unique data just fine', function () {
+                expect(tree.findByData({name: 'pops'})).toBe(tree.root());
+            });
 
             it('finds the leftmost matching child by default', function () {
                 var node = tree.findByData({'name': 'jr'});
@@ -70,11 +79,30 @@ define(['_tree'], function (_tree) {
                 expect(node).not.toBe(tree.root().children()[1]);
             });
 
-            it('finds the shallowest matching child using breadth first search', function () {
-                var node = tree.findByData({'name': 'jr'});
-                throw new Error('supplying a walk fn is not supported');
+            it('finds the leftmost matching descendent by default', function () {
+                var node = tree.findByData({name: 'gjr'});
+                expect(node).toBe(tree.root().children()[0].children()[0]);
+                expect(node).not.toBe(tree.root().children()[1].children()[0]);
+                expect(node).not.toBe(tree.root().children()[2]);
             });
 
+            it('finds the shallowest matching child using breadth-first, preorder search', function () {
+                var node = tree.findByData({name: 'gjr'}, tree.walk.bfpre);
+                expect(node).toBe(tree.root().children()[2]);
+                expect(node).not.toBe(tree.root().children()[0].children()[0]);
+                expect(node).not.toBe(tree.root().children()[1].children()[0]);
+            });
+
+            it('finds the leftmost matching child on the deepest level using breadth-first, postorder search', function () {
+                var node = tree.findByData({name: 'gjr'}, tree.walk.bfpost);
+                expect(node).toBe(tree.root().children()[0].children()[0]);
+                expect(node).not.toBe(tree.root().children()[1].children()[0]);
+                expect(node).not.toBe(tree.root().children()[2]);
+
+                node = tree.findByData({name: 'jr'}, tree.walk.bfpost);
+                expect(node).toBe(tree.root().children()[0]);
+                expect(node).not.toBe(tree.root().children()[1]);
+            });
 
         });
     });

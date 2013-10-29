@@ -281,23 +281,24 @@ THE SOFTWARE.
     // the Node or `false` if no match was found. This can be used to
     // find a matching node in a cloned tree, since ids are designed
     // to be invariant across clones.
-    Tree.prototype.findNode = function (fromNode) {
+    Tree.prototype.findNode = function (fromNode, walkMethod) {
         if (!this.equals(fromNode.__tree)) {
             return false;
         }
+
         var found = false;
         this.walk(function (visitNode) {
             if (!found && fromNode.equals(visitNode)) {
                 found = visitNode;
             }
-        });
+        }, walkMethod);
         return found;
     };
 
 
     // Matches a node by its data using deep comparison *without*
     // object equality, via `_.isEqual(node.data(), data)`
-    Tree.prototype.findByData = function (data) {
+    Tree.prototype.findByData = function (data, walkMethod) {
         if (_.isUndefined(data))
             return false;
 
@@ -306,19 +307,19 @@ THE SOFTWARE.
             if (!found && _.isEqual(data, visitNode.__data)) {
                 found = visitNode;
             }
-        });
+        }, walkMethod);
         return found;
     };
 
 
     // This method is the workhorse of the library. It allows you to
-    // walk the tree in arbitrary ways (specified by `Method`), and
+    // walk the tree in arbitrary ways (specified by `walkMethod`), and
     // execute `Callback` for every node in the order you specify.
-    Tree.prototype.walk = function (Callback, Method) {
-        Method = Method || this.defaults.walk;
+    Tree.prototype.walk = function (Callback, walkMethod) {
+        walkMethod = walkMethod || this.defaults.walk;
         var _this, qs = [], recurList = [], tmpNode;
 
-        // In `Method`, `this` will be bound to the following
+        // In `walkMethod`, `this` will be bound to the following
         // object. To see how it's used, scan the built-in walk
         // methods below. Briefly, the binding provides:
         //
@@ -336,7 +337,7 @@ THE SOFTWARE.
             },
             'recurse': function (Nodes) {
                 _.each(Nodes, function (n) {
-                    Method.call(_this, n);
+                    walkMethod.call(_this, n);
                 });
             },
             'queueRecurse': function (Nodes) {
@@ -345,14 +346,14 @@ THE SOFTWARE.
         };
 
         // Before executing any callbacks, an ordered list of nodes
-        // (`qs`) is generated. In some cases, `Method` many not be
+        // (`qs`) is generated. In some cases, `walkMethod` many not be
         // able to evaluate all nodes in one pass, so `recurList` is
         // used to track which nodes to visit in the next pass.  It
         // can take as many passes as required.
-        Method.call(_this, this.root());
+        walkMethod.call(_this, this.root());
         while (recurList.length > 0) {
             tmpNode = recurList.shift();
-            Method.call(_this, tmpNode);
+            walkMethod.call(_this, tmpNode);
         }
         // Finally, `Callback` is called for each node, in order.
         _.each(qs, Callback);
