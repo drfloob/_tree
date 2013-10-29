@@ -461,11 +461,15 @@ THE SOFTWARE.
     // A static copy constructor for `Node` objects, much like
     // `Tree.clone`, but recursive. All child nodes are cloned as
     // well.
-    Node.clone = function (newTree, node) {
+    Node.clone = function (newTree, node, differentId) {
         var newNode = new Node(newTree);
         newNode.__data = node.__data;
-        newNode.__children = _.map(node.children(), _.partial(Node.clone, newTree));
-        newNode.__id = node.__id;
+        // newNode.__children = _.map(node.children(), _.partial(Node.clone, newTree));
+        newNode.__children = _.map(node.children(), function(c) { return Node.clone(newTree, c, differentId); });
+        if (!differentId) {
+            newNode.__id = node.__id;
+            newTree.__nextNodeId--;
+        }
         return newNode;
     };
 
@@ -537,6 +541,25 @@ THE SOFTWARE.
         return newTree;
     };
 
+
+
+    Node.prototype.addChildNode = function(node) {
+        var newTree, newParentNode, nodeClone;
+        newTree = Tree.clone(this.__tree);
+        newParentNode = newTree.findNode(this);
+        if (!newParentNode) {
+            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
+        }
+
+        newTree.__nextNodeId = this.__tree.__nextNodeId;
+        nodeClone = Node.clone(newTree, node, true);
+        newParentNode.__children.push(nodeClone);
+        nodeClone.__parent = newParentNode;
+
+        __finalizeMutableTreeClone(newTree);
+
+        return newTree;
+    };
 
     // `Node.equals` works across clone lines, determining if both
     // nodes *represent* the same node regardless of whether they're

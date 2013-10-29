@@ -10,7 +10,8 @@
 # Tests
 
  * refactor spec.js into multiple files
- 
+ * ensure unique node ids
+
 # Quality
 
  * Setup real-world performance tests

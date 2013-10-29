@@ -1,10 +1,10 @@
-/*global define, xdescribe, describe, beforeEach, it, expect */
+/*global define, describe, beforeEach, it, expect */
 
 define(['_tree'], function (_tree) {
     'use strict';
 
-    // disabled to refactor _tree. this does not pass on PhantomJS
-    xdescribe('node.children', function () {
+    // This does not pass on PhantomJS
+    describe('node.children', function () {
         it('is immutable', function () {
 
             var tree, kids, tmpLen;
