@@ -409,14 +409,16 @@ THE SOFTWARE.
 
     // A shorthand method to test whether a `Node` exists in the
     // `Tree`. `someNode` can be from any tree clone.
-    Tree.prototype.contains = function (someNode) {
+    Tree.prototype.containsNode = function (someNode) {
         return (this.findNode(someNode) instanceof Node);
     };
 
 
-    Tree.prototype.sample = function () {
-        throw new Error('not implemented');
-    };
+    // A shorthand method to test whether a node containing this data
+    // exists in the `Tree`.
+    Tree.prototype.containsData = function(someData) {
+        return (this.findNodeByData(someData) instanceof Node);
+    }
 
 
 
