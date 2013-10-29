@@ -1,7 +1,6 @@
 # Implementation
 
  * Implement _node.delete
- * Implement _tree.findByData
  * Make _tree.__* and _node.__* properties truly private (they're
    already frozen; make them non-enumerable)
  * Decide on an error practice; Normalize codebase and make errors

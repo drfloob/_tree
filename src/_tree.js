@@ -62,11 +62,14 @@ THE SOFTWARE.
     // nodes need to be given a reference to their tree.
     function __finalizeMutableTreeClone(tree) {
 
-        function __finalizeMutableChildNodes(node) {
+        function __finalizeMutableChildNodes(node, parent) {
             node.__tree = tree;
+            if (parent) {
+                node.__parent = parent;
+            }
             Object.freeze(node);
             Object.freeze(node.__children);
-            _.each(node.children(), __finalizeMutableChildNodes);
+            _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
         }
 
         Object.freeze(tree);
@@ -518,7 +521,27 @@ THE SOFTWARE.
     };
 
     Node.prototype.delete = function () {
-        throw new Error('not implemented');
+        // throw new Error('not implemented');
+        if (this === this.__tree.__root) {
+            throw new Error('cannot delete the root node');
+        }
+
+        var newTree, newNode, parNode;
+
+        newTree = Tree.clone(this.__tree);
+        newNode = newTree.findNode(this);
+        if (!newNode) {
+            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
+        }
+        parNode = newTree.findNode(this.__parent);
+        if (!parNode) {
+            throw new Error(['Internal Error: Node not found in new tree', parNode, newTree]);
+        }
+
+        parNode.__children = _.without(parNode.__children, newNode);
+        __finalizeMutableTreeClone(newTree);
+
+        return newTree;
     };
 
 
