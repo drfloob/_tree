@@ -1,4 +1,4 @@
-/*global define, jasmine, describe, it, expect, beforeEach */
+/*global define, describe, it, expect, beforeEach */
 
 define(['_tree', 'underscore'], function (_tree, _) {
 
@@ -42,9 +42,10 @@ define(['_tree', 'underscore'], function (_tree, _) {
             beforeEach(function () {
                 tree = _tree.inflate(
                     [{name: 'pops'}, [
-                        {name: 'jr'}, [{name: 'gjr'}], 
                         {name: 'jr'}, [{name: 'gjr'}],
-                        {name: 'gjr'}]],
+                        {name: 'jr'}, [{name: 'gjr'}],
+                        {name: 'gjr'}
+                    ]],
                     _tree.inflate.byAdjacencyList);
                 methods = [tree.walk.dfpre, tree.walk.dfpost, tree.walk.bfpre, tree.walk.bfpost];
             });

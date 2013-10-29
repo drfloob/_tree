@@ -1,4 +1,4 @@
-/*global define, xdescribe, it, expect */
+/*global define, xdescribe, describe, beforeEach, it, expect */
 
 define(['_tree'], function (_tree) {
     'use strict';
@@ -26,9 +26,10 @@ define(['_tree'], function (_tree) {
         beforeEach(function () {
             tree = _tree.inflate(
                 [{name: 'pops'}, [
-                    {name: 'jr1'}, [{name: 'gjr1'}], 
+                    {name: 'jr1'}, [{name: 'gjr1'}],
                     {name: 'jr2'}, [{name: 'gjr2'}],
-                    {name: 'gjrx'}]],
+                    {name: 'gjrx'}
+                ]],
                 _tree.inflate.byAdjacencyList);
         });
 

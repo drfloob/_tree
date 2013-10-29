@@ -182,11 +182,14 @@ nodes need to be given a reference to their tree.</p>
             
             <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">__finalizeMutableTreeClone</span><span class="params">(tree)</span> {</span>
 
-        <span class="function"><span class="keyword">function</span> <span class="title">__finalizeMutableChildNodes</span><span class="params">(node)</span> {</span>
+        <span class="function"><span class="keyword">function</span> <span class="title">__finalizeMutableChildNodes</span><span class="params">(node, parent)</span> {</span>
             node.__tree = tree;
+            <span class="keyword">if</span> (parent) {
+                node.__parent = parent;
+            }
             Object.freeze(node);
             Object.freeze(node.__children);
-            _.each(node.children(), __finalizeMutableChildNodes);
+            _.each(node.children(), <span class="function"><span class="keyword">function</span> <span class="params">(c)</span> {</span>__finalizeMutableChildNodes(c, node); });
         }
 
         Object.freeze(tree);
@@ -394,7 +397,7 @@ frozen before it&#39;s returned.</p>
             <div class="content"><div class='highlight'><pre>    Tree = <span class="function"><span class="keyword">function</span> <span class="params">(defaults, obj, inflateMethod, nextNodeId)</span> {</span>
         <span class="keyword">this</span>.defaults = defaults;
         <span class="keyword">this</span>.__id = uuid();
-        <span class="keyword">this</span>.__nextNodeId = nextNodeId || <span class="number">1</span>;</pre></div></div>
+        <span class="keyword">this</span>.__nextNodeId = nextNodeId || <span class="number">0</span>;</pre></div></div>
             
         </li>
         
@@ -554,16 +557,17 @@ to be invariant across clones.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="function"><span class="keyword">function</span> <span class="params">(fromNode)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="function"><span class="keyword">function</span> <span class="params">(fromNode, walkMethod)</span> {</span>
         <span class="keyword">if</span> (!<span class="keyword">this</span>.equals(fromNode.__tree)) {
             <span class="keyword">return</span> <span class="literal">false</span>;
         }
+
         <span class="keyword">var</span> found = <span class="literal">false</span>;
         <span class="keyword">this</span>.walk(<span class="function"><span class="keyword">function</span> <span class="params">(visitNode)</span> {</span>
             <span class="keyword">if</span> (!found &amp;&amp; fromNode.equals(visitNode)) {
                 found = visitNode;
             }
-        });
+        }, walkMethod);
         <span class="keyword">return</span> found;
     };</pre></div></div>
             
@@ -576,15 +580,24 @@ to be invariant across clones.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
-              <p>This method is the workhorse of the library. It allows you to
-walk the tree in arbitrary ways (specified by <code>Method</code>), and
-execute <code>Callback</code> for every node in the order you specify.</p>
+              <p>Matches a node by its data using deep comparison <em>without</em>
+object equality, via <code>_.isEqual(node.data(), data)</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.walk = <span class="function"><span class="keyword">function</span> <span class="params">(Callback, Method)</span> {</span>
-        Method = Method || <span class="keyword">this</span>.defaults.walk;
-        <span class="keyword">var</span> _<span class="keyword">this</span>, qs = [], recurList = [], tmpNode;</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findByData = <span class="function"><span class="keyword">function</span> <span class="params">(data, walkMethod)</span> {</span>
+        <span class="keyword">if</span> (_.isUndefined(data)) {
+            <span class="keyword">return</span> <span class="literal">false</span>;
+        }
+
+        <span class="keyword">var</span> found = <span class="literal">false</span>;
+        <span class="keyword">this</span>.walk(<span class="function"><span class="keyword">function</span> <span class="params">(visitNode)</span> {</span>
+            <span class="keyword">if</span> (!found &amp;&amp; _.isEqual(data, visitNode.__data)) {
+                found = visitNode;
+            }
+        }, walkMethod);
+        <span class="keyword">return</span> found;
+    };</pre></div></div>
             
         </li>
         
@@ -595,7 +608,26 @@ execute <code>Callback</code> for every node in the order you specify.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>In <code>Method</code>, <code>this</code> will be bound to the following
+              <p>This method is the workhorse of the library. It allows you to
+walk the tree in arbitrary ways (specified by <code>walkMethod</code>), and
+execute <code>Callback</code> for every node in the order you specify.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.walk = <span class="function"><span class="keyword">function</span> <span class="params">(Callback, walkMethod)</span> {</span>
+        walkMethod = walkMethod || <span class="keyword">this</span>.defaults.walk;
+        <span class="keyword">var</span> _<span class="keyword">this</span>, qs = [], recurList = [], tmpNode;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>In <code>walkMethod</code>, <code>this</code> will be bound to the following
 object. To see how it&#39;s used, scan the built-in walk
 methods below. Briefly, the binding provides:</p>
 <ul>
@@ -617,7 +649,7 @@ methods below. Briefly, the binding provides:</p>
             },
             <span class="string">'recurse'</span>: <span class="function"><span class="keyword">function</span> <span class="params">(Nodes)</span> {</span>
                 _.each(Nodes, <span class="function"><span class="keyword">function</span> <span class="params">(n)</span> {</span>
-                    Method.call(_<span class="keyword">this</span>, n);
+                    walkMethod.call(_<span class="keyword">this</span>, n);
                 });
             },
             <span class="string">'queueRecurse'</span>: <span class="function"><span class="keyword">function</span> <span class="params">(Nodes)</span> {</span>
@@ -628,34 +660,34 @@ methods below. Briefly, the binding provides:</p>
         </li>
         
         
-        <li id="section-27">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <p>Before executing any callbacks, an ordered list of nodes
-(<code>qs</code>) is generated. In some cases, <code>Method</code> many not be
+(<code>qs</code>) is generated. In some cases, <code>walkMethod</code> many not be
 able to evaluate all nodes in one pass, so <code>recurList</code> is
 used to track which nodes to visit in the next pass.  It
 can take as many passes as required.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        Method.call(_<span class="keyword">this</span>, <span class="keyword">this</span>.root());
+            <div class="content"><div class='highlight'><pre>        walkMethod.call(_<span class="keyword">this</span>, <span class="keyword">this</span>.root());
         <span class="keyword">while</span> (recurList.length &gt; <span class="number">0</span>) {
             tmpNode = recurList.shift();
-            Method.call(_<span class="keyword">this</span>, tmpNode);
+            walkMethod.call(_<span class="keyword">this</span>, tmpNode);
         }</pre></div></div>
             
         </li>
         
         
-        <li id="section-28">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <p>Finally, <code>Callback</code> is called for each node, in order.</p>
 
@@ -667,11 +699,11 @@ can take as many passes as required.</p>
         </li>
         
         
-        <li id="section-29">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <p>The is the implementation of the built-in depth-first,
 pre-order traversal algorithm. It is setup as the default walk
@@ -687,11 +719,11 @@ method.</p>
         </li>
         
         
-        <li id="section-30">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-30">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <p>Depth-first, post-order traversal algorithm.</p>
 
@@ -705,11 +737,11 @@ method.</p>
         </li>
         
         
-        <li id="section-31">
+        <li id="section-32">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-31">&#182;</a>
+                <a class="pilcrow" href="#section-32">&#182;</a>
               </div>
               <p>Breadth-first, pre-order traversal algorithm.</p>
 
@@ -726,11 +758,11 @@ method.</p>
         </li>
         
         
-        <li id="section-32">
+        <li id="section-33">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-32">&#182;</a>
+                <a class="pilcrow" href="#section-33">&#182;</a>
               </div>
               <p>Breadth-first, post-order traversal algorithm.</p>
 
@@ -749,11 +781,11 @@ method.</p>
         </li>
         
         
-        <li id="section-33">
+        <li id="section-34">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-33">&#182;</a>
+                <a class="pilcrow" href="#section-34">&#182;</a>
               </div>
               <p><code>TreeInstance.equals</code> tests for equality of trees across clone
 lines. Returns <code>boolean</code>, whether trees share any clone
@@ -768,11 +800,11 @@ lineage.</p>
         </li>
         
         
-        <li id="section-34">
+        <li id="section-35">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-34">&#182;</a>
+                <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
               <p>A shorthand method to test whether a <code>Node</code> exists in the
 <code>Tree</code>. <code>someNode</code> can be from any tree clone.</p>
@@ -791,11 +823,11 @@ lineage.</p>
         </li>
         
         
-        <li id="section-35">
+        <li id="section-36">
             <div class="annotation">
               
               <div class="pilwrap for-h1">
-                <a class="pilcrow" href="#section-35">&#182;</a>
+                <a class="pilcrow" href="#section-36">&#182;</a>
               </div>
               <h1>Node</h1>
 
@@ -804,11 +836,11 @@ lineage.</p>
         </li>
         
         
-        <li id="section-36">
+        <li id="section-37">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-36">&#182;</a>
+                <a class="pilcrow" href="#section-37">&#182;</a>
               </div>
               <p>This defines the <code>Node</code> constructor, and much like <code>Tree</code>, the
 resulting object is mutable until just before being exposed to
@@ -827,11 +859,11 @@ the external world.</p>
         </li>
         
         
-        <li id="section-37">
+        <li id="section-38">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-37">&#182;</a>
+                <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
               <p>A static copy constructor for <code>Node</code> objects, much like
 <code>Tree.clone</code>, but recursive. All child nodes are cloned as
@@ -850,11 +882,11 @@ well.</p>
         </li>
         
         
-        <li id="section-38">
+        <li id="section-39">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-38">&#182;</a>
+                <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
               <p>The <code>Node.data</code> method is both a getter and setter, depending
 on how it&#39;s used.</p>
@@ -887,11 +919,11 @@ after being made immutable.</p>
         </li>
         
         
-        <li id="section-39">
+        <li id="section-40">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-39">&#182;</a>
+                <a class="pilcrow" href="#section-40">&#182;</a>
               </div>
               <p>A simple getter for node children.</p>
 
@@ -904,11 +936,11 @@ after being made immutable.</p>
         </li>
         
         
-        <li id="section-40">
+        <li id="section-41">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-40">&#182;</a>
+                <a class="pilcrow" href="#section-41">&#182;</a>
               </div>
               <p>A simple getter for the node&#39;s parent. Returns <code>undefined</code> if
 no parent is set.</p>
@@ -922,11 +954,11 @@ no parent is set.</p>
         </li>
         
         
-        <li id="section-41">
+        <li id="section-42">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-41">&#182;</a>
+                <a class="pilcrow" href="#section-42">&#182;</a>
               </div>
               <p>To add a child node, an object representing the node data is
 parsed as if it were a new tree and then appended to the end of
@@ -958,11 +990,11 @@ returned, <em>not</em> a <code>Node</code>.</p>
         </li>
         
         
-        <li id="section-42">
+        <li id="section-43">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-42">&#182;</a>
+                <a class="pilcrow" href="#section-43">&#182;</a>
               </div>
               <p><code>Node.equals</code> works across clone lines, determining if both
 nodes <em>represent</em> the same node regardless of whether they&#39;re
@@ -975,18 +1007,51 @@ the same object in memory.</p>
             <span class="keyword">this</span>.__id === otherNode.__id;
     };
 
-    Node.prototype.<span class="keyword">delete</span> = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
-        <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'not implemented'</span>);
+    Node.prototype.<span class="keyword">delete</span> = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-44">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-44">&#182;</a>
+              </div>
+              <p>throw new Error(&#39;not implemented&#39;);</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span> (<span class="keyword">this</span> === <span class="keyword">this</span>.__tree.__root) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'cannot delete the root node'</span>);
+        }
+
+        <span class="keyword">var</span> newTree, newNode, parNode;
+
+        newTree = Tree.clone(<span class="keyword">this</span>.__tree);
+        newNode = newTree.findNode(<span class="keyword">this</span>);
+        <span class="keyword">if</span> (!newNode) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, <span class="keyword">this</span>, newTree]);
+        }
+        parNode = newTree.findNode(<span class="keyword">this</span>.__parent);
+        <span class="keyword">if</span> (!parNode) {
+            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, parNode, newTree]);
+        }
+
+        parNode.__children = _.without(parNode.__children, newNode);
+        __finalizeMutableTreeClone(newTree);
+
+        <span class="keyword">return</span> newTree;
     };</pre></div></div>
             
         </li>
         
         
-        <li id="section-43">
+        <li id="section-45">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-43">&#182;</a>
+                <a class="pilcrow" href="#section-45">&#182;</a>
               </div>
               <p>Finally, we setup some library-wide defaults.</p>
 
@@ -1001,11 +1066,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-44">
+        <li id="section-46">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-44">&#182;</a>
+                <a class="pilcrow" href="#section-46">&#182;</a>
               </div>
               <p>And we&#39;re done.</p>
 

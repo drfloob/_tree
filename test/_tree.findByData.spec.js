@@ -62,9 +62,10 @@ define(['_tree'], function (_tree) {
             beforeEach(function () {
                 tree = _tree.inflate(
                     [{name: 'pops'}, [
-                        {name: 'jr'}, [{name: 'gjr'}], 
                         {name: 'jr'}, [{name: 'gjr'}],
-                        {name: 'gjr'}]],
+                        {name: 'jr'}, [{name: 'gjr'}],
+                        {name: 'gjr'}
+                    ]],
                     _tree.inflate.byAdjacencyList);
             });
             
