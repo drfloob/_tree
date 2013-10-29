@@ -33,7 +33,8 @@
     "jasmine-reporters": "~0.2.1",
     "grunt-docco": "~0.3.0",
     "requirejs": "~2.1.9",
-    "grunt-jsonlint": "~1.0.1"
+    "grunt-jsonlint": "~1.0.1",
+    "grunt-benchmark": "~0.2.0"
   },
   "author": "A. J. Heller",
   "license": "MIT"

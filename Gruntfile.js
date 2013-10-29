@@ -63,6 +63,15 @@ module.exports = function(grunt) {
                     output: 'docs/'
                 }
             }
+        },
+        benchmark: {
+            options: {
+                maxTime: 1
+            },
+            all: {
+                src: ['benchmark/**/*.js'],
+                dest: 'benchmark/results.csv'
+            }
         }
     });
     
@@ -74,6 +83,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-jsonlint');
     grunt.loadNpmTasks('grunt-docco');
+    grunt.loadNpmTasks('grunt-benchmark');
 
 
     grunt.registerTask('test', ['connect:test', 'jasmine']);
