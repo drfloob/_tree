@@ -1,0 +1,2195 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/_tree.js</title>
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="../prettify.css">
+
+    <style>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: Helvetica Neue, Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: Consolas, Menlo, Monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+            -moz-tab-size: 2;
+            -o-tab-size:  2;
+            tab-size: 2;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+            xtext-decoration: line-through;
+        }
+        .missing-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("http://yui.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">src/_tree.js</span></h1>
+    <h2>
+        
+        Statements: <span class="metric">94.69% <small>(214 / 226)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class="metric">86.59% <small>(71 / 82)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class="metric">98.08% <small>(51 / 52)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class="metric">94.62% <small>(211 / 223)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; _tree.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">406</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12586</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12586</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">517</span>
+<span class="cline-any cline-yes">517</span>
+<span class="cline-any cline-yes">402</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">517</span>
+<span class="cline-any cline-yes">517</span>
+<span class="cline-any cline-yes">517</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">315</span>
+<span class="cline-any cline-yes">315</span>
+<span class="cline-any cline-yes">315</span>
+<span class="cline-any cline-yes">157</span>
+<span class="cline-any cline-yes">157</span>
+<span class="cline-any cline-yes">279</span>
+<span class="cline-any cline-yes">279</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-yes">121</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">279</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">406</span>
+<span class="cline-any cline-yes">406</span>
+<span class="cline-any cline-yes">406</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">406</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">58</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">290</span>
+<span class="cline-any cline-yes">289</span>
+<span class="cline-any cline-yes">289</span>
+<span class="cline-any cline-yes">289</span>
+<span class="cline-any cline-yes">289</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-yes">348</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">928</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">46</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">43</span>
+<span class="cline-any cline-yes">43</span>
+<span class="cline-any cline-yes">253</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">43</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">133</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">93</span>
+<span class="cline-any cline-yes">93</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">93</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">84</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">466</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">463</span>
+<span class="cline-any cline-yes">380</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87</span>
+<span class="cline-any cline-yes">87</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">87</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">431</span>
+<span class="cline-any cline-yes">431</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">136</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">557</span>
+<span class="cline-any cline-yes">557</span>
+<span class="cline-any cline-yes">557</span>
+<span class="cline-any cline-yes">557</span>
+<span class="cline-any cline-yes">557</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-yes">130</span>
+<span class="cline-any cline-yes">130</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">151</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">105</span>
+<span class="cline-any cline-yes">98</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1277</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">48</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">89</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+&nbsp;
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+&nbsp;
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.  
+*/
+&nbsp;
+/* jshint -W071 */
+/* global define */
+&nbsp;
+// [UMD/returnExports.js](https://github.com/umdjs/umd/blob/master/returnExports.js)
+// setup for AMD, Node.js, and Global usages.
+(function (root, factory) {
+    'use strict';
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken"" >E</span>if (typeof define === 'function' &amp;&amp; define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['underscore'], factory);
+    } else <span class="cstat-no" title="statement not covered" >if (typeof exports === 'object') {</span>
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like enviroments that support module.exports,
+        // like Node.
+        /* global module, require */
+<span class="cstat-no" title="statement not covered" >        module.exports = factory(require('underscore'));</span>
+    } else {
+        // Browser globals (root is window)
+<span class="cstat-no" title="statement not covered" >        root._tree = factory(root._);</span>
+    }
+}(this, function (_) {
+    'use strict';
+&nbsp;
+    var _tree = {}, Tree, Node, __defaults;
+&nbsp;
+    // A rfc4122-compatible GUID generator, with thanks to 
+    // [broofa](http://stackoverflow.com/a/2117523)
+    function uuid () {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            /* jshint bitwise:false */
+            // Bitwise logic is intentional here. Chill out, `jshint`
+            var r = Math.random()*16|0, v = c === 'x' ? r : (r&amp;0x3|0x8);
+            /* jshint bitwise:true */
+            return v.toString(16);
+        });
+    }
+&nbsp;
+    // Before returning a mutable cloned tree, it needs to be properly
+    // frozen to maintain our guarantee. Also, since node-to-tree
+    // references aren't useful until all modifications are done, all
+    // nodes need to be given a reference to their tree.
+    function __finalizeMutableTreeClone(tree) {
+&nbsp;
+        function __finalizeMutableChildNodes(node, parent) {
+            node.__tree = tree;
+            if (parent) {
+                node.__parent = parent;
+            }
+            Object.freeze(node);
+            Object.freeze(node.__children);
+            _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
+        }
+&nbsp;
+        Object.freeze(tree);
+        __finalizeMutableChildNodes(tree.root());
+    }
+&nbsp;
+&nbsp;
+    // # Public API
+    
+    // `_tree.inflate` parses tree-like data into an immutable `Tree`
+    // object for you to work with. It does so without modifying your
+    // object whatsoever, and it can handle any tree data structure
+    // you define.
+    //
+    // You can specify the default behaviour of your tree via the
+    // `defaults` argument. Anything you don't specify will take the
+    // standard default options.
+    //
+    // `_tree.inflate` handles all forms of tree-like data by making
+    // the object parsing logic fully pluggable. You can define your
+    // own `inflateMethod`, or use one of the handful of built-ins.
+    _tree.inflate = function (obj, inflateMethod, defaults) {
+        defaults = _.defaults(_.clone(defaults || {}), __defaults);
+&nbsp;
+        inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
+&nbsp;
+        var tree = new Tree(defaults, obj, inflateMethod);
+        __finalizeMutableTreeClone(tree);
+        return tree;
+    };
+&nbsp;
+&nbsp;
+    // `_tree.create` creates an empty tree from scratch. Tree-wide
+    // `defaults` can also be set here.
+    _tree.create = function (defaults) {
+        return _tree.inflate(null, null, defaults);
+    };
+&nbsp;
+&nbsp;
+    // Maybe the most natural representation of trees in Javascript
+    // can be parsed by this `_tree.inflate` method. It inflates
+    // objects that have child arrays bound to some property of the
+    // parent object (usually 'children')
+    //
+    // For example, it parses an object like this:
+    //
+    //     {'name': parent, 
+    //      'children': [
+    //          {'name': 'child1'}, 
+    //          {'name': 'child2', 'children': [
+    //              {'name': 'child3'}]
+    //          }]
+    //     }
+    //
+    // into a tree like this:
+    //
+    //     parent
+    //         child1
+    //         child2
+    //             child3
+    _tree.inflate.byKey = function (Key) {
+        Key = Key || 'children';
+        return function (Obj) {
+            this.emit(Obj);
+            if (_.has(Obj, Key)) {
+                this.children(Obj[Key]);
+            }
+        };
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+    // `_tree.inflate.byAdjacencyList` parses a wonky sort of array,
+    // wherein every entry is either a node, or an array containing
+    // the children of the previous node. An example to clarify:
+    //
+    // It parses an array like this:
+    //
+    //     ['parent', ['child1', 'child2', ['child3']]]
+    //
+    // into a tree like this:
+    //
+    //     parent
+    //         child1
+    //         child2
+    //             child3
+    _tree.inflate.byAdjacencyList = function (Obj) {
+        var kids, tmpObj, i;
+        this.emit(_.first(Obj));
+        if (Obj.length &gt; 1 &amp;&amp; _.isArray(Obj[1])) {
+            kids = Obj[1];
+            for (i = 0; i &lt; kids.length; i++) {
+                tmpObj = [kids[i]];
+                if (kids.length &gt; 1 &amp;&amp; _.isArray(kids[i + 1])) {
+                    tmpObj.push(kids[i + 1]);
+                    i++;
+                }
+                this.children([tmpObj]);
+            }
+        }
+    };
+&nbsp;
+&nbsp;
+    // If your tree only keeps data for leaf nodes, you can use `_tree.inflate.onlyLeavesList`
+    // inflation method to parse arrays like this:
+    //
+    //     [[child1, [child3]]]
+    //
+    // into trees like this:
+    //
+    //     &lt;no data&gt;
+    //         child1
+    //         &lt;no data&gt;
+    //             child3
+    //
+    _tree.inflate.onlyLeavesList = <span class="fstat-no" title="function not covered" >function (Obj) {</span>
+<span class="cstat-no" title="statement not covered" >        if (_.isArray(_.first(Obj))) {</span>
+<span class="cstat-no" title="statement not covered" >            this.children(_.first(Obj));</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >            this.emit(_.first(Obj));</span>
+        }
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+    // The final public API method, `_tree.fromNode`, allows the
+    // creation of a new tree from an existing `Node`. The new tree is
+    // considered *not to be* a clone of the node's original tree.
+    _tree.fromNode = function (node, defaults) {
+        if (! (node instanceof Node)) {
+            throw new Error('invalid node: ' + JSON.stringify(node));
+        }
+        defaults = _.defaults(_.clone(defaults || {}), node.__tree.__defaults);
+        var tree = new Tree(defaults);
+        tree.__root = Node.clone(tree, node);
+        __finalizeMutableTreeClone(tree);
+        return tree;
+    };
+&nbsp;
+&nbsp;
+    // # Tree
+    
+&nbsp;
+    // This is the `Tree` constructor. It is intended to be used
+    // internally, and so it returns a mutable object that must be
+    // frozen before it's returned.
+    Tree = function (defaults, obj, inflateMethod, nextNodeId) {
+        this.defaults = defaults;
+        this.__id = uuid();
+        this.__nextNodeId = nextNodeId || 0;
+&nbsp;
+        // Your tree-like object `obj` is inflated via
+        // `inflateMethod`, if given.
+        if (!!obj &amp;&amp; !!inflateMethod) {
+            this.__root = Tree.inflate(this, obj, inflateMethod);
+        } else {
+            this.__root = new Node(this);
+        }
+    };
+&nbsp;
+&nbsp;
+    // ## Internal Static Tree Methods
+    
+&nbsp;
+    // To facilitate immutability, `Tree.clone` provides a static copy
+    // constructor that takes a(n) (im)mutable tree and returns a
+    // mutable clone. This method provides the base for all Tree
+    // modifications.
+    Tree.clone = function (tree) {
+        var newTree = new Tree(tree.defaults);
+        newTree.__root = Node.clone(newTree, tree.root());
+        newTree.__nextNodeId = tree.__nextNodeId;
+        newTree.__id = tree.__id;
+        return newTree;
+    };
+&nbsp;
+    // `Tree.inflate` provides the general logic behind object
+    // inflation/parsing/deserialization.
+    Tree.inflate = function(tree, obj, inflateMethod) {
+        var thisnode = new Node(tree), _this;
+        tree.__root = thisnode;
+&nbsp;
+        // When `inflateMethod` is called to navigate `obj`, `this` is
+        // bound to the following object:
+        //
+        //  * `this.emit(data)`: Sets the data for the current node.
+        //  * `this.children([child])`: Calling this immediately
+        //    processes and inflates a set of child node objects.
+        //
+        _this = {
+            emit: function (Data) {
+                thisnode.__data = Data;
+            },
+            children: function (Nodes) {
+                _.each(Nodes, function (kidObj) {
+                    var kidTree = new Tree(tree.defaults, kidObj, inflateMethod, tree.__nextNodeId);
+                    thisnode.__children.push(kidTree.root());
+                    kidTree.root().__parent = thisnode;
+                    tree.__nextNodeId = kidTree.__nextNodeId;
+                });
+            }
+        };
+&nbsp;
+        inflateMethod.call(_this, obj);
+        return thisnode;
+    };
+&nbsp;
+&nbsp;
+    // ## Tree Instance Methods
+    
+&nbsp;
+&nbsp;
+    // A getter for the root `Node` of the tree.
+    Tree.prototype.root = function () {
+        return this.__root;
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+    // Find a node in a tree by internal id correlation, and return
+    // the Node or `false` if no match was found. This can be used to
+    // find a matching node in a cloned tree, since ids are designed
+    // to be invariant across clones.
+    Tree.prototype.findNode = function (fromNode, walkMethod) {
+        if (!this.equals(fromNode.__tree)) {
+            return false;
+        }
+&nbsp;
+        var found = false;
+        this.walk(function (visitNode) {
+            if (!found &amp;&amp; fromNode.equals(visitNode)) {
+                found = visitNode;
+            }
+        }, walkMethod);
+        return found;
+    };
+&nbsp;
+&nbsp;
+    // Matches a node by its data using deep comparison, without
+    // requiring object equality, via `_.isEqual(node.data(), data)`
+    Tree.prototype.findNodeByData = function (data, walkMethod) {
+        if (_.isUndefined(data)) {
+            return false;
+        }
+&nbsp;
+        var found = false;
+        this.walk(function (visitNode) {
+            if (!found &amp;&amp; _.isEqual(data, visitNode.__data)) {
+                found = visitNode;
+            }
+        }, walkMethod);
+        return found;
+    };
+&nbsp;
+&nbsp;
+    // This method is the workhorse of the library. It allows you to
+    // walk the tree in arbitrary ways (specified by `walkMethod`), and
+    // execute `Callback` for every node in the order you specify.
+    Tree.prototype.walk = function (Callback, walkMethod, startNode) {
+        walkMethod = walkMethod || this.defaults.walk;
+        var _this, qs = [], recurList = [], tmpNode;
+&nbsp;
+        if (startNode) {
+            if (!this.containsNode(startNode)) {
+                throw new Error('startNode does not exist in the tree');
+            }
+        } else {
+            startNode = this.root();
+        }
+&nbsp;
+        // In `walkMethod`, `this` will be bound to the following
+        // object. To see how it's used, scan the built-in walk
+        // methods below. Briefly, the binding provides:
+        //
+        //  * `queue`: Adds nodes to the end of the callback list.
+        //  * `push`: Adds nodes to the front of the callback list.
+        //  * `recurse`: Recurses immediately on the set of nodes.
+        //  * `queueRecurse`: Adds a set of nodes to the end of a list of nodes to recurse on next.
+        _this = {
+&nbsp;
+            'queue': function (Nodes) {
+                qs = qs.concat(Nodes);
+            },
+            'push': function (Nodes) {
+                qs = Nodes.concat(qs);
+            },
+            'recurse': function (Nodes) {
+                _.each(Nodes, function (n) {
+                    walkMethod.call(_this, n);
+                });
+            },
+            'queueRecurse': function (Nodes) {
+                recurList = recurList.concat(Nodes);
+            }
+        };
+&nbsp;
+        // Before executing any callbacks, an ordered list of nodes
+        // (`qs`) is generated. In some cases, `walkMethod` many not be
+        // able to evaluate all nodes in one pass, so `recurList` is
+        // used to track which nodes to visit in the next pass.  It
+        // can take as many passes as required.
+        walkMethod.call(_this, startNode);
+        while (recurList.length &gt; 0) {
+            tmpNode = recurList.shift();
+            walkMethod.call(_this, tmpNode);
+        }
+        // Finally, `Callback` is called for each node, in order.
+        _.each(qs, Callback);
+    };
+&nbsp;
+&nbsp;
+    // The is the implementation of the built-in depth-first,
+    // pre-order traversal algorithm. It is setup as the default walk
+    // method.
+    Tree.prototype.walk.dfpre = function (Node) {
+        this.queue(Node);
+        this.recurse(Node.children());
+    };
+&nbsp;
+    // Depth-first, post-order traversal algorithm.
+    Tree.prototype.walk.dfpost = function (Node) {
+        this.recurse(Node.children());
+        this.queue(Node);
+    };
+&nbsp;
+&nbsp;
+    // Breadth-first, pre-order traversal algorithm.
+    Tree.prototype.walk.bfpre = function (Node) {
+        if (!Node.parent()) {
+            this.queue([Node]);
+        }
+        this.queue(Node.children());
+        this.recurse(Node.children());
+    };
+&nbsp;
+    // Breadth-first, post-order traversal algorithm.
+    Tree.prototype.walk.bfpost = function (Node) {
+        if (!Node.parent()) {
+            this.push([Node]);
+        }
+        this.push(Node.children());
+        var rev = _.clone(Node.children());
+        rev.reverse();
+        this.queueRecurse(rev);
+    };
+&nbsp;
+&nbsp;
+    // Tests for equality of trees across clone
+    // lines. Returns `boolean`, whether trees share any clone
+    // lineage.
+    Tree.prototype.equals = function (otherTree) {
+        return (otherTree instanceof Tree) &amp;&amp; this.__id === otherTree.__id;
+    };
+&nbsp;
+    // A shorthand method to test whether a `Node` exists in the
+    // `Tree`. `someNode` can be from any tree clone.
+    Tree.prototype.containsNode = function (someNode) {
+        return (this.findNode(someNode) instanceof Node);
+    };
+&nbsp;
+&nbsp;
+    // A shorthand method to test whether a node containing this data
+    // exists in the `Tree`.
+    Tree.prototype.containsData = function(someData) {
+        return (this.findNodeByData(someData) instanceof Node);
+    };
+&nbsp;
+&nbsp;
+    // Returns a new `Tree` created by 
+    // 
+    //  * deleting the `movingNode`, 
+    //  * finding the destination parent node in the new `Tree` context, and
+    //  * adding the `movingNode` as a child
+    Tree.prototype.moveNode = function (movingNode, toParent) {
+        return movingNode.delete()
+            .findNode(toParent)
+            .addChildNode(movingNode);
+    };
+&nbsp;
+    // # Node
+    
+&nbsp;
+&nbsp;
+    // This defines the `Node` constructor, and much like `Tree`, the
+    // resulting object is mutable until just before being exposed to
+    // the external world.
+    Node = function (tree) {
+        this.__tree = tree;
+        this.__data = undefined;
+        this.__children = [];
+        this.__id = tree.__nextNodeId;
+        tree.__nextNodeId = tree.__nextNodeId + 1;
+    };
+&nbsp;
+    // A static copy constructor for `Node` objects, much like
+    // `Tree.clone`, but recursive. All child nodes are cloned as
+    // well.
+    Node.clone = function (newTree, node, differentId) {
+        var newNode = new Node(newTree);
+        newNode.__data = node.__data;
+&nbsp;
+        newNode.__children = _.map(node.children(), function(c) { return Node.clone(newTree, c, differentId); });
+        _.each(newNode.__children, function(c) {c.__parent = newNode;});
+&nbsp;
+        if (!differentId) {
+            newNode.__id = node.__id;
+            newTree.__nextNodeId--;
+        }
+&nbsp;
+        return newNode;
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+    // The `Node.data` method is both a getter and setter, depending
+    // on how it's used.
+    //
+    // If `Obj` isn't submitted, it's used as a getter.
+    // 
+    // Otherwise, it's used as a setter. Setting the data on a node
+    // triggers the creation of a complete tree clone. Modifications
+    // are done to the mutable clone, and the entire tree is returned
+    // after being made immutable.
+    Node.prototype.data = function (Obj) {
+&nbsp;
+        if (!Obj) {
+            return this.__data;
+        }
+&nbsp;
+        var newTree, newNode;
+&nbsp;
+        newTree = Tree.clone(this.__tree);
+        newNode = newTree.findNode(this);
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
+<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
+        }
+        newNode.__data = Obj;
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+    // A simple getter for node children.
+    Node.prototype.children = function () {
+        return this.__children;
+    };
+&nbsp;
+    // A simple getter for the node's parent. Returns `undefined` if
+    // no parent is set.
+    Node.prototype.parent = function () {
+        return this.__parent;
+    };
+&nbsp;
+    // A simple getter for the node's tree. `_tree` is intended for
+    // internal use. Presumably, client code will know which tree a
+    // node is in, but it may be useful to client code.
+    Node.prototype.tree = function () {
+        return this.__tree;
+    };
+&nbsp;
+    // A simple getter for the node's id. `__id` is intended for
+    // internal use, but may also be valuable to client code.
+    Node.prototype.id = function () {
+        return this.__id;
+    };
+&nbsp;
+&nbsp;
+    // To add a child node, an object representing the node data is
+    // parsed as if it were a new tree and then appended to the end of
+    // the children array. Remember that a newly-cloned tree is
+    // returned, *not* a `Node`.
+    Node.prototype.parseAndAddChild = function (childObj, inflateMethod) {
+        inflateMethod = inflateMethod || this.__tree.defaults.inflate;
+        var childTree, newTree, newNode, tree;
+        tree = this.__tree;
+        childTree = new Tree(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+&nbsp;
+        newTree = Tree.clone(tree);
+        newNode = newTree.findNode(this);
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
+<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
+        }
+        newNode.__children.push(childTree.root());
+        childTree.root().__parent = newNode;
+        newTree.__nextNodeId = childTree.__nextNodeId;
+&nbsp;
+        __finalizeMutableTreeClone(newTree);
+&nbsp;
+        return newTree;
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+    Node.prototype.addChildNode = function(node) {
+        var newTree, newParentNode, nodeClone;
+&nbsp;
+        newTree = Tree.clone(this.tree());
+        newParentNode = newTree.findNode(this);
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newParentNode) {
+<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
+        }
+&nbsp;
+        newTree.__nextNodeId = this.tree().__nextNodeId;
+        nodeClone = Node.clone(newTree, node, true);
+        newParentNode.__children.push(nodeClone);
+        nodeClone.__parent = newParentNode;
+&nbsp;
+        __finalizeMutableTreeClone(newTree);
+&nbsp;
+        return newTree;
+    };
+&nbsp;
+    // `Node.equals` works across clone lines, determining if both
+    // nodes *represent* the same node regardless of whether they're
+    // the same object in memory.
+    Node.prototype.equals = function(otherNode) {
+        return this.__tree.equals(otherNode.__tree) &amp;&amp;
+            this.__id === otherNode.__id;
+    };
+&nbsp;
+    Node.prototype.delete = function () {
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (this === this.__tree.__root) {
+<span class="cstat-no" title="statement not covered" >            throw new Error('cannot delete the root node');</span>
+        }
+&nbsp;
+        var newTree, newNode, parNode;
+&nbsp;
+        newTree = Tree.clone(this.__tree);
+        newNode = newTree.findNode(this);
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
+<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
+        }
+        parNode = newTree.findNode(this.__parent);
+        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!parNode) {
+<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', parNode, newTree]);</span>
+        }
+&nbsp;
+        parNode.__children = _.without(parNode.__children, newNode);
+        __finalizeMutableTreeClone(newTree);
+&nbsp;
+        return newTree;
+    };
+&nbsp;
+&nbsp;
+&nbsp;
+    // Finally, we setup some library-wide defaults.
+    __defaults =  {
+        'inflate': _tree.inflate.byKey(),
+        'walk': Tree.prototype.walk.dfpre,
+        'deleteRecursive': true
+    };
+&nbsp;
+    // And we're done.
+    return _tree;
+}));
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Oct 30 2013 15:41:16 GMT-0700 (PDT)</div>
+</div>
+
+<script src="../prettify.js"></script>
+
+<script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</body>
+</html>

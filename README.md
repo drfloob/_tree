@@ -57,22 +57,32 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 [PhantomJS](https://github.com/ariya/phantomjs) does not support
 `Object.freeze`, so only the tests for immutability fail there.
 
+You can [run tests in the browser](https://rawgithub.com/drfloob/_tree/master/test/test.html) (via rawgithub.com),
+or at the command line with 
+
+```bash
+grunt test # via phantomJS
+```
+
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
 
  * 1024 node trees can be inflated at ~15/sec
  * 30 node trees can be inflated at ~600/sec
  * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
- 
-**Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
 
-To execute various tests yourself, see `Gruntfile.js`, and execute:
+Run benchmarks with:
 
 ```bash
-grunt test # via phantomJS
 grunt benchmark:all
-grunt cover
 ```
+
+**Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
+
+Coverage is calculated every time you run `grunt test` from the
+command line. You can view the coverage report locally at
+`coverage/index.html`. Here is the
+[latest report](https://rawgithub.com/drfloob/_tree/master/coverage/index.html).
 
 ## API
 
