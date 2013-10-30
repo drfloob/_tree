@@ -11,9 +11,6 @@ This library provides a tree model implementation and a pluggable tree
 behavior for your data. 
 
 
-
---------------------------------------------------------------------------------
-
 ## Development Principles
 
 `_tree` does not maintain any internal state, which has a number of
@@ -26,6 +23,8 @@ benefits:
  * the library should perform identically in parallel environments
    (providing your client manages shared data appropriately)
 
+It also does unobtrusive, in that `_tree` does not alter your input
+objects in any way.
 
 ### Core development principles:
 
@@ -42,7 +41,7 @@ benefits:
  * AMD, Node, and global-script compatible
 
 
---------------------------------------------------------------------------------
+
 
 ## Building
 
@@ -55,7 +54,7 @@ npm install
 grunt --force
 ```
 
---------------------------------------------------------------------------------
+
 
 ## Simple Usage Example
 
@@ -88,7 +87,7 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ```
 
---------------------------------------------------------------------------------
+
 
 ## API
 
@@ -126,7 +125,7 @@ The `Tree` consists of `Node`s, which have the following API:
    nodes.
  * `delete`: deletes a `Node` from the tree, returning a new `Tree`.
 
---------------------------------------------------------------------------------
+
 
 ## Contributing
 
