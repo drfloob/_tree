@@ -46,7 +46,6 @@
             expect(_.bind(_tree.fromNode, [1, [2]])).toThrow();
         });
 
-        throw new Error('not finished');
     });
 
 }));

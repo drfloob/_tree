@@ -36,6 +36,7 @@
     "testling": {
         "scripts": [
             "node_modules/jasmine-reporters/ext/jasmine.js",
+            "node_modules/jasmine-reporters/ext/jasmine-html.js",
             "node_modules/jasmine-reporters/src/jasmine.tap_reporter.js",
             "node_modules/underscore/underscore-min.js",
             "dist/_tree.min.js",
@@ -44,10 +45,12 @@
         ],
         "browsers": {
             "ie": [ 8, 9, 10 ],
-            "firefox": [ 13, 23 ],
-            "chrome": [ 20 ],
+            "firefox": [ 24, 23, "nightly" ],
+            "chrome": [ 29, 28, 27 ],
             "safari": [ 5.1 ],
-            "opera": [ 12 ],
+            "iphone": [ 6 ],
+            "ipad": [ 6 ],
+            "opera": [ 12, 15 ],
             "android-browser": [ 4.2 ]
         }
     }
