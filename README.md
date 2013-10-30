@@ -56,7 +56,7 @@ On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
 
  * 1024 node trees can be inflated at ~15/sec
  * 30 node trees can be inflated at ~600/sec
- * 11 nodes trees can be inflated at ~1,500/sec
+ * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
  
 Test coverage is at 98% functions, 94% for statements, 94% lines, and 87% branches.
