@@ -104,7 +104,7 @@ module.exports = function(grunt) {
 
 
     grunt.registerTask('test', ['connect:test', 'jasmine']);
-    grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine', 'uglify', 'compare_size', 'docco']);
+    grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine:cover', 'uglify', 'compare_size', 'docco']);
     grunt.registerTask('cover', ['connect:test', 'jasmine:cover']);
     grunt.registerTask('docs', ['docco']);
     

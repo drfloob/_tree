@@ -426,7 +426,7 @@ THE SOFTWARE.
     // lines. Returns `boolean`, whether trees share any clone
     // lineage.
     Tree.prototype.equals = function (otherTree) {
-        return this.__id === otherTree.__id;
+        return (otherTree instanceof Tree) && this.__id === otherTree.__id;
     };
 
     // A shorthand method to test whether a `Node` exists in the
@@ -521,7 +521,7 @@ THE SOFTWARE.
 
     // A simple getter for node children.
     Node.prototype.children = function () {
-        return this.__children || [];
+        return this.__children;
     };
 
     // A simple getter for the node's parent. Returns `undefined` if
