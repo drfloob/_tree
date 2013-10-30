@@ -6,11 +6,12 @@ A tree data structure library for Javascript.
 > *--Edsger W. Dijkstra, [EWD1243][]*
 
 This library provides a tree model implementation and a pluggable tree
-behavior for your data. It does so while maintaining *zero* internal
-state, providing only immutable objects, and without altering your
-data or trampling on the global scope (by default). 
+behavior for your data. It maintains *zero* internal state, provides
+only immutable objects, and does not alter your data or trample on the
+global scope.
 
-It is AMD (RequireJs), Node, and global-script compatible.
+`_tree` supports AMD (RequireJs), Node, and global-script loading
+scenarios.
 
 
 ## Simple Usage Example
