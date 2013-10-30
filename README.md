@@ -2,8 +2,6 @@
 
 A tree data structure library for Javascript.
 
-## Purpose:
-
 > "Computing's core challenge is how not to make a mess of it."
 > *--Edsger W. Dijkstra, [EWD1243][]*
 
