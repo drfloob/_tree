@@ -13,8 +13,13 @@ global scope.
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
 
-
 ## Simple Usage Example
+
+To get a feel for the library, also check out the
+[tests][https://github.com/drfloob/_tree/tree/master/test] and read
+the
+[annotated source][https://rawgithub.com/drfloob/_tree/master/docs/_tree.html]
+documentation.
 
 
 ```javascript
@@ -44,7 +49,6 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ```
 
-
 ## Quality Metrics
 
 
@@ -57,6 +61,13 @@ On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
  
 Test coverage is at 98% functions, 94% for statements, 94% lines, and 87% branches.
 
+To execute various tests yourself, see `Gruntfile.js`, and execute:
+
+```bash
+grunt test
+grunt benchmark:all
+grunt cover
+```
 
 ## API
 
