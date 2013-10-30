@@ -13,11 +13,9 @@
 
 # Quality
 
+ * cleanup the README
  * Setup real-world performance tests
  * Setup performance comparisons between libraries
-
-# Infrastructure
-
  * get continuous integration setup
  
 # Nice-to-haves
