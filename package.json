@@ -11,7 +11,14 @@
         "wrapper",
         "graph"
     ],
-    "main": "_tree.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/drfloob/_tree.git"
+    },
+    "bugs": {
+        "url": "https://github.com/drfloob/_tree/issues"
+    },
+    "main": "_tree",
     "directories": {
         "test": "tests"
     },
