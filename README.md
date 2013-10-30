@@ -117,7 +117,7 @@ benefits:
  * all operations are idempotent
  * tests can be implemented easily
  * the library should perform identically in parallel environments
-   ^*(if you manage your own shared data appropriately)*
+   *(if you manage your own shared data appropriately)*
 
 It is also unobtrusive, in that `_tree` does not alter your input
 objects in any way, or trample on the global scope by default.
