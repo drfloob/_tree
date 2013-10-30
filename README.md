@@ -51,20 +51,27 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ## Quality Metrics
 
+**Tests**: All tests pass on
 
-On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
+ * google chrome 30
+ * firefox 25
+ 
+[PhantomJS](https://github.com/ariya/phantomjs) does not support
+`Object.freeze`, so only the tests for immutability fail there.
+
+**Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
 
  * 1024 node trees can be inflated at ~15/sec
  * 30 node trees can be inflated at ~600/sec
  * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
  
-Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
+**Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
 
 To execute various tests yourself, see `Gruntfile.js`, and execute:
 
 ```bash
-grunt test
+grunt test # via phantomJS
 grunt benchmark:all
 grunt cover
 ```

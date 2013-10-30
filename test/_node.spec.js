@@ -30,7 +30,11 @@
             kids = tree.root().children();
             
             tmpLen = kids.length;
-            kids.push(2);
+            try {
+                kids.push(2);
+            } catch (e) {
+                // firefox 25 throws TypeError: kids.push(...) is not extensible
+            }
             expect(tmpLen).toEqual(kids.length);
             expect(kids[1]).toBeUndefined();
             expect(kids[1]).not.toBe(2);
