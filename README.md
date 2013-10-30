@@ -16,9 +16,9 @@ scenarios.
 ## Simple Usage Example
 
 To get a feel for the library, also check out the
-[tests][https://github.com/drfloob/_tree/tree/master/test] and read
+[tests](https://github.com/drfloob/_tree/tree/master/test) and read
 the
-[annotated source][https://rawgithub.com/drfloob/_tree/master/docs/_tree.html]
+[annotated source](https://rawgithub.com/drfloob/_tree/master/docs/_tree.html)
 documentation.
 
 
