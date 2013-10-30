@@ -13,6 +13,9 @@ global scope.
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
 
+[![browser support](https://ci.testling.com/drfloob/_tree.png)](https://ci.testling.com/drfloob/_tree)
+
+
 ## Simple Usage Example
 
 To get a feel for the library, also check out the
