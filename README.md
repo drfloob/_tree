@@ -8,7 +8,9 @@ A tree data structure library for Javascript.
 This library provides a tree model implementation and a pluggable tree
 behavior for your data. It does so while maintaining *zero* internal
 state, providing only immutable objects, and without altering your
-data or trampling on the global scope (by default).
+data or trampling on the global scope (by default). 
+
+It is AMD (RequireJs), Node, and global-script compatible.
 
 
 ## Simple Usage Example
@@ -103,10 +105,10 @@ benefits:
  * all operations are idempotent
  * tests can be implemented easily
  * the library should perform identically in parallel environments
-   (providing your client manages shared data appropriately)
+   (providing you manage your own shared data appropriately)
 
-It also does unobtrusive, in that `_tree` does not alter your input
-objects in any way.
+It is also unobtrusive, in that `_tree` does not alter your input
+objects in any way, or trample on the global scope by default.
 
 ### Core development principles:
 
