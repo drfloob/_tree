@@ -54,15 +54,15 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
  * google chrome 30
  * firefox 25
  
-[PhantomJS](https://github.com/ariya/phantomjs) does not support
-`Object.freeze`, so only the tests for immutability fail there.
+In the following browsers, which do not support `Object.freeze`,
+*only* the tests for immutability fail:
 
-You can [run tests in the browser](https://rawgithub.com/drfloob/_tree/master/test/test.html) (via rawgithub.com),
-or at the command line with 
+ * [PhantomJS](https://github.com/ariya/phantomjs)
+ * Safari 5.0.6
 
-```bash
-grunt test # via phantomJS
-```
+You can
+[**run the tests yourself in your browser**](https://rawgithub.com/drfloob/_tree/master/test/test.html),
+or at the command line with `grunt test`
 
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
 
@@ -71,18 +71,14 @@ grunt test # via phantomJS
  * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
 
-Run benchmarks with:
-
-```bash
-grunt benchmark:all
-```
+Run benchmarks with `grunt benchmark:all`
 
 **Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
 
 Coverage is calculated every time you run `grunt test` from the
 command line. You can view the coverage report locally at
 `coverage/index.html`. Here is the
-[latest report](https://rawgithub.com/drfloob/_tree/master/coverage/index.html).
+[**latest report**](https://rawgithub.com/drfloob/_tree/master/coverage/index.html).
 
 ## API
 
