@@ -54,6 +54,27 @@ module.exports = function(grunt) {
                         }
                     }
                 }
+            },
+            cover: {
+                src: ['src/**/*.js'],
+                options: {
+                    // keepRunner: true,
+                    specs: ['test/**/*.js'],
+                    host: 'http://127.0.0.1:8042',
+                    template: require('grunt-template-jasmine-istanbul'),
+                    templateOptions: {
+                        coverage: 'coverage/coverage.json',
+                        report: 'coverage',
+                        template: require('grunt-template-jasmine-requirejs'),
+                        templateOptions: {
+                            requireConfig: {
+                                baseUrl: '.grunt/grunt-contrib-jasmine/src/',
+                                paths: { 'underscore': '/node_modules/underscore/underscore-min' },
+                                shim: { 'underscore': { exports: '_' } }
+                            }
+                        }
+                    }
+                }
             }
         },
         docco: {
@@ -84,6 +105,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test', ['connect:test', 'jasmine']);
     grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine', 'uglify', 'compare_size', 'docco']);
+    grunt.registerTask('cover', ['connect:test', 'jasmine:cover']);
 
     grunt.registerTask('default', ['build']);
 
