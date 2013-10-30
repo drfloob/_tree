@@ -37,8 +37,10 @@
         "scripts": [
             "node_modules/jasmine-reporters/ext/jasmine.js",
             "node_modules/jasmine-reporters/src/jasmine.tap_reporter.js",
+            "node_modules/underscore/underscore-min.js",
             "dist/_tree.min.js",
-            "test/**/*.js"
+            "test/**/*.js",
+            "testling/jasmine_bootstrap.js"
         ],
         "browsers": {
             "ie": [ 8, 9, 10 ],

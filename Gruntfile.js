@@ -36,7 +36,10 @@ module.exports = function(grunt) {
         
         // for grunt-template-jasmine-requirejs
         connect: { test: { options: { port: 8042, keepalive: false } },
-                   manual: { options: { port: 8042, keepalive: true } }
+                   manual: { options: { port: 8042, 
+                                        keepalive: true,
+                                        debug: true
+                                      } }
                  },
         jasmine: {
             all: {

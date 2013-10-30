@@ -14,7 +14,7 @@
         module.exports = factory(require('_tree'), require('underscore'));
     } else {
         // Browser globals (root is window)
-        root._tree = factory(root._tree, root._);
+        factory(root._tree, root._);
     }
 }(this, function (_tree, _) {
 
