@@ -1,64 +1,88 @@
 {
-    "name": "_tree",
-    "version": "0.1.2",
-    "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
-    "author": "A.J. Heller",
-    "license": "MIT",
-    "keywords": [
-        "tree",
-        "data structure",
-        "model",
-        "wrapper",
-        "graph"
+  "name": "_tree",
+  "version": "0.1.2",
+  "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
+  "author": "A.J. Heller",
+  "license": "MIT",
+  "keywords": [
+    "tree",
+    "data structure",
+    "model",
+    "wrapper",
+    "graph"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drfloob/_tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/drfloob/_tree/issues"
+  },
+  "main": "_tree",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.7.0",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-compare-size": "~0.4.0",
+    "grunt-contrib-jasmine": "~0.5.2",
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-template-jasmine-requirejs": "~0.1.7",
+    "jasmine-reporters": "larrymyers/jasmine-reporters.git",
+    "grunt-docco": "~0.3.0",
+    "requirejs": "~2.1.9",
+    "grunt-jsonlint": "~1.0.1",
+    "grunt-benchmark": "~0.2.0",
+    "grunt-template-jasmine-istanbul": "~0.2.5",
+    "grunt-contrib-copy": "~0.4.1"
+  },
+  "testling": {
+    "scripts": [
+      "node_modules/jasmine-reporters/ext/jasmine.js",
+      "node_modules/jasmine-reporters/ext/jasmine-html.js",
+      "node_modules/jasmine-reporters/src/jasmine.tap_reporter.js",
+      "node_modules/underscore/underscore-min.js",
+      "dist/_tree.min.js",
+      "test/**/*.js",
+      "testling/jasmine_bootstrap.js"
     ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/drfloob/_tree.git"
-    },
-    "bugs": {
-        "url": "https://github.com/drfloob/_tree/issues"
-    },
-    "main": "_tree",
-    "directories": {
-        "test": "tests"
-    },
-    "dependencies": {
-        "underscore": "~1.5.2"
-    },
-    "devDependencies": {
-        "grunt": "~0.4.1",
-        "grunt-contrib-jshint": "~0.7.0",
-        "grunt-contrib-uglify": "~0.2.4",
-        "grunt-compare-size": "~0.4.0",
-        "grunt-contrib-jasmine": "~0.5.2",
-        "grunt-contrib-connect": "~0.5.0",
-        "grunt-template-jasmine-requirejs": "~0.1.7",
-        "jasmine-reporters": "larrymyers/jasmine-reporters.git",
-        "grunt-docco": "~0.3.0",
-        "requirejs": "~2.1.9",
-        "grunt-jsonlint": "~1.0.1",
-        "grunt-benchmark": "~0.2.0",
-        "grunt-template-jasmine-istanbul": "~0.2.5"
-    },
-    "testling": {
-        "scripts": [
-            "node_modules/jasmine-reporters/ext/jasmine.js",
-            "node_modules/jasmine-reporters/ext/jasmine-html.js",
-            "node_modules/jasmine-reporters/src/jasmine.tap_reporter.js",
-            "node_modules/underscore/underscore-min.js",
-            "dist/_tree.min.js",
-            "test/**/*.js",
-            "testling/jasmine_bootstrap.js"
-        ],
-        "browsers": {
-            "ie": [ 8, 9, 10 ],
-            "firefox": [ 24, 23, "nightly" ],
-            "chrome": [ 29, 28, 27 ],
-            "safari": [ 5.1 ],
-            "iphone": [ 6 ],
-            "ipad": [ 6 ],
-            "opera": [ 12, 15 ],
-            "android-browser": [ 4.2 ]
-        }
+    "browsers": {
+      "ie": [
+        8,
+        9,
+        10
+      ],
+      "firefox": [
+        24,
+        23,
+        "nightly"
+      ],
+      "chrome": [
+        29,
+        28,
+        27
+      ],
+      "safari": [
+        5.1
+      ],
+      "iphone": [
+        6
+      ],
+      "ipad": [
+        6
+      ],
+      "opera": [
+        12,
+        15
+      ],
+      "android-browser": [
+        4.2
+      ]
     }
+  }
 }

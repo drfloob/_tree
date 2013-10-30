@@ -28,7 +28,7 @@ module.exports = function(grunt) {
             options: { jshintrc: '.jshintrc' },
             src: { src: ['src/**/*.js'] },
             grunt: { src: ['Gruntfile.js'] },
-            tests: { src: ['test/**/*.js'] }
+            tests: { src: ['test/*.js'] }
         },
         jsonlint: {
             'pkg': { src: ['package.json'] }
@@ -36,33 +36,17 @@ module.exports = function(grunt) {
         
         // for grunt-template-jasmine-requirejs
         connect: { test: { options: { port: 8042, keepalive: false } },
-                   manual: { options: { port: 8042, 
+                   manual: { options: { port: 8042,
                                         keepalive: true,
                                         debug: true
                                       } }
                  },
         jasmine: {
-            all: {
-                src: 'src/**/*.js',
-                options: {
-                    // keepRunner: true,
-                    specs: 'test/**/*.js',
-                    host: 'http://127.0.0.1:8042',
-                    template: require('grunt-template-jasmine-requirejs'),
-                    templateOptions: {
-                        requireConfig: {
-                            baseUrl: 'src/',
-                            paths: { 'underscore': '/node_modules/underscore/underscore-min' },
-                            shim: { 'underscore': { exports: '_' } }
-                        }
-                    }
-                }
-            },
             cover: {
                 src: ['src/**/*.js'],
                 options: {
                     // keepRunner: true,
-                    specs: ['test/**/*.js'],
+                    specs: ['test/*.js'],
                     host: 'http://127.0.0.1:8042',
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
@@ -92,6 +76,17 @@ module.exports = function(grunt) {
             all: { src: ['benchmark/**/*.js'] },
             object: { src: ['benchmark/**/object_*.js'] },
             adjList: { src: ['benchmark/**/adjList_*.js'] }
+        },
+        copy: {
+            vendor: {
+                files: [
+                    {src: 'node_modules/jasmine-reporters/ext/jasmine.css', dest: 'test/vendor/jasmine.css'},
+                    {src: 'node_modules/jasmine-reporters/ext/jasmine.js', dest: 'test/vendor/jasmine.js'},
+                    {src: 'node_modules/jasmine-reporters/ext/jasmine-html.js', dest: 'test/vendor/jasmine-html.js'},
+                    {src: 'node_modules/jasmine-reporters/src/jasmine.tap_reporter.js', dest: 'test/vendor/jasmine.tap_reporter.js'},
+                    {src: 'node_modules/underscore/underscore-min.js', dest: 'test/vendor/underscore-min.js'}
+                ]
+            }
         }
     });
     
@@ -104,11 +99,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsonlint');
     grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-benchmark');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
 
-    grunt.registerTask('test', ['connect:test', 'jasmine']);
-    grunt.registerTask('build', ['jshint', 'jsonlint', 'connect:test', 'jasmine:cover', 'uglify', 'compare_size', 'docco']);
-    grunt.registerTask('cover', ['connect:test', 'jasmine:cover']);
+    grunt.registerTask('test', ['copy:vendor', 'connect:test', 'jasmine']);
+    grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docco']);
     grunt.registerTask('docs', ['docco']);
     
     grunt.registerTask('default', ['build']);
