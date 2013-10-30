@@ -1,42 +1,44 @@
 {
-  "name": "_tree",
-  "version": "0.1.2",
-  "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
-  "keywords": [
-    "tree",
-    "data structure",
-    "model",
-    "wrapper",
-    "graph"
-  ],
-  "main": "_tree.js",
-  "directories": {
-    "test": "tests"
-  },
-  "scripts": {
-    "test": "./node_modules/jasmine-node/bin/jasmine-node tests/",
-    "build": "uglifyjs _tree.js -c --mangle --comments \"/\\(c\\)/\" -o _tree.min.js --source-map _tree.min.js.map",
-    "docs": "docco _tree.js",
-    "lint": "./node_modules/nodelint/nodelint _tree.js tests/ --config .nodelint"
-  },
-  "dependencies": {
-    "underscore": "~1.5.2"
-  },
-  "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-compare-size": "~0.4.0",
-    "grunt-contrib-jasmine": "~0.5.2",
-    "grunt-contrib-connect": "~0.5.0",
-    "grunt-template-jasmine-requirejs": "~0.1.7",
-    "jasmine-reporters": "~0.2.1",
-    "grunt-docco": "~0.3.0",
-    "requirejs": "~2.1.9",
-    "grunt-jsonlint": "~1.0.1",
-    "grunt-benchmark": "~0.2.0",
-    "grunt-template-jasmine-istanbul": "~0.2.5"
-  },
-  "author": "A. J. Heller",
-  "license": "MIT"
+    "name": "_tree",
+    "version": "0.1.2",
+    "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
+    "author": "A.J. Heller",
+    "license": "MIT",
+    "keywords": [
+        "tree",
+        "data structure",
+        "model",
+        "wrapper",
+        "graph"
+    ],
+    "main": "_tree.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "underscore": "~1.5.2"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.1",
+        "grunt-contrib-jshint": "~0.7.0",
+        "grunt-contrib-uglify": "~0.2.4",
+        "grunt-compare-size": "~0.4.0",
+        "grunt-contrib-jasmine": "~0.5.2",
+        "grunt-contrib-connect": "~0.5.0",
+        "grunt-template-jasmine-requirejs": "~0.1.7",
+        "jasmine-reporters": "larrymyers/jasmine-reporters.git",
+        "grunt-docco": "~0.3.0",
+        "requirejs": "~2.1.9",
+        "grunt-jsonlint": "~1.0.1",
+        "grunt-benchmark": "~0.2.0",
+        "grunt-template-jasmine-istanbul": "~0.2.5"
+    },
+    "testling": {
+        "scripts": [
+            "node_modules/jasmine-reporters/ext/jasmine.js",
+            "node_modules/jasmine-reporters/src/jasmine.tap_reporter.js",
+            "dist/_tree.min.js",
+            "test/**/*.js"
+        ]
+    }
 }

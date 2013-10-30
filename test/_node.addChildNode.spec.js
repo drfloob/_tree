@@ -1,6 +1,22 @@
 /*global define, describe, beforeEach, it, expect */
 
-define(['_tree', 'underscore'], function (_tree, _) {
+(function (root, factory) {
+    'use strict';
+
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['_tree', 'underscore'], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like enviroments that support module.exports,
+        // like Node.
+        /* global module, require */
+        module.exports = factory(require('_tree'), require('underscore'));
+    } else {
+        // Browser globals (root is window)
+        root._tree = factory(root._tree, root._);
+    }
+}(this, function (_tree, _) {
     'use strict';
 
     describe('_node.addChildNode', function () {
@@ -79,4 +95,4 @@ define(['_tree', 'underscore'], function (_tree, _) {
 
         
     });
-});
+}));
