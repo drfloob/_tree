@@ -1,8 +1,7 @@
 # _tree
 
 > "Computing's core challenge is how not to make a mess of it."
->
-> -*Edsger W. Dijkstra, [EWD1243][]*
+> --*Edsger W. Dijkstra, [EWD1243][]*
 
 This library provides a tree model (data structure) implementation and
 a pluggable tree behavior for your data. It maintains *zero* internal
