@@ -78,11 +78,7 @@ THE SOFTWARE.
 
 
     // # Public API
-    //
-    // This next chunk of code defines the public methods of the _tree
-    // library beginning with its main entrypoints.
     
-
     // `_tree.inflate` parses tree-like data into an immutable `Tree`
     // object for you to work with. It does so without modifying your
     // object whatsoever, and it can handle any tree data structure
@@ -94,7 +90,7 @@ THE SOFTWARE.
     //
     // `_tree.inflate` handles all forms of tree-like data by making
     // the object parsing logic fully pluggable. You can define your
-    // own parsing `inflateMethod`, or use one of the handful of built-ins.
+    // own `inflateMethod`, or use one of the handful of built-ins.
     _tree.inflate = function (obj, inflateMethod, defaults) {
         defaults = _.defaults(_.clone(defaults || {}), __defaults);
 
@@ -114,9 +110,9 @@ THE SOFTWARE.
 
 
     // Maybe the most natural representation of trees in Javascript
-    // can be parsed by this method. It inflates chains of objects
-    // that have child arrays bound to some property of the parent
-    // object (usually 'children')
+    // can be parsed by this `_tree.inflate` method. It inflates
+    // objects that have child arrays bound to some property of the
+    // parent object (usually 'children')
     //
     // For example, it parses an object like this:
     //
@@ -200,9 +196,9 @@ THE SOFTWARE.
 
 
 
-    // This allows the creation of a new tree from a given `Node`. The
-    // new tree is considered to *not be* a clone of the node's
-    // original tree.
+    // The final public API method, `_tree.fromNode`, allows the
+    // creation of a new tree from an existing `Node`. The new tree is
+    // considered *not to be* a clone of the node's original tree.
     _tree.fromNode = function (node, defaults) {
         if (! (node instanceof Node)) {
             throw new Error('invalid node: ' + JSON.stringify(node));
@@ -219,14 +215,15 @@ THE SOFTWARE.
     
 
     // This is the `Tree` constructor. It is intended to be used
-    // internally, and so it returns a **mutable object** that must be
+    // internally, and so it returns a mutable object that must be
     // frozen before it's returned.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
         this.defaults = defaults;
         this.__id = uuid();
         this.__nextNodeId = nextNodeId || 0;
 
-        // `obj` is inflated via `inflateMethod`, if supplied
+        // Your tree-like object `obj` is inflated via
+        // `inflateMethod`, if given.
         if (!!obj && !!inflateMethod) {
             this.__root = Tree.inflate(this, obj, inflateMethod);
         } else {
@@ -256,9 +253,8 @@ THE SOFTWARE.
         var thisnode = new Node(tree), _this;
         tree.__root = thisnode;
 
-        // When `inflateMethod` is called to navigate the submitted
-        // tree-like object, `this` is bound to this object, exposing
-        // the following functionality:
+        // When `inflateMethod` is called to navigate `obj`, `this` is
+        // bound to the following object:
         //
         //  * `this.emit(data)`: Sets the data for the current node.
         //  * `this.children([child])`: Calling this immediately
@@ -313,8 +309,8 @@ THE SOFTWARE.
     };
 
 
-    // Matches a node by its data using deep comparison *without*
-    // object equality, via `_.isEqual(node.data(), data)`
+    // Matches a node by its data using deep comparison, without
+    // requiring object equality, via `_.isEqual(node.data(), data)`
     Tree.prototype.findNodeByData = function (data, walkMethod) {
         if (_.isUndefined(data)) {
             return false;
@@ -422,7 +418,7 @@ THE SOFTWARE.
     };
 
 
-    // `TreeInstance.equals` tests for equality of trees across clone
+    // Tests for equality of trees across clone
     // lines. Returns `boolean`, whether trees share any clone
     // lineage.
     Tree.prototype.equals = function (otherTree) {
@@ -443,7 +439,7 @@ THE SOFTWARE.
     };
 
 
-    // returns a new `Tree` created by 
+    // Returns a new `Tree` created by 
     // 
     //  * deleting the `movingNode`, 
     //  * finding the destination parent node in the new `Tree` context, and
@@ -598,7 +594,6 @@ THE SOFTWARE.
     };
 
     Node.prototype.delete = function () {
-        // throw new Error('not implemented');
         if (this === this.__tree.__root) {
             throw new Error('cannot delete the root node');
         }

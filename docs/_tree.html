@@ -206,8 +206,6 @@ nodes need to be given a reference to their tree.</p>
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <h1>Public API</h1>
-<p>This next chunk of code defines the public methods of the _tree
-library beginning with its main entrypoints.</p>
 
             </div>
             
@@ -229,7 +227,7 @@ you define.</p>
 standard default options.</p>
 <p><code>_tree.inflate</code> handles all forms of tree-like data by making
 the object parsing logic fully pluggable. You can define your
-own parsing <code>inflateMethod</code>, or use one of the handful of built-ins.</p>
+own <code>inflateMethod</code>, or use one of the handful of built-ins.</p>
 
             </div>
             
@@ -271,9 +269,9 @@ own parsing <code>inflateMethod</code>, or use one of the handful of built-ins.<
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>Maybe the most natural representation of trees in Javascript
-can be parsed by this method. It inflates chains of objects
-that have child arrays bound to some property of the parent
-object (usually &#39;children&#39;)</p>
+can be parsed by this <code>_tree.inflate</code> method. It inflates
+objects that have child arrays bound to some property of the
+parent object (usually &#39;children&#39;)</p>
 <p>For example, it parses an object like this:</p>
 <pre><code>{&#39;name&#39;: parent, 
  &#39;children&#39;: [
@@ -375,9 +373,9 @@ inflation method to parse arrays like this:</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>This allows the creation of a new tree from a given <code>Node</code>. The
-new tree is considered to <em>not be</em> a clone of the node&#39;s
-original tree.</p>
+              <p>The final public API method, <code>_tree.fromNode</code>, allows the
+creation of a new tree from an existing <code>Node</code>. The new tree is
+considered <em>not to be</em> a clone of the node&#39;s original tree.</p>
 
             </div>
             
@@ -415,7 +413,7 @@ original tree.</p>
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>This is the <code>Tree</code> constructor. It is intended to be used
-internally, and so it returns a <strong>mutable object</strong> that must be
+internally, and so it returns a mutable object that must be
 frozen before it&#39;s returned.</p>
 
             </div>
@@ -434,7 +432,8 @@ frozen before it&#39;s returned.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
-              <p><code>obj</code> is inflated via <code>inflateMethod</code>, if supplied</p>
+              <p>Your tree-like object <code>obj</code> is inflated via
+<code>inflateMethod</code>, if given.</p>
 
             </div>
             
@@ -509,9 +508,8 @@ inflation/parsing/deserialization.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>When <code>inflateMethod</code> is called to navigate the submitted
-tree-like object, <code>this</code> is bound to this object, exposing
-the following functionality:</p>
+              <p>When <code>inflateMethod</code> is called to navigate <code>obj</code>, <code>this</code> is
+bound to the following object:</p>
 <ul>
 <li><code>this.emit(data)</code>: Sets the data for the current node.</li>
 <li><code>this.children([child])</code>: Calling this immediately
@@ -607,8 +605,8 @@ to be invariant across clones.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
-              <p>Matches a node by its data using deep comparison <em>without</em>
-object equality, via <code>_.isEqual(node.data(), data)</code></p>
+              <p>Matches a node by its data using deep comparison, without
+requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
 
             </div>
             
@@ -822,7 +820,7 @@ method.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-35">&#182;</a>
               </div>
-              <p><code>TreeInstance.equals</code> tests for equality of trees across clone
+              <p>Tests for equality of trees across clone
 lines. Returns <code>boolean</code>, whether trees share any clone
 lineage.</p>
 
@@ -877,7 +875,7 @@ exists in the <code>Tree</code>.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-38">&#182;</a>
               </div>
-              <p>returns a new <code>Tree</code> created by </p>
+              <p>Returns a new <code>Tree</code> created by </p>
 <ul>
 <li>deleting the <code>movingNode</code>, </li>
 <li>finding the destination parent node in the new <code>Tree</code> context, and</li>
@@ -1144,22 +1142,8 @@ the same object in memory.</p>
             <span class="keyword">this</span>.__id === otherNode.__id;
     };
 
-    Node.prototype.<span class="keyword">delete</span> = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-49">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
-              </div>
-              <p>throw new Error(&#39;not implemented&#39;);</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span> (<span class="keyword">this</span> === <span class="keyword">this</span>.__tree.__root) {
+    Node.prototype.<span class="keyword">delete</span> = <span class="function"><span class="keyword">function</span> <span class="params">()</span> {</span>
+        <span class="keyword">if</span> (<span class="keyword">this</span> === <span class="keyword">this</span>.__tree.__root) {
             <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">'cannot delete the root node'</span>);
         }
 
@@ -1184,11 +1168,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-49">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-49">&#182;</a>
               </div>
               <p>Finally, we setup some library-wide defaults.</p>
 
@@ -1203,11 +1187,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-50">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-50">&#182;</a>
               </div>
               <p>And we&#39;re done.</p>
 
