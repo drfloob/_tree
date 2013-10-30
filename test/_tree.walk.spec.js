@@ -99,12 +99,31 @@ define(['_tree', 'underscore'], function (_tree, _) {
             });
 
 
+
             describe('starting from non-root', function () {
+                it('throws on non-node', function () {
+                    var tree = _tree.create();
+                    
+                    expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre)).toThrow();
+                    expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre, null)).toThrow();
+                    expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre, 1)).toThrow();
+                    expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre, [1, [2]])).toThrow();
+                });
+
                 it('throws if node does not exist', function () {
                     var otherTree = _tree.create(),
-                    rt = otherTree.root();
-                    
+                    rt = otherTree.root(),
+                    err = function() {
+                        try {
+                            tree.walk(this, function(){}, tree.walk.dfpre, rt);
+                        } catch (e) {
+                            return e.message;
+                        }
+                        return 'did not error';
+                    };
+
                     expect(_.bind(tree.walk, this, function(){}, tree.walk.dfpre, rt)).toThrow();
+                    expect(err()).toEqual('startNode does not exist in the tree');
                 });
 
                 it('walks the root fine', function () {
