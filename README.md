@@ -14,7 +14,7 @@ data or trampling on the global scope (by default).
 ## Simple Usage Example
 
 
-```
+```javascript
 'use strict';
 var Patronage, FamilyTree;
 
