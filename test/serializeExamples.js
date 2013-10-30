@@ -9,7 +9,7 @@ define(['_tree', 'underscore'], function (_tree, _) {
 
                 // Holy shit this is nasty
 
-                var tree, callback, walkMethod;
+                var tree, walkMethod, serialized;
 
                 tree = _tree.inflate([1, [2, [3]]], _tree.inflate.byAdjacencyList);
 
@@ -22,9 +22,9 @@ define(['_tree', 'underscore'], function (_tree, _) {
                         parent.push(kids);
                     }
                     return parent;
-                }
+                };
 
-                var serialized = walkMethod(tree.root());
+                serialized = walkMethod(tree.root());
                 expect(serialized).toEqual([1, [2, [3]]]);
             });
         });

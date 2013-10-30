@@ -205,14 +205,14 @@ THE SOFTWARE.
     // original tree.
     _tree.fromNode = function (node, defaults) {
         if (! (node instanceof Node)) {
-            throw new Error("invalid node: " + JSON.stringify(node));
+            throw new Error('invalid node: ' + JSON.stringify(node));
         }
         defaults = _.defaults(_.clone(defaults || {}), node.__tree.__defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
         __finalizeMutableTreeClone(tree);
         return tree;
-    }
+    };
 
 
     // # Tree
@@ -339,7 +339,7 @@ THE SOFTWARE.
 
         if (startNode) {
             if (!this.containsNode(startNode)) {
-                throw new Error("startNode does not exist in the tree");
+                throw new Error('startNode does not exist in the tree');
             }
         } else {
             startNode = this.root();
@@ -440,17 +440,15 @@ THE SOFTWARE.
     // exists in the `Tree`.
     Tree.prototype.containsData = function(someData) {
         return (this.findNodeByData(someData) instanceof Node);
-    }
+    };
 
 
+    // returns a new `Tree` created by 
+    // 
+    //  * deleting the `movingNode`, 
+    //  * finding the destination parent node in the new `Tree` context, and
+    //  * adding the `movingNode` as a child
     Tree.prototype.moveNode = function (movingNode, toParent) {
-        var newTree;
-
-        // returns a new `Tree` created by 
-        // 
-        //  * deleting the `movingNode`, 
-        //  * finding the destination parent node in the new `Tree` context, and
-        //  * adding the `movingNode` as a child
         return movingNode.delete()
             .findNode(toParent)
             .addChildNode(movingNode);

@@ -1,6 +1,6 @@
-/*global define, xdescribe, describe, beforeEach, it, expect */
+/*global define, describe, beforeEach, it, expect */
 
-define(['_tree'], function (_tree) {
+define(['_tree', 'underscore'], function (_tree, _) {
     'use strict';
 
     describe('_node.addChildNode', function () {
@@ -33,7 +33,7 @@ define(['_tree'], function (_tree) {
             var vals = [], tmpTree = _tree.inflate({'test': 'data'}),
             newTree = tree.root().addChildNode(tmpTree.root());
             
-            tree.walk(function (n) { vals.push(n.__id); }, tree.walk.dfpre);
+            newTree.walk(function (n) { vals.push(n.__id); }, tree.walk.dfpre);
             expect(_.uniq(vals)).toEqual(vals);
         });
 
@@ -48,7 +48,7 @@ define(['_tree'], function (_tree) {
 
 
         it('sets a tree of node ids properly', function () {
-            var ids = [], 
+            var ids = [],
             tmpTree = _tree.inflate(['six', [7, [8, 9], 10, [11, [12]]]],
                                     _tree.inflate.byAdjacencyList),
             expectedSixId = tree.__nextNodeId,

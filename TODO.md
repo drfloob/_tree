@@ -19,8 +19,7 @@
 # Infrastructure
 
  * get continuous integration setup
- * get test coverage info setup
-
+ 
 # Nice-to-haves
 
  * implement more tree builtin behaviors

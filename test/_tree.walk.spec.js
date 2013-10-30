@@ -1,6 +1,6 @@
 /* global define, describe, it, expect, beforeEach */
 
-define(['_tree'], function (_tree) {
+define(['_tree', 'underscore'], function (_tree, _) {
     'use strict';
 
     describe('tree.walk', function () {
