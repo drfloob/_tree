@@ -13,7 +13,6 @@
 
 # Quality
 
- * cleanup the README
  * Setup real-world performance tests
  * Setup performance comparisons between libraries
  * get continuous integration setup
@@ -27,7 +26,7 @@
  * wire up some visual examples in jsfiddle
  * benchmark uuid vs _.uniqueId
 
-# For the sake of awesomeness
+# For the sake of meta awesomeness
 
  * analyze how the codebase would differ if javascript had
    type-safety, and static or dynamic type-checking
