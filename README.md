@@ -47,8 +47,9 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ## Quality Metrics
 
-**Tests**: As of commit c35018e09d83995b0b04113bdd3d216ef8d98c5f, all
-tests pass on
+**Tests**: As of commit
+[c35018](https://github.com/drfloob/_tree/tree/c35018e09d83995b0b04113bdd3d216ef8d98c5f),
+all tests pass on:
 
  * Chrome: 26-
  * Firefox: 10-
