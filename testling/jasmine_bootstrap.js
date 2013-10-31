@@ -4,9 +4,15 @@ window.onload = function() {
         currentWindowOnload();
     }
     
-    var jasmineEnv = jasmine.getEnv();
+    var jasmineEnv = jasmine.getEnv(),
+    htmlReporter = new jasmine.HtmlReporter();
     // jasmineEnv.addReporter(new jasmine.TapReporter());
     // jasmineEnv.addReporter(new jasmine.TrivialReporter());
-    jasmineEnv.addReporter(new jasmine.HtmlReporter());
+    jasmineEnv.addReporter(htmlReporter);
+
+    jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+    };
+
     jasmineEnv.execute();
 };

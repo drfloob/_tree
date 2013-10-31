@@ -38,7 +38,8 @@ module.exports = function(grunt) {
         connect: { test: { options: { port: 8042, keepalive: false } },
                    manual: { options: { port: 8043,
                                         keepalive: true,
-                                        debug: true
+                                        debug: true,
+                                        hostname: "*"
                                       }
                            }
                  },
