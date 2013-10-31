@@ -1,6 +1,6 @@
 # _tree
 
-> "Computing's core challenge is how not to make a mess of it. ... all
+> "Computing's core challenge is how not to make a mess of it. ... All
 > unmastered complexity is of our own making; there is no one else to
 > blame and so we had better learn how not to introduce the complexity
 > in the first place."

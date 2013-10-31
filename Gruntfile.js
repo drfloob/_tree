@@ -97,9 +97,9 @@ module.exports = function(grunt) {
         copy: {
             vendor: {
                 files: [
-                    {src: 'node_modules/jasmine-reporters/ext/jasmine.css', dest: 'test/vendor/jasmine.css'},
-                    {src: 'node_modules/jasmine-reporters/ext/jasmine.js', dest: 'test/vendor/jasmine.js'},
-                    {src: 'node_modules/jasmine-reporters/ext/jasmine-html.js', dest: 'test/vendor/jasmine-html.js'},
+                    {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine.css', dest: 'test/vendor/jasmine.css'},
+                    {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine.js', dest: 'test/vendor/jasmine.js'},
+                    {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine-html.js', dest: 'test/vendor/jasmine-html.js'},
                     {src: 'node_modules/jasmine-reporters/src/jasmine.tap_reporter.js', dest: 'test/vendor/jasmine.tap_reporter.js'},
                     {src: 'node_modules/underscore/underscore-min.js', dest: 'test/vendor/underscore-min.js'}
                 ]
