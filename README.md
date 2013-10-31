@@ -53,7 +53,7 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
  * Firefox: 10-
  * Internet Explorer: 10-
  * Safari 6
- * iPhone 5, 4S 6.0
+ * iPhone 5, 4S (6.0)
  * Kindle Fire 2
  * iPad mini
  * Samsung Galaxy Nexus
@@ -65,7 +65,7 @@ tests for immutability fail:
  * Opera: 12.14, 12.15, 12.16
  * [PhantomJS](https://github.com/ariya/phantomjs)
  * iPad: 2, 3rd
- * iPhone 4S
+ * iPhone 4S (5.1)
  
 Tests on IE9 and below currently fail badly. It's being worked on.
 
