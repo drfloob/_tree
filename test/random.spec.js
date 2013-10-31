@@ -67,14 +67,10 @@
             // Right now, we can only sniff at identity
 
             expect(infTree.defaults).toEqual(tree.defaults);
-
             expect(infTree.root().__id).toEqual(tree.root().__id);
-
             expect(infTree.root().data()).toEqual(tree.root().data());
             expect(infTree.root().data()).toBeUndefined();
-
             expect(infTree.root().children()).toEqual(tree.root().children());
-            expect(infTree.root().children()).toEqual(Object.freeze([]));
         });
         describe('with an inflate method default', function () {
 
@@ -164,7 +160,11 @@
                 });
 
                 it('has a root with no children', function () {
-                    expect(tree.root().children()).toEqual(Object.freeze([]));
+                    var arr = [];
+                    if (Object.freeze) {
+                        Object.freeze(arr);
+                    }
+                    expect(tree.root().children()).toEqual(arr);
                 });
 
                 it('is frozen', function () {
@@ -195,7 +195,9 @@
                 });
 
                 it('has a root with no children', function () {
-                    expect(tree.root().children()).toEqual(Object.freeze([]));
+                    var arr = [];
+                    (Object.freeze || Object)(arr);
+                    expect(tree.root().children()).toEqual(arr);
                 });
 
                 it('is frozen', function () {
@@ -213,12 +215,15 @@
                 });
 
                 it('is unaware of changes in its linked data', function () {
+                    var arr = [];
+                    (Object.freeze || Object)(arr);
+
                     data.b = 'test';
                     expect(tree.root().data().b).toEqual('test');
 
                     data.children = [{'name': 'newKid'}];
                     expect(tree.root().data().children.length).toEqual(1);
-                    expect(tree.root().children()).toEqual(Object.freeze([]));
+                    expect(tree.root().children()).toEqual(arr);
                 });
 
             });

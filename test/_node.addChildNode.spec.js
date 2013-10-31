@@ -27,10 +27,10 @@
         });
 
         it('throws if not a node', function () {
-            expect(tree.root().addChildNode).toThrow();
-            expect(_.bind(tree.root().addChildNode, this, null)).toThrow();
-            expect(_.bind(tree.root().addChildNode, this, 1)).toThrow();
-            expect(_.bind(tree.root().addChildNode, this, [97, [98, 99]])).toThrow();
+            expect(_.bind(tree.root().addChildNode, tree.root())).toThrow();
+            expect(_.bind(tree.root().addChildNode, tree.root(), null)).toThrow();
+            expect(_.bind(tree.root().addChildNode, tree.root(), 1)).toThrow();
+            expect(_.bind(tree.root().addChildNode, tree.root(), [97, [98, 99]])).toThrow();
         });
 
         it('throws if the node is already in the tree', function () {

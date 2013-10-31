@@ -39,7 +39,7 @@ module.exports = function(grunt) {
                    manual: { options: { port: 8043,
                                         keepalive: true,
                                         debug: true,
-                                        hostname: "*"
+                                        hostname: '*'
                                       }
                            }
                  },

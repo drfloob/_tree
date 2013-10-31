@@ -67,12 +67,19 @@ THE SOFTWARE.
             if (parent) {
                 node.__parent = parent;
             }
-            Object.freeze(node);
-            Object.freeze(node.__children);
+            try {
+                Object.freeze(node);
+                Object.freeze(node.__children);
+            } catch (e) {}
             _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
         }
 
-        Object.freeze(tree);
+        try {
+            Object.freeze(tree);
+        } catch (e) {
+            // environments that don't support `Object.freeze` will
+            // still work, but without guaranteed immutability.
+        }
         __finalizeMutableChildNodes(tree.root());
     }
 
@@ -216,38 +223,53 @@ THE SOFTWARE.
 
     // This is the `Tree` constructor. It is intended to be used
     // internally, and so it returns a mutable object that must be
-    // frozen before it's returned.
+    // frozen before it's returned. For the sake of IE8, and all other
+    // environments that don't support Object.definePropert{y|ies},
+    // the nasty bit of try/catch here allows those environments to
+    // work without guaranteed immutability.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
         this.defaults = defaults;
-        Object.defineProperties(this, {
-            '__id': {
-                value: uuid(),
-                writable: true,
-                enumerable: false,
-                configurable: false
-            },
-            '__nextNodeId': {
-                value: nextNodeId || 0,
-                writable: true,
-                enumerable: false,
-                configurable: false
-            }
-        });
-        Object.defineProperties(this, {
-            '__root': {
-                writable: true,
-                enumerable: false,
-                configurable: false,
-                value: (function(){
-                    // Your tree-like object `obj` is inflated via
-                    // `inflateMethod`, if given.
-                    if (!!obj && !!inflateMethod) {
-                        return Tree.inflate(this, obj, inflateMethod);
-                    }
-                    return new Node(this);
-                }.call(this))
-            }
-        });
+        var  __id, __nextNodeId, __root;
+        __id = uuid();
+        __nextNodeId = nextNodeId || 0;
+        try {
+            Object.defineProperties(this, {
+                '__id': {
+                    value: __id,
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                },
+                '__nextNodeId': {
+                    value: __nextNodeId,
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                }
+            });
+        } catch (e) {
+            this.__id = __id;
+            this.__nextNodeId = __nextNodeId;
+        }
+        
+        if (!!obj && !!inflateMethod) {
+            __root = Tree.inflate(this, obj, inflateMethod);
+        } else {
+            __root = new Node(this);
+        }
+
+        try {
+            Object.defineProperties(this, {
+                '__root': {
+                    writable: true,
+                    enumerable: false,
+                    configurable: false,
+                    value: __root
+                }
+            });
+        } catch (e) {
+            this.__root = __root;
+        }
     };
 
 
@@ -478,31 +500,38 @@ THE SOFTWARE.
     // resulting object is mutable until just before being exposed to
     // the external world.
     Node = function (tree) {
-        Object.defineProperties(this, {
-            '__tree': {
-                value: tree,
-                writable: true,
-                enumerable: false,
-                configurable: false
-            },
-            '__data': {
-                writable: true,
-                enumerable: false,
-                configurable: false
-            },
-            '__children': {
-                value: [],
-                writable: true,
-                enumerable: false,
-                configurable: false
-            },
-            '__id': {
-                value: tree.__nextNodeId,
-                writable: true,
-                enumerable: false,
-                configurable: false
-            }
-        });
+        try {
+            Object.defineProperties(this, {
+                '__tree': {
+                    value: tree,
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                },
+                '__data': {
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                },
+                '__children': {
+                    value: [],
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                },
+                '__id': {
+                    value: tree.__nextNodeId,
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
+                }
+            });
+        } catch (e) {
+            this.__tree = tree;
+            this.__data = undefined;
+            this.__children = [];
+            this.__id = tree.__nextNodeId;
+        }
         tree.__nextNodeId = tree.__nextNodeId + 1;
     };
 
