@@ -81,7 +81,7 @@ command line via PhantonJS with: `grunt test`
 
 Run benchmarks with `grunt benchmark:all`
 
-**Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
+**Coverage**: Test coverage is at 97% statements, 93% branches, 98% functions, and 97% lines.
 
 Coverage is analyzed every time you run `grunt test`. You can view the
 coverage report locally at `coverage/index.html`.

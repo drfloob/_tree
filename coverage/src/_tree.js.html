@@ -183,16 +183,16 @@
     <h1>Code coverage report for <span class="entity">src/_tree.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">94.62% <small>(211 / 223)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">97.18% <small>(207 / 213)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Branches: <span class="metric">86.59% <small>(71 / 82)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">93.06% <small>(67 / 72)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Functions: <span class="metric">98.11% <small>(52 / 53)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">94.55% <small>(208 / 220)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">97.14% <small>(204 / 210)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
     </h2>
     <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; _tree.js</div>
@@ -855,22 +855,7 @@
 654
 655
 656
-657
-658
-659
-660
-661
-662
-663
-664
-665
-666
-667
-668
-669
-670
-671
-672</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+657</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1419,9 +1404,6 @@
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-yes">7</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-yes">7</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1466,9 +1448,6 @@
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1484,9 +1463,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13</span>
 <span class="cline-any cline-yes">8</span>
-<span class="cline-any cline-yes">8</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8</span>
 <span class="cline-any cline-yes">8</span>
@@ -1508,7 +1484,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">9</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8</span>
@@ -1516,12 +1492,6 @@
 <span class="cline-any cline-yes">8</span>
 <span class="cline-any cline-yes">8</span>
 <span class="cline-any cline-yes">8</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8</span>
-<span class="cline-any cline-yes">8</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8</span>
 <span class="cline-any cline-yes">8</span>
@@ -2089,9 +2059,6 @@ THE SOFTWARE.
 &nbsp;
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
-<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
-        }
         newNode.__data = Obj;
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -2136,9 +2103,6 @@ THE SOFTWARE.
 &nbsp;
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(this);
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
-<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
-        }
         newNode.__children.push(childTree.root());
         childTree.root().__parent = newNode;
         newTree.__nextNodeId = childTree.__nextNodeId;
@@ -2155,9 +2119,6 @@ THE SOFTWARE.
 &nbsp;
         newTree = Tree.clone(this.tree());
         newParentNode = newTree.findNode(this);
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newParentNode) {
-<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
-        }
 &nbsp;
         newTree.__nextNodeId = this.tree().__nextNodeId;
         nodeClone = Node.clone(newTree, node, true);
@@ -2178,21 +2139,15 @@ THE SOFTWARE.
     };
 &nbsp;
     Node.prototype.delete = function () {
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (this === this.__tree.__root) {
-<span class="cstat-no" title="statement not covered" >            throw new Error('cannot delete the root node');</span>
+        if (this === this.__tree.__root) {
+            throw new Error('cannot delete the root node');
         }
 &nbsp;
         var newTree, newNode, parNode;
 &nbsp;
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!newNode) {
-<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);</span>
-        }
         parNode = newTree.findNode(this.__parent);
-        <span class="missing-if-branch" title="if path not taken"" >I</span>if (!parNode) {
-<span class="cstat-no" title="statement not covered" >            throw new Error(['Internal Error: Node not found in new tree', parNode, newTree]);</span>
-        }
 &nbsp;
         parNode.__children = _.without(parNode.__children, newNode);
         __finalizeMutableTreeClone(newTree);
@@ -2217,7 +2172,7 @@ THE SOFTWARE.
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Oct 30 2013 21:02:10 GMT-0700 (PDT)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Oct 30 2013 21:13:20 GMT-0700 (PDT)</div>
 </div>
 
 <script src="../prettify.js"></script>

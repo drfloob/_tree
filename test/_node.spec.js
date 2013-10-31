@@ -89,7 +89,13 @@
         });
 
         it('cannot delete the root', function () {
-            expect(tree.root().delete).toThrow();
+            var msg;
+            try {
+                tree.root().delete();
+            } catch (e) {
+                msg = e.message;
+            }
+            expect(msg).toBe('cannot delete the root node');
         });
 
         it('can delete a child node with no children', function () {
