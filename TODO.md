@@ -1,11 +1,6 @@
 # Implementation
 
- * Fix IE9's issues
- * Make _tree.__* and _node.__* properties truly private (they're
-   already frozen; make them non-enumerable)
- * Decide on an error practice; Normalize codebase and make errors
-   explicit in the API.
- * Error (or whatever) if adjacency list has root siblings.
+ * Make errors explicit in the API.
 
 # Support
 
@@ -14,13 +9,17 @@
  * package and host docs
  * package and host benchmark page
  * (ask for and) collect test & benchmark stats.
+ * `grunt release` impl
+ * npm distribution
 
 # Tests
 
- * refactor spec.js into multiple files
- * ensure unique node ids
+ * spec: adjacency list with root siblings.
+ * test on NodeJS
+ * get continuous integration setup for at least one environment
+ * refactor random.spec.js into multiple files
+ * ensure unique node ids after all operations on various trees
  * analyze test robustness, outline what needs better testing
- * get continuous integration setup
 
 # Benchmarks
 
@@ -40,4 +39,6 @@
  * analyze how the codebase would differ if javascript had
    type-safety, and static or dynamic type-checking
  * port to haxe; compare expressability, performance, and size.
- 
+ * see about emscripten or duetto for a C++ tree lib; compare size and
+   performance.
+
