@@ -44,12 +44,19 @@
             expect(_.last(newTree.root().children()).data()).toEqual({'test': 'data'});
         });
 
+        
+        it('contains valid ids', function () {
+            var vals = [], tmpTree = _tree.inflate({'test': 'data'}),
+            newTree = tree.root().addChildNode(tmpTree.root());
+            newTree.walk(function (n) { vals.push(n.id()); }, tree.walk.dfpre);
+            expect(_.every(vals, function(v) {return !_.isUndefined(v);})).toEqual(true);
+        });
 
         it('contains unique ids', function () {
             var vals = [], tmpTree = _tree.inflate({'test': 'data'}),
             newTree = tree.root().addChildNode(tmpTree.root());
             
-            newTree.walk(function (n) { vals.push(n.__id); }, tree.walk.dfpre);
+            newTree.walk(function (n) { vals.push(n.id()); }, tree.walk.dfpre);
             expect(_.uniq(vals)).toEqual(vals);
         });
 

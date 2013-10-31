@@ -25,19 +25,19 @@
 
             var tree, kids, tmpLen;
             tree = _tree.inflate({a: 1, children: [{a: 2}]});
-            expect(Object.isFrozen(tree.root().children())).toBeTruthy();
-
             kids = tree.root().children();
-            
             tmpLen = kids.length;
+
+            expect(Object.isFrozen(kids)).toBe(true);
+
             try {
-                kids.push(2);
+                kids.push('test');
             } catch (e) {
                 // firefox 25 throws TypeError: kids.push(...) is not extensible
+                // chrome doesn't throw
             }
             expect(tmpLen).toEqual(kids.length);
             expect(kids[1]).toBeUndefined();
-            expect(kids[1]).not.toBe(2);
         });
     });
 

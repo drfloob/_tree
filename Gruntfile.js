@@ -36,12 +36,29 @@ module.exports = function(grunt) {
         
         // for grunt-template-jasmine-requirejs
         connect: { test: { options: { port: 8042, keepalive: false } },
-                   manual: { options: { port: 8042,
+                   manual: { options: { port: 8043,
                                         keepalive: true,
                                         debug: true
-                                      } }
+                                      } 
+                           }
                  },
         jasmine: {
+            run: {
+                src: ['src/**/*.js'],
+                options: {
+                    // keepRunner: true,
+                    specs: ['test/*.js'],
+                    host: 'http://127.0.0.1:8042',
+                    template: require('grunt-template-jasmine-requirejs'),
+                    templateOptions: {
+                        requireConfig: {
+                            baseUrl: 'src/',
+                            paths: { 'underscore': '/node_modules/underscore/underscore-min' },
+                            shim: { 'underscore': { exports: '_' } }
+                        }
+                    }
+                }
+            },
             cover: {
                 src: ['src/**/*.js'],
                 options: {
@@ -102,9 +119,10 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
 
 
-    grunt.registerTask('test', ['copy:vendor', 'connect:test', 'jasmine']);
-    grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docco']);
+    grunt.registerTask('test', ['copy:vendor', 'connect:test', 'jasmine:run']);
+    grunt.registerTask('cover', ['copy:vendor', 'connect:test', 'jasmine:cover']);
     grunt.registerTask('docs', ['docco']);
+    grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docs']);
     
     grunt.registerTask('default', ['build']);
 

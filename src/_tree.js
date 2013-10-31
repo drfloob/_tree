@@ -219,17 +219,37 @@ THE SOFTWARE.
     // frozen before it's returned.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
         this.defaults = defaults;
-        this.__id = uuid();
-        this.__nextNodeId = nextNodeId || 0;
-
-        // Your tree-like object `obj` is inflated via
-        // `inflateMethod`, if given.
-        if (!!obj && !!inflateMethod) {
-            this.__root = Tree.inflate(this, obj, inflateMethod);
-        } else {
-            this.__root = new Node(this);
-        }
+        Object.defineProperties(this, {
+            '__id': {
+                value: uuid(),
+                writable: true,
+                enumerable: false,
+                configurable: false
+            },
+            '__nextNodeId': {
+                value: nextNodeId || 0,
+                writable: true,
+                enumerable: false,
+                configurable: false
+            }
+        });
+        Object.defineProperties(this, {
+            '__root': {
+                writable: true,
+                enumerable: false,
+                configurable: false,
+                value: (function(){
+                    // Your tree-like object `obj` is inflated via
+                    // `inflateMethod`, if given.
+                    if (!!obj && !!inflateMethod) {
+                        return Tree.inflate(this, obj, inflateMethod);
+                    }
+                    return this.__root = new Node(this);
+                }.call(this))
+            }
+        });
     };
+
 
 
     // ## Internal Static Tree Methods

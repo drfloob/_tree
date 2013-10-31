@@ -420,8 +420,26 @@ frozen before it&#39;s returned.</p>
             
             <div class="content"><div class='highlight'><pre>    Tree = <span class="function"><span class="keyword">function</span> <span class="params">(defaults, obj, inflateMethod, nextNodeId)</span> {</span>
         <span class="keyword">this</span>.defaults = defaults;
-        <span class="keyword">this</span>.__id = uuid();
-        <span class="keyword">this</span>.__nextNodeId = nextNodeId || <span class="number">0</span>;</pre></div></div>
+        Object.defineProperties(<span class="keyword">this</span>, {
+            <span class="string">'__id'</span>: {
+                value: uuid(),
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            },
+            <span class="string">'__nextNodeId'</span>: {
+                value: nextNodeId || <span class="number">0</span>,
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            }
+        });
+        Object.defineProperties(<span class="keyword">this</span>, {
+            <span class="string">'__root'</span>: {
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>,
+                value: (<span class="keyword">function</span>(){</pre></div></div>
             
         </li>
         
@@ -437,11 +455,13 @@ frozen before it&#39;s returned.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="keyword">if</span> (!!obj &amp;&amp; !!inflateMethod) {
-            <span class="keyword">this</span>.__root = Tree.inflate(<span class="keyword">this</span>, obj, inflateMethod);
-        } <span class="keyword">else</span> {
-            <span class="keyword">this</span>.__root = <span class="keyword">new</span> Node(<span class="keyword">this</span>);
-        }
+            <div class="content"><div class='highlight'><pre>                    <span class="keyword">if</span> (!!obj &amp;&amp; !!inflateMethod) {
+                        <span class="keyword">return</span> Tree.inflate(<span class="keyword">this</span>, obj, inflateMethod);
+                    }
+                    <span class="keyword">return</span> <span class="keyword">this</span>.__root = <span class="keyword">new</span> Node(<span class="keyword">this</span>);
+                }.call(<span class="keyword">this</span>))
+            }
+        });
     };</pre></div></div>
             
         </li>
