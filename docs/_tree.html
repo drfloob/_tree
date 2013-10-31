@@ -458,7 +458,7 @@ frozen before it&#39;s returned.</p>
             <div class="content"><div class='highlight'><pre>                    <span class="keyword">if</span> (!!obj &amp;&amp; !!inflateMethod) {
                         <span class="keyword">return</span> Tree.inflate(<span class="keyword">this</span>, obj, inflateMethod);
                     }
-                    <span class="keyword">return</span> <span class="keyword">this</span>.__root = <span class="keyword">new</span> Node(<span class="keyword">this</span>);
+                    <span class="keyword">return</span> <span class="keyword">new</span> Node(<span class="keyword">this</span>);
                 }.call(<span class="keyword">this</span>))
             }
         });
@@ -939,10 +939,31 @@ the external world.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Node = <span class="function"><span class="keyword">function</span> <span class="params">(tree)</span> {</span>
-        <span class="keyword">this</span>.__tree = tree;
-        <span class="keyword">this</span>.__data = <span class="literal">undefined</span>;
-        <span class="keyword">this</span>.__children = [];
-        <span class="keyword">this</span>.__id = tree.__nextNodeId;
+        Object.defineProperties(<span class="keyword">this</span>, {
+            <span class="string">'__tree'</span>: {
+                value: tree,
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            },
+            <span class="string">'__data'</span>: {
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            },
+            <span class="string">'__children'</span>: {
+                value: [],
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            },
+            <span class="string">'__id'</span>: {
+                value: tree.__nextNodeId,
+                writable: <span class="literal">true</span>,
+                enumerable: <span class="literal">false</span>,
+                configurable: <span class="literal">false</span>
+            }
+        });
         tree.__nextNodeId = tree.__nextNodeId + <span class="number">1</span>;
     };</pre></div></div>
             

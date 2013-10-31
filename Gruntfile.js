@@ -39,14 +39,14 @@ module.exports = function(grunt) {
                    manual: { options: { port: 8043,
                                         keepalive: true,
                                         debug: true
-                                      } 
+                                      }
                            }
                  },
         jasmine: {
             run: {
                 src: ['src/**/*.js'],
                 options: {
-                    // keepRunner: true,
+                    keepRunner: true,
                     specs: ['test/*.js'],
                     host: 'http://127.0.0.1:8042',
                     template: require('grunt-template-jasmine-requirejs'),

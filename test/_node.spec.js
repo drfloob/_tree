@@ -19,6 +19,41 @@
 }(this, function (_tree) {
     'use strict';
 
+
+    describe('_node hidden properties', function () {
+        var tree, root;
+        beforeEach(function() {
+            tree = _tree.inflate({});
+            root = tree.root();
+        });
+
+        it('are not enumerable', function () {
+            expect(root.propertyIsEnumerable('__id')).toBe(false);
+            expect(root.propertyIsEnumerable('__tree')).toBe(false);
+            expect(root.propertyIsEnumerable('__data')).toBe(false);
+            expect(root.propertyIsEnumerable('__children')).toBe(false);
+        });
+
+        it('are not writable', function () {
+            expect(function(){root.__id = 0;}).toThrow();
+            expect(function(){root.__tree = 0;}).toThrow();
+            expect(function(){root.__data = 0;}).toThrow();
+            expect(function(){root.__children = 0;}).toThrow();
+        });
+
+        it('are not configurable', function () {
+            expect(function(){delete root.__id;}).toThrow();
+            expect(function(){delete root.__tree;}).toThrow();
+            expect(function(){delete root.__data;}).toThrow();
+            expect(function(){delete root.__children;}).toThrow();
+            expect(root.__id).toBeDefined();
+            expect(root.__tree).toBeDefined();
+            expect(root.__data).toBeDefined();
+            expect(root.__children).toBeDefined();
+        });
+    });
+ 
+
     // This does not pass on PhantomJS
     describe('node.children', function () {
         it('is immutable', function () {

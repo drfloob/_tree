@@ -244,7 +244,7 @@ THE SOFTWARE.
                     if (!!obj && !!inflateMethod) {
                         return Tree.inflate(this, obj, inflateMethod);
                     }
-                    return this.__root = new Node(this);
+                    return new Node(this);
                 }.call(this))
             }
         });
@@ -478,10 +478,31 @@ THE SOFTWARE.
     // resulting object is mutable until just before being exposed to
     // the external world.
     Node = function (tree) {
-        this.__tree = tree;
-        this.__data = undefined;
-        this.__children = [];
-        this.__id = tree.__nextNodeId;
+        Object.defineProperties(this, {
+            '__tree': {
+                value: tree,
+                writable: true,
+                enumerable: false,
+                configurable: false
+            },
+            '__data': {
+                writable: true,
+                enumerable: false,
+                configurable: false
+            },
+            '__children': {
+                value: [],
+                writable: true,
+                enumerable: false,
+                configurable: false
+            },
+            '__id': {
+                value: tree.__nextNodeId,
+                writable: true,
+                enumerable: false,
+                configurable: false
+            }
+        });
         tree.__nextNodeId = tree.__nextNodeId + 1;
     };
 
