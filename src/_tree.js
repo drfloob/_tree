@@ -546,9 +546,6 @@ THE SOFTWARE.
 
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
-        if (!newNode) {
-            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
-        }
         newNode.__data = Obj;
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -593,9 +590,6 @@ THE SOFTWARE.
 
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(this);
-        if (!newNode) {
-            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
-        }
         newNode.__children.push(childTree.root());
         childTree.root().__parent = newNode;
         newTree.__nextNodeId = childTree.__nextNodeId;
@@ -612,9 +606,6 @@ THE SOFTWARE.
 
         newTree = Tree.clone(this.tree());
         newParentNode = newTree.findNode(this);
-        if (!newParentNode) {
-            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
-        }
 
         newTree.__nextNodeId = this.tree().__nextNodeId;
         nodeClone = Node.clone(newTree, node, true);
@@ -643,13 +634,7 @@ THE SOFTWARE.
 
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
-        if (!newNode) {
-            throw new Error(['Internal Error: Node not found in new tree', this, newTree]);
-        }
         parNode = newTree.findNode(this.__parent);
-        if (!parNode) {
-            throw new Error(['Internal Error: Node not found in new tree', parNode, newTree]);
-        }
 
         parNode.__children = _.without(parNode.__children, newNode);
         __finalizeMutableTreeClone(newTree);

@@ -1026,9 +1026,6 @@ after being made immutable.</p>
 
         newTree = Tree.clone(<span class="keyword">this</span>.__tree);
         newNode = newTree.findNode(<span class="keyword">this</span>);
-        <span class="keyword">if</span> (!newNode) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, <span class="keyword">this</span>, newTree]);
-        }
         newNode.__data = Obj;
         __finalizeMutableTreeClone(newTree);
         <span class="keyword">return</span> newTree;
@@ -1130,9 +1127,6 @@ returned, <em>not</em> a <code>Node</code>.</p>
 
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(<span class="keyword">this</span>);
-        <span class="keyword">if</span> (!newNode) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, <span class="keyword">this</span>, newTree]);
-        }
         newNode.__children.push(childTree.root());
         childTree.root().__parent = newNode;
         newTree.__nextNodeId = childTree.__nextNodeId;
@@ -1149,9 +1143,6 @@ returned, <em>not</em> a <code>Node</code>.</p>
 
         newTree = Tree.clone(<span class="keyword">this</span>.tree());
         newParentNode = newTree.findNode(<span class="keyword">this</span>);
-        <span class="keyword">if</span> (!newParentNode) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, <span class="keyword">this</span>, newTree]);
-        }
 
         newTree.__nextNodeId = <span class="keyword">this</span>.tree().__nextNodeId;
         nodeClone = Node.clone(newTree, node, <span class="literal">true</span>);
@@ -1192,13 +1183,7 @@ the same object in memory.</p>
 
         newTree = Tree.clone(<span class="keyword">this</span>.__tree);
         newNode = newTree.findNode(<span class="keyword">this</span>);
-        <span class="keyword">if</span> (!newNode) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, <span class="keyword">this</span>, newTree]);
-        }
         parNode = newTree.findNode(<span class="keyword">this</span>.__parent);
-        <span class="keyword">if</span> (!parNode) {
-            <span class="keyword">throw</span> <span class="keyword">new</span> Error([<span class="string">'Internal Error: Node not found in new tree'</span>, parNode, newTree]);
-        }
 
         parNode.__children = _.without(parNode.__children, newNode);
         __finalizeMutableTreeClone(newTree);
