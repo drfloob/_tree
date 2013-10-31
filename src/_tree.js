@@ -465,7 +465,7 @@ THE SOFTWARE.
     //  * finding the destination parent node in the new `Tree` context, and
     //  * adding the `movingNode` as a child
     Tree.prototype.moveNode = function (movingNode, toParent) {
-        return movingNode.delete()
+        return movingNode.remove()
             .findNode(toParent)
             .addChildNode(movingNode);
     };
@@ -625,7 +625,7 @@ THE SOFTWARE.
             this.__id === otherNode.__id;
     };
 
-    Node.prototype.delete = function () {
+    Node.prototype.remove = function () {
         if (this === this.__tree.__root) {
             throw new Error('cannot delete the root node');
         }

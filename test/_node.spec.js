@@ -76,7 +76,7 @@
         });
     });
 
-    describe('node.delete', function () {
+    describe('node.remove', function () {
         var tree;
         beforeEach(function () {
             tree = _tree.inflate(
@@ -91,7 +91,7 @@
         it('cannot delete the root', function () {
             var msg;
             try {
-                tree.root().delete();
+                tree.root().remove();
             } catch (e) {
                 msg = e.message;
             }
@@ -99,14 +99,14 @@
         });
 
         it('can delete a child node with no children', function () {
-            var newTree = tree.root().children()[2].delete();
+            var newTree = tree.root().children()[2].remove();
             expect(newTree.root().data()).toEqual({name: 'pops'});
             expect(newTree.root().children().length).toBe(2);
             expect(newTree.findNodeByData({name: 'gjrx'})).toEqual(false);
         });
 
         it('can delete a child node with children', function () {
-            var newTree = tree.root().children()[0].delete();
+            var newTree = tree.root().children()[0].remove();
 
             expect(newTree.root().data()).toEqual({name: 'pops'});
             expect(newTree.root().children().length).toBe(2);
@@ -119,7 +119,7 @@
         });
 
         it('rearranges the children array', function () {
-            var newTree = tree.root().children()[0].delete();
+            var newTree = tree.root().children()[0].remove();
 
             expect(newTree.root().children().length).toBe(2);
             expect(newTree.findNodeByData({name: 'jr1'})).toBe(false);
@@ -127,16 +127,16 @@
         });
 
         it('can delete everything but the root', function () {
-            var newTree = tree.root().children()[0].delete()
-                .root().children()[0].delete()
-                .root().children()[0].delete();
+            var newTree = tree.root().children()[0].remove()
+                .root().children()[0].remove()
+                .root().children()[0].remove();
            
             expect(newTree.root().data()).toEqual({name: 'pops'});
             expect(newTree.root().children().length).toEqual(0);
         });
 
         it('has no effect on the original tree', function () {
-            var newTree = tree.root().children()[2].delete();
+            var newTree = tree.root().children()[2].remove();
             expect(tree.root().children()[2].data()).toEqual({name: 'gjrx'});
             expect(newTree.root().children()[2]).toBeUndefined();
         });

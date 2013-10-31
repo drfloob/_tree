@@ -1,7 +1,11 @@
 # _tree
 
-> "Computing's core challenge is how not to make a mess of it."
-> --*Edsger W. Dijkstra, [EWD1243][]*
+> "Computing's core challenge is how not to make a mess of it. ... all
+> unmastered complexity is of our own making; there is no one else to
+> blame and so we had better learn how not to introduce the complexity
+> in the first place."
+> 
+> -- <cite>[Edsger W. Dijkstra][EWD1243]</cite>
 
 This library provides a tree model (data structure) implementation and
 a pluggable tree behavior for your data. It maintains *zero* internal
@@ -39,7 +43,7 @@ FamilyTree.walk(function(node) {
 });
 
 // Delete a child node
-FamilyTree = FamilyTree.findNodeByData({name: 'Charlie'}).delete();
+FamilyTree = FamilyTree.findNodeByData({name: 'Charlie'}).remove();
 
 FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
@@ -122,7 +126,7 @@ The `Tree` consists of `Node`s, which have the following API:
    `Node` already exists in the tree. Returns a new `Tree`.
  * `equals`: returns `boolean` determining clone-agnostic equality of
    nodes.
- * `delete`: deletes a `Node` from the tree, returning a new `Tree`.
+ * `remove`: removes a `Node` from the tree, returning a new `Tree`.
 
 
 
