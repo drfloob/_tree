@@ -13,11 +13,9 @@ scenarios.
 
 ## Simple Usage Example
 
-To get a feel for the library, also check out the
-[tests](https://github.com/drfloob/_tree/tree/master/test) and read
-the
-[annotated source](https://rawgithub.com/drfloob/_tree/master/docs/_tree.html)
-documentation.
+To get a feel for the library, check out the
+[tests](https://github.com/drfloob/_tree/tree/master/test). Also, the
+`docs/` folder contains the annotated source code.
 
 
 ```javascript
@@ -51,18 +49,28 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 **Tests**: All tests pass on
 
- * google chrome 30
- * firefox 25
- 
-In the following browsers, which do not support `Object.freeze`,
-*only* the tests for immutability fail:
+ * Chrome: 26-
+ * Firefox: 10-
+ * Internet Explorer: 10-
+ * Safari 6
+ * iPhone 5, 4S 6.0
+ * Kindle Fire 2
+ * iPad mini
+ * Samsung Galaxy Nexus
 
+The following browsers do not support `Object.freeze`, so *only* the
+tests for immutability fail:
+
+ * Safari: 5.0.6, 5.1
+ * Opera: 12.14, 12.15, 12.16
  * [PhantomJS](https://github.com/ariya/phantomjs)
- * Safari 5.0.6
+ * iPad: 2, 3rd
+ * iPhone 4S
+ 
+Tests on IE9 and below currently fail badly. It's being worked on.
 
-You can
-[**run the tests yourself in your browser**](https://rawgithub.com/drfloob/_tree/master/test/test.html),
-or at the command line with `grunt test`
+You can open 'test/test.html' in your browser, or run tests at the
+command line via PhantonJS with: `grunt test`
 
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
 
@@ -75,10 +83,8 @@ Run benchmarks with `grunt benchmark:all`
 
 **Coverage**: Test coverage is at 98% functions, 94% statements, 94% lines, and 87% branches.
 
-Coverage is calculated every time you run `grunt test` from the
-command line. You can view the coverage report locally at
-`coverage/index.html`. Here is the
-[**latest report**](https://rawgithub.com/drfloob/_tree/master/coverage/index.html).
+Coverage is analyzed every time you run `grunt test`. You can view the
+coverage report locally at `coverage/index.html`.
 
 ## API
 

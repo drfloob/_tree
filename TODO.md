@@ -1,21 +1,30 @@
 # Implementation
 
+ * Fix IE9's issues
  * Make _tree.__* and _node.__* properties truly private (they're
    already frozen; make them non-enumerable)
  * Decide on an error practice; Normalize codebase and make errors
    explicit in the API.
  * Error (or whatever) if adjacency list has root siblings.
 
+# Support
+
+ * build a simple supporting website
+ * package and host test page
+ * package and host docs
+ * package and host benchmark page
+ * (ask for and) collect test & benchmark stats.
+
 # Tests
 
  * refactor spec.js into multiple files
  * ensure unique node ids
-
-# Quality
-
- * Setup real-world performance tests
- * Setup performance comparisons between libraries
+ * analyze test robustness, outline what needs better testing
  * get continuous integration setup
+
+# Benchmarks
+
+ * Setup performance comparisons between libraries
  
 # Nice-to-haves
 
