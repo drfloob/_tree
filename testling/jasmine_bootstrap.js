@@ -6,7 +6,7 @@ window.onload = function() {
     
     var jasmineEnv = jasmine.getEnv(),
     htmlReporter = new jasmine.HtmlReporter();
-    // jasmineEnv.addReporter(new jasmine.TapReporter());
+    jasmineEnv.addReporter(new jasmine.TapReporter());
     // jasmineEnv.addReporter(new jasmine.TrivialReporter());
     jasmineEnv.addReporter(htmlReporter);
 
