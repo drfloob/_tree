@@ -72,20 +72,31 @@ tests for immutability fail:
  * [PhantomJS](https://github.com/ariya/phantomjs)
  * iPad: 2, 3rd
  * iPhone 4S (5.1)
- 
-Tests on IE9 and below currently fail badly. It's being worked on.
+
+IE8 doesn't support `strict mode`, `Object.freeze`, or
+`Object.defineProperty`. The only failing tests are:
+
+* tests wor immutability, and 
+* tests for errors being thrown on writing to a non-writable property.
+
+IE9 doesn't support `strict mode`, so the only tests that fail are
+those that test for errors being thrown for abusing Object properties
+(non-writable, non-configurable).
+
+IE7 and below are not currently tested or supported. 
 
 You can open 'test/test.html' in your browser, or run tests at the
 command line via PhantonJS with: `grunt test`
 
-**Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB ram, running Debian Wheezy:
+**Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
+  using Chrome 30 on Debian Wheezy:
 
  * 1024 node trees can be inflated at ~15/sec
  * 30 node trees can be inflated at ~600/sec
  * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
 
-Run benchmarks with `grunt benchmark:all`
+Run your own benchmarks with `grunt benchmark:all`
 
 **Coverage**: Test coverage is at 97% statements, 93% branches, 98% functions, and 97% lines.
 

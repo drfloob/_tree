@@ -35,17 +35,27 @@
         });
 
         it('are not writable', function () {
-            expect(function(){root.__id = 0;}).toThrow();
-            expect(function(){root.__tree = 0;}).toThrow();
-            expect(function(){root.__data = 0;}).toThrow();
-            expect(function(){root.__children = 0;}).toThrow();
+            // IE9 doesn't throw errors here (no strict mode support)
+            expect(function(){root.__id = null;}).toThrow();
+            expect(function(){root.__tree = null;}).toThrow();
+            expect(function(){root.__data = null;}).toThrow();
+            expect(function(){root.__children = null;}).toThrow();
+            
+            // but it does respect the writable setting
+            expect(root.__id).not.toBeNull();
+            expect(root.__tree).not.toBeNull();
+            expect(root.__data).not.toBeNull();
+            expect(root.__children).not.toBeNull();
         });
 
         it('are not configurable', function () {
+            // IE9 doesn't throw errors here (no strict mode support)
             expect(function(){delete root.__id;}).toThrow();
             expect(function(){delete root.__tree;}).toThrow();
             expect(function(){delete root.__data;}).toThrow();
             expect(function(){delete root.__children;}).toThrow();
+
+            // but it does respect the configurable setting
             expect(root.__id).toBeDefined();
             expect(root.__tree).toBeDefined();
             expect(root.__data).toBeDefined();

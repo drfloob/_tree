@@ -172,9 +172,10 @@
                     expect(Object.isFrozen(tree.root())).toBe(true);
 
                     var modRoot = function () {
-                        tree.root = null;
+                        tree.__root = null;
                     };
                     expect(modRoot).toThrow();
+                    expect(tree.root()).not.toBeNull();
                 });
             });
 
