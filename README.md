@@ -57,7 +57,7 @@ all tests pass on:
 
  * Chrome: 26-
  * Firefox: 10-
- * Internet Explorer: 10-
+ * Internet Explorer: 9-
  * Safari 6
  * iPhone 5, 4S (6.0)
  * Kindle Fire 2
@@ -74,14 +74,13 @@ tests for immutability fail:
  * iPhone 4S (5.1)
 
 IE8 doesn't support `strict mode`, `Object.freeze`, or
-`Object.defineProperty`. The only failing tests are:
+`Object.defineProperty`. So all (but only) the tests for immutability
+fail.
 
-* tests wor immutability, and 
-* tests for errors being thrown on writing to a non-writable property.
-
-IE9 doesn't support `strict mode`, so the only tests that fail are
-those that test for errors being thrown for abusing Object properties
-(non-writable, non-configurable).
+IE9 works fine. It doesn't support `strict mode`, but does provide
+`Object.freeze` and `Object.defineProperty`. It won't throw an error
+when you try to modify a Tree, but it won't actually change
+anything either. All tests pass.
 
 IE7 and below are not currently tested or supported. 
 

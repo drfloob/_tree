@@ -35,11 +35,12 @@
         });
 
         it('are not writable', function () {
-            // IE9 doesn't throw errors here (no strict mode support)
-            expect(function(){root.__id = null;}).toThrow();
-            expect(function(){root.__tree = null;}).toThrow();
-            expect(function(){root.__data = null;}).toThrow();
-            expect(function(){root.__children = null;}).toThrow();
+            // IE9 doesn't throw errors here (no strict mode
+            // support). Not what I'm testing.
+            try {root.__id = null;} catch(e){}
+            try {root.__tree = null;} catch(e){}
+            try {root.__data = null;} catch(e){}
+            try {root.__children = null;} catch(e){}
             
             // but it does respect the writable setting
             expect(root.__id).not.toBeNull();
@@ -49,11 +50,12 @@
         });
 
         it('are not configurable', function () {
-            // IE9 doesn't throw errors here (no strict mode support)
-            expect(function(){delete root.__id;}).toThrow();
-            expect(function(){delete root.__tree;}).toThrow();
-            expect(function(){delete root.__data;}).toThrow();
-            expect(function(){delete root.__children;}).toThrow();
+            // IE9 doesn't throw errors here (no strict mode
+            // support). Not what I'm testing.
+            try {delete root.__id;} catch(e){};
+            try {delete root.__tree;} catch(e){};
+            try {delete root.__data;} catch(e){};
+            try {delete root.__children;} catch(e){};
 
             // but it does respect the configurable setting
             expect(root.__id).toBeDefined();

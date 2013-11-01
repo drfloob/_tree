@@ -168,13 +168,19 @@
                 });
 
                 it('is frozen', function () {
-                    expect(Object.isFrozen(tree)).toBe(true);
-                    expect(Object.isFrozen(tree.root())).toBe(true);
 
-                    var modRoot = function () {
-                        tree.__root = null;
-                    };
-                    expect(modRoot).toThrow();
+                    // IE9 doesn't support `Object.isFrozen`. If
+                    // present, ensure it works. If not, check
+                    // frigidity another way.
+                    if (Object.isFrozen) {
+                        expect(Object.isFrozen(tree)).toBe(true);
+                        expect(Object.isFrozen(tree.root())).toBe(true);
+                    }
+
+                    // Whether strict mode is enforced or not is not a
+                    // concern, only whether the data can be modified.
+                    try { tree.__root = null; } catch(e){}
+
                     expect(tree.root()).not.toBeNull();
                 });
             });
@@ -202,13 +208,20 @@
                 });
 
                 it('is frozen', function () {
-                    expect(Object.isFrozen(tree)).toBe(true);
-                    expect(Object.isFrozen(tree.root())).toBe(true);
 
-                    var modRoot = function () {
-                        tree.root = null;
-                    };
-                    expect(modRoot).toThrow();
+                    // IE9 doesn't support `Object.isFrozen`. If
+                    // present, ensure it works. If not, check
+                    // frigidity another way.
+                    if (Object.isFrozen) {
+                        expect(Object.isFrozen(tree)).toBe(true);
+                        expect(Object.isFrozen(tree.root())).toBe(true);
+                    }
+
+                    // Whether strict mode is enforced or not is not a
+                    // concern, only whether the data can be modified.
+                    try { tree.__root = null; } catch(e){}
+
+                    expect(tree.root()).not.toBeNull();
                 });
 
                 it('does not have its data frozen', function () {
