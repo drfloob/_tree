@@ -105,6 +105,12 @@ module.exports = function(grunt) {
                     {src: 'node_modules/underscore/underscore-min.js', dest: 'test/vendor/underscore-min.js'}
                 ]
             }
+        },
+        markdown: {
+            readme: {
+                files: [{src: 'README.md', dest: 'README.html'}],
+                options: { gfm: true, highlight: 'auto' }
+            }
         }
     });
     
@@ -118,6 +124,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-docco');
     grunt.loadNpmTasks('grunt-benchmark');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-markdown');
 
 
     grunt.registerTask('test', ['copy:vendor', 'connect:test', 'jasmine:run']);

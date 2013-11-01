@@ -26,20 +26,18 @@ To get a feel for the library, check out the
 'use strict';
 var Patronage, FamilyTree;
 
-Patronage = {'name': 'Jake', 'kids': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]};
+Patronage = {'name': 'Jake', 'children': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]};
 FamilyTree = _tree.inflate(Patronage);
 
-// FamilyTree is immutable. You need to capture the return value to
-// see your changes. If nothing holds a reference to the old tree, it
-// will be garbage collected.
-FamilyTree = FamilyTree.addChild(FamilyTree.root(), {'name': 'Kim Kil Wam'});
+// add a child, and save the new tree.
+FamilyTree = FamilyTree.root().parseAndAddChild({'name': 'Kim Kil Wam'});
 
 // Log the tree, with everyone's name and their father's name
 FamilyTree.walk(function(node) {
-    var origin = 'origin unknown';
-    if (_.has(node), 'parent'))
-        origin = 'is the child of ' + node.parent.data.name;
-    console.log(node.data.name, origin);
+    var origin = ', origin unknown';
+    if (node.parent())
+        origin = 'is the child of ' + node.parent().data().name;
+    console.log(node.data().name, origin);
 });
 
 // Delete a child node
@@ -51,9 +49,7 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ## Quality Metrics
 
-**Tests**: As of commit
-[c35018](https://github.com/drfloob/_tree/tree/c35018e09d83995b0b04113bdd3d216ef8d98c5f),
-all tests pass on:
+**Tests**: All tests pass for:
 
  * Chrome: 26-
  * Firefox: 10-
@@ -74,18 +70,17 @@ tests for immutability fail:
  * iPhone 4S (5.1)
 
 IE8 doesn't support `strict mode`, `Object.freeze`, or
-`Object.defineProperty`. So all (but only) the tests for immutability
-fail.
+`Object.defineProperty`. All the tests for immutability fail, but the
+library is functional.
 
-IE9 works fine. It doesn't support `strict mode`, but does provide
+IE9 works fine. It doesn't support *strict mode*, but does provide
 `Object.freeze` and `Object.defineProperty`. It won't throw an error
-when you try to modify a Tree, but it won't actually change
-anything either. All tests pass.
+when you try to modify a Tree, but it won't change the tree
+either. All tests pass.
 
 IE7 and below are not currently tested or supported. 
 
-You can open 'test/test.html' in your browser, or run tests at the
-command line via PhantonJS with: `grunt test`
+You can run tests at the command line via PhantonJS with: `grunt test`
 
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
   using Chrome 30 on Debian Wheezy:
@@ -108,39 +103,55 @@ The `_tree` library exposes the following functions:
 
  * `create`: creates an empty `Tree`
  * `inflate`: parses your data into a `Tree`
- * `fromNode`: creates a new tree from the given `Node`
+ * `fromNode`: creates a new tree using a `Node` from another tree
 
 All of the `_tree` methods return a `Tree` object, which has the
 following methods: 
 
  * `root`: returns the root `Node`
- * `findNode`: finds the equivalent `Node` in a tree (works across
-   clones)
  * `walk`: traverses the `Tree`, executing a callback for each node in
    the order you specify
  * `equals`: determines if two `Tree`s are related clones.
- * `containsNode`: returns `boolean` whether the `Node` exists in the `Tree`
- * `containsData`: returns `boolean` whether the data exists in any `Node` in the `Tree`
- * `moveNode`: move a `Node` and its descendants from one point in the tree to another.
+ * `findNode`: finds the equivalent `Node` in a tree (works across
+   clones)
+ * `findNodeByData`: finds the first `Node` containing matching data
+ * `containsNode`: returns `boolean` whether the `Node` exists in the
+   `Tree`
+ * `containsData`: returns `boolean` whether the data exists in any
+   `Node` in the `Tree`
+ * `moveNode`: move a `Node` and its descendants from one point in the
+   tree to another.
  
 The `Tree` consists of `Node`s, which have the following API:
  
- * `data`: gets or sets the data on a node, generating a new `Tree`
+ * `data`: gets or sets the data on a node. Setting data generates a new `Tree`.
  * `children`: returns the child `Node`s of a node
  * `parent`: returns the `Node`'s parent
  * `tree`: returns the `Node`'s tree
- * `id`: get the tree-unique internal id of the `Node`
- * `parseAndAddChild`: parses an object (like inflate) and adds it as
-   a child of the `Node`. Returns a new `Tree`.
+ * `id`: returns the tree-unique internal id of the `Node`
+ * `parseAndAddChild`: parses an object (much like inflate) and adds
+   it as a child of the `Node`. Returns a new `Tree`.
  * `addChildNode`: adds a `Node` as a child. Errors are thrown if the
    `Node` already exists in the tree. Returns a new `Tree`.
- * `equals`: returns `boolean` determining clone-agnostic equality of
-   nodes.
+ * `equals`: returns `boolean` that representse the clone-agnostic
+   equality of nodes.
  * `remove`: removes a `Node` from the tree, returning a new `Tree`.
 
 
 
-## Development Principles
+## Building
+
+Requirements: `Node` and `grunt`
+
+```
+git clone https://github.com/drfloob/_tree.git
+cd _tree
+npm install
+grunt --force
+```
+
+
+## Development Stuff
 
 `_tree` does not maintain any internal state, which has a number of
 benefits:
@@ -170,18 +181,6 @@ objects in any way, or trample on the global scope by default.
  * AMD, Node, and global-script compatible
 
 
-
-
-## Building
-
-Requirements: `Node` and `grunt`
-
-```
-git clone https://github.com/drfloob/_tree.git
-cd _tree
-npm install
-grunt --force
-```
 
 
 
