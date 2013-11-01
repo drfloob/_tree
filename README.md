@@ -96,7 +96,7 @@ browser under `strict mode` throws an error.
  * 11 node trees can be inflated at ~1,500/sec
  * empty trees can be created at ~12,000/sec
 
-Run your own benchmarks with `grunt benchmark:all`
+You can run the benchmarks with `grunt benchmark:all`
 
 
 
