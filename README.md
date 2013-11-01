@@ -15,11 +15,11 @@ or trample on the global scope.
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
 
-## Simple Usage Example
+## Example
 
 To get a feel for the library, check out the
 [tests](https://github.com/drfloob/_tree/tree/master/test). Also, the
-`docs/` folder contains the annotated source code.
+`docs/` folder contains the annotated source code. Website coming soon!
 
 
 ```javascript
@@ -49,38 +49,40 @@ FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
 
 ## Quality Metrics
 
+
+
 **Tests**: All tests pass for:
 
- * Chrome: 26-
- * Firefox: 10-
- * Internet Explorer: 9-
+ * Chrome: 26 - current
+ * Firefox: 10 - current
+ * Internet Explorer: 9<sup>[note](#note-strict-mode)</sup> - current
  * Safari 6
  * iPhone 5, 4S (6.0)
  * Kindle Fire 2
  * iPad mini
  * Samsung Galaxy Nexus
 
-The following browsers do not support `Object.freeze`, so *only* the
-tests for immutability fail:
+The following environments do not support immutability, whether via
+`Object.freeze` or `Object.defineProperty`. `_tree` is fully usable,
+but object immutability tests fail:
 
+ * Internet Explorer 8
+ * Opera: 12.*
  * Safari: 5.0.6, 5.1
- * Opera: 12.14, 12.15, 12.16
- * [PhantomJS](https://github.com/ariya/phantomjs)
+ * PhantomJS
  * iPad: 2, 3rd
  * iPhone 4S (5.1)
-
-IE8 doesn't support `strict mode`, `Object.freeze`, or
-`Object.defineProperty`. All the tests for immutability fail, but the
-library is functional.
-
-IE9 works fine. It doesn't support *strict mode*, but does provide
-`Object.freeze` and `Object.defineProperty`. It won't throw an error
-when you try to modify a Tree, but it won't change the tree
-either. All tests pass.
 
 IE7 and below are not currently tested or supported. 
 
 You can run tests at the command line via PhantonJS with: `grunt test`
+
+<a name="note-strict-mode"></a>
+Also Keep in mind that IE9 doesn't support strict mode. Trying to alter an
+immutable object will fail silently. Altering a `_tree` in a modern
+browser under `strict mode` throws an error.
+
+
 
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
   using Chrome 30 on Debian Wheezy:
@@ -92,10 +94,15 @@ You can run tests at the command line via PhantonJS with: `grunt test`
 
 Run your own benchmarks with `grunt benchmark:all`
 
+
+
 **Coverage**: Test coverage is at 97% statements, 93% branches, 98% functions, and 97% lines.
 
 Coverage is analyzed by running `grunt cover`. You can view the
 coverage report locally at `coverage/index.html`.
+
+
+
 
 ## API
 
@@ -151,6 +158,7 @@ grunt --force
 ```
 
 
+
 ## Development Stuff
 
 `_tree` does not maintain any internal state, which has a number of
@@ -179,9 +187,6 @@ objects in any way, or trample on the global scope by default.
  * All operations have sane defaults
  * Performance isn't impractically bad
  * AMD, Node, and global-script compatible
-
-
-
 
 
 
