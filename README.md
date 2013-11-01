@@ -100,7 +100,12 @@ You can run the benchmarks with `grunt benchmark:all`
 
 
 
-**Coverage**: Test coverage is at 97% statements, 93% branches, 98% functions, and 97% lines.
+**Coverage**: Test coverage is currently only measured for
+PhantomJS. Branches for Node and global script definitions aren't
+executed, nor are the `Object.defineProperty` fallbacks.
+
+Current PhantomJS coverage is at 94% statements, 93% branches, 98%
+functions, and 94% lines.
 
 Coverage is analyzed by running `grunt cover`. You can view the
 coverage report locally at `coverage/index.html`.
@@ -168,12 +173,11 @@ grunt --force
 `_tree` does not maintain any internal state, which has a number of
 benefits:
 
- * all state can be managed directly by *your* application
+ * all state can be managed directly by your application
  * all functions are [referentially transparent][REFTRAN]
  * all operations are idempotent
  * tests can be implemented easily
  * the library should perform identically in parallel environments
-   *(if you manage your own shared data appropriately)*
 
 It is also unobtrusive, in that `_tree` does not alter your input
 objects in any way, or trample on the global scope by default.
