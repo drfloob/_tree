@@ -26,7 +26,12 @@ To get a feel for the library, check out the
 'use strict';
 var Patronage, FamilyTree;
 
-Patronage = {'name': 'Jake', 'children': [{'name': 'Jake Jr.'}, {'name': 'T.V.'}, {'name': 'Charlie'}, {'name': 'Viola'}]};
+Patronage = {'name': 'Jake', 'children': [
+    {'name': 'Jake Jr.'},
+    {'name': 'T.V.'},
+    {'name': 'Charlie'},
+    {'name': 'Viola'}
+]};
 FamilyTree = _tree.inflate(Patronage);
 
 // add a child, and save the new tree.
@@ -44,7 +49,6 @@ FamilyTree.walk(function(node) {
 FamilyTree = FamilyTree.findNodeByData({name: 'Charlie'}).remove();
 
 FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
-
 ```
 
 ## Quality Metrics
