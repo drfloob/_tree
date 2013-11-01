@@ -32,15 +32,20 @@
         });
 
         it('are not writable', function () {
-            expect(function(){tree.__id = 0;}).toThrow();
-            expect(function(){tree.__root = 0;}).toThrow();
-            expect(function(){tree.__nextNodeId = 0;}).toThrow();
+            try{tree.__id = null;} catch(e){}
+            try{tree.__root = null;} catch(e){}
+            try{tree.__nextNodeId = null;} catch(e){}
+
+            expect(tree.__id).not.toBeNull();
+            expect(tree.__root).not.toBeNull();
+            expect(tree.__nextNodeId).not.toBeNull();
         });
 
         it('are not configurable', function () {
-            expect(function(){delete tree.__id;}).toThrow();
-            expect(function(){delete tree.__root;}).toThrow();
-            expect(function(){delete tree.__nextNodeId;}).toThrow();
+            try{delete tree.__id;}catch(e){}
+            try{delete tree.__root;}catch(e){}
+            try{delete tree.__nextNodeId;}catch(e){}
+
             expect(tree.__id).toBeDefined();
             expect(tree.__root).toBeDefined();
             expect(tree.__nextNodeId).toBeDefined();
