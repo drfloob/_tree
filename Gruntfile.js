@@ -44,6 +44,21 @@ module.exports = function(grunt) {
                            }
                  },
         jasmine: {
+            travis: {
+                src: ['src/**/*.js'],
+                options: {
+                    keepRunner: true,
+                    specs: ['test/*.js'],
+                    template: require('grunt-template-jasmine-requirejs'),
+                    templateOptions: {
+                        requireConfig: {
+                            baseUrl: 'src/',
+                            paths: { 'underscore': '../node_modules/underscore/underscore-min' },
+                            shim: { 'underscore': { exports: '_' } }
+                        }
+                    }
+                }
+            },
             run: {
                 src: ['src/**/*.js'],
                 options: {

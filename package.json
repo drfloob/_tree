@@ -43,7 +43,7 @@
     "grunt-markdown": "~0.4.0"
   },
   "scripts": {
-    "test": "grunt test --verbose"
+    "test": "grunt jasmine:travis --verbose"
   },
   "testling": {
     "scripts": [
