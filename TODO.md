@@ -5,7 +5,7 @@
  * parse vertex-edge representations
 
  * host benchmark page
- * npm distribution
+ * figure out npm distribution
 
  * Setup performance comparisons between libraries
 
