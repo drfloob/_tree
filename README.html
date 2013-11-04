@@ -1,0 +1,287 @@
+<!DOCTYPE  html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    
+    <title>doc</title>
+    <style>
+      /*github.com style (c) Vasily Polovnyov <vast@whiteants.net>*/
+      pre code {
+        display: block; padding: 0.5em;
+        color: #333;
+        background: #f8f8ff
+      }
+      pre .comment,
+      pre .template_comment,
+      pre .diff .header,
+      pre .javadoc {
+        color: #998;
+        font-style: italic
+      }
+      pre .keyword,
+      pre .css .rule .keyword,
+      pre .winutils,
+      pre .javascript .title,
+      pre .nginx .title,
+      pre .subst,
+      pre .request,
+      pre .status {
+        color: #333;
+        font-weight: bold
+      }
+      pre .number,
+      pre .hexcolor,
+      pre .ruby .constant {
+        color: #099;
+      }
+      pre .string,
+      pre .tag .value,
+      pre .phpdoc,
+      pre .tex .formula {
+        color: #d14
+      }
+      pre .title,
+      pre .id {
+        color: #900;
+        font-weight: bold
+      }
+      pre .javascript .title,
+      pre .lisp .title,
+      pre .clojure .title,
+      pre .subst {
+        font-weight: normal
+      }
+      pre .class .title,
+      pre .haskell .type,
+      pre .vhdl .literal,
+      pre .tex .command {
+        color: #458;
+        font-weight: bold
+      }
+      pre .tag,
+      pre .tag .title,
+      pre .rules .property,
+      pre .django .tag .keyword {
+        color: #000080;
+        font-weight: normal
+      }
+      pre .attribute,
+      pre .variable,
+      pre .lisp .body {
+        color: #008080
+      }
+      pre .regexp {
+        color: #009926
+      }
+      pre .class {
+        color: #458;
+        font-weight: bold
+      }
+      pre .symbol,
+      pre .ruby .symbol .string,
+      pre .lisp .keyword,
+      pre .tex .special,
+      pre .prompt {
+        color: #990073
+      }
+      pre .built_in,
+      pre .lisp .title,
+      pre .clojure .built_in {
+        color: #0086b3
+      }
+      pre .preprocessor,
+      pre .pi,
+      pre .doctype,
+      pre .shebang,
+      pre .cdata {
+        color: #999;
+        font-weight: bold
+      }
+      pre .deletion {
+        background: #fdd
+      }
+      pre .addition {
+        background: #dfd
+      }
+      pre .diff .change {
+        background: #0086b3
+      }
+      pre .chunk {
+        color: #aaa
+      }
+    </style>
+  </head>
+  <body>  
+    <h1>_tree</h1>
+<blockquote>
+<p>&quot;Computing&#39;s core challenge is how not to make a mess of it. ... All
+unmastered complexity is of our own making; there is no one else to
+blame and so we had better learn how not to introduce the complexity
+in the first place.&quot;</p>
+<p>-- <cite><a href="http://www.cs.utexas.edu/users/EWD/transcriptions/EWD12xx/EWD1243.html">Edsger W. Dijkstra</a></cite></p>
+</blockquote>
+<p>This library provides an immutable tree model (data structure)
+implementation and a pluggable tree behavior for hierarchical data. It
+maintains zero internal state, does not alter your data, and does not
+trample on the global scope (unless you tell it to).</p>
+<p><code>_tree</code> supports AMD (RequireJs), Node, and global-script loading
+scenarios.</p>
+<h2>Example</h2>
+<pre><code class="lang-javascript">&#39;use strict&#39;;
+var patronage, familyTree, charlie, chuckFamilyTree, printLineage;
+
+patronage = {&#39;name&#39;: &#39;Jake&#39;, &#39;children&#39;: [
+    {&#39;name&#39;: &#39;Jake Jr.&#39;},
+    {&#39;name&#39;: &#39;T.V.&#39;},
+    {&#39;name&#39;: &#39;Charlie&#39;},
+    {&#39;name&#39;: &#39;Viola&#39;}
+]};
+familyTree = _tree.inflate(patronage);
+
+// add a child, and save the new tree.
+familyTree = familyTree.root().parseAndAddChild({&#39;name&#39;: &#39;Kim Kil Wam&#39;});
+
+// Prints the tree with everyone&#39;s name and their father&#39;s name
+printLineage = function(node) {
+    var origin = &#39;, origin unknown&#39;;
+    if (node.parent())
+        origin = &#39;is the child of &#39; + node.parent().data().name;
+    console.log(node.data().name, origin);
+};
+
+familyTree.walk(printLineage);
+
+// Charlie goes by Chuck now
+charlie = familyTree.findNodeByData({name: &#39;Charlie&#39;});
+chuckFamilyTree = charlie.data({&#39;name&#39;: &#39;Chuck&#39;});
+
+// Make sure Chuck&#39;s name is changed in the new tree ...
+chuckFamilyTree.walk(printLineage);
+
+// ... and *not* in the old tree
+familyTree.walk(printLineage);</code></pre>
+<p>To get a feel for the library, check out the
+<a href="https://github.com/drfloob/_tree/tree/master/test">tests</a>. Also, the
+<code>docs/</code> folder contains the annotated source code. Website coming
+soon!</p>
+<h2>Quality Metrics</h2>
+<p><strong>Tests</strong>: All tests pass for:</p>
+<ul>
+<li>Chrome: 26 - current</li>
+<li>Firefox: 10 - current</li>
+<li>Internet Explorer: 9<sup><a href="#note-strict-mode">note</a></sup> - current</li>
+<li>Safari 6</li>
+<li>iPhone 5, 4S (6.0)</li>
+<li>Kindle Fire 2</li>
+<li>iPad mini</li>
+<li>Samsung Galaxy Nexus</li>
+</ul>
+<p>The following environments do not support immutability, whether via
+<code>Object.freeze</code> or <code>Object.defineProperty</code>. <code>_tree</code> is fully usable,
+but object immutability tests fail:</p>
+<ul>
+<li>Internet Explorer 8</li>
+<li>Opera: 12.*</li>
+<li>Safari: 5.0.6, 5.1</li>
+<li>PhantomJS</li>
+<li>iPad: 2, 3rd</li>
+<li>iPhone 4S (5.1)</li>
+</ul>
+<p>IE7 and below are currently untested and unsupported. </p>
+<p>You can run tests at the command line via PhantonJS with: <code>grunt test</code></p>
+<p><a name="note-strict-mode"></a> </p>
+<p>Keep in mind that IE9 doesn&#39;t support strict mode. Trying to alter an
+immutable object will fail silently. Altering a <code>_tree</code> in a modern
+browser under <code>strict mode</code> throws an error.</p>
+<p><strong>Performance</strong>: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
+  using Chrome 30 on Debian Wheezy:</p>
+<ul>
+<li>1024 node trees can be inflated at ~15/sec</li>
+<li>30 node trees can be inflated at ~600/sec</li>
+<li>11 node trees can be inflated at ~1,500/sec</li>
+<li>empty trees can be created at ~12,000/sec</li>
+</ul>
+<p>You can run the benchmarks with <code>grunt benchmark:all</code></p>
+<p><strong>Coverage</strong>: Test coverage is currently only measured for
+PhantomJS. Branches for Node and global script definitions aren&#39;t
+executed, nor are the <code>Object.defineProperty</code> fallbacks.</p>
+<p>Current PhantomJS coverage is at 94% statements, 93% branches, 98%
+functions, and 94% lines.</p>
+<p>Coverage is analyzed by running <code>grunt cover</code>. You can view the
+coverage report locally at <code>coverage/index.html</code>.</p>
+<h2>API</h2>
+<p>The <code>_tree</code> library exposes the following functions:</p>
+<ul>
+<li><code>create</code>: creates an empty <code>Tree</code></li>
+<li><code>inflate</code>: parses your data into a <code>Tree</code></li>
+<li><code>fromNode</code>: creates a new tree using a <code>Node</code> from another tree</li>
+</ul>
+<p>All of the <code>_tree</code> methods return a <code>Tree</code> object, which has the
+following methods: </p>
+<ul>
+<li><code>root</code>: returns the root <code>Node</code></li>
+<li><code>walk</code>: traverses the <code>Tree</code>, executing a callback for each node in
+the order you specify</li>
+<li><code>equals</code>: determines if two <code>Tree</code>s are related clones.</li>
+<li><code>findNode</code>: finds the equivalent <code>Node</code> in a tree (works across
+clones)</li>
+<li><code>findNodeByData</code>: finds the first <code>Node</code> containing matching data</li>
+<li><code>containsNode</code>: returns <code>boolean</code> whether the <code>Node</code> exists in the
+<code>Tree</code></li>
+<li><code>containsData</code>: returns <code>boolean</code> whether the data exists in any
+<code>Node</code> in the <code>Tree</code></li>
+<li><code>moveNode</code>: move a <code>Node</code> and its descendants from one point in the
+tree to another.</li>
+</ul>
+<p>The <code>Tree</code> consists of <code>Node</code>s, which have the following API:</p>
+<ul>
+<li><code>data</code>: gets or sets the data on a node. Setting data generates a new <code>Tree</code>.</li>
+<li><code>children</code>: returns the child <code>Node</code>s of a node</li>
+<li><code>parent</code>: returns the <code>Node</code>&#39;s parent</li>
+<li><code>tree</code>: returns the <code>Node</code>&#39;s tree</li>
+<li><code>id</code>: returns the tree-unique internal id of the <code>Node</code></li>
+<li><code>parseAndAddChild</code>: parses an object (much like inflate) and adds
+it as a child of the <code>Node</code>. Returns a new <code>Tree</code>.</li>
+<li><code>addChildNode</code>: adds a <code>Node</code> as a child. Errors are thrown if the
+<code>Node</code> already exists in the tree. Returns a new <code>Tree</code>.</li>
+<li><code>equals</code>: returns <code>boolean</code> that representse the clone-agnostic
+equality of nodes.</li>
+<li><code>remove</code>: removes a <code>Node</code> from the tree, returning a new <code>Tree</code>.</li>
+</ul>
+<h2>Building</h2>
+<p>Requirements: <code>Node</code> and <code>grunt</code></p>
+<pre><code>git clone https://github.com/drfloob/_tree.git
+cd _tree
+npm install
+grunt --force</code></pre>
+<h2>Development Stuff</h2>
+<p><code>_tree</code> does not maintain any internal state, which has a number of
+benefits:</p>
+<ul>
+<li>all state can be managed directly by your application</li>
+<li>all functions are <a href="https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)">referentially transparent</a></li>
+<li>all operations are idempotent</li>
+<li>tests can be implemented easily</li>
+<li>the library should perform identically in parallel environments</li>
+</ul>
+<p>It is also unobtrusive, in that <code>_tree</code> does not alter your input
+objects in any way, or trample on the global scope by default.</p>
+<h3>Core development principles:</h3>
+<ul>
+<li>Referential transparency</li>
+<li>Immutable data structures</li>
+<li>Zero internal state</li>
+<li>Zero side effects in the public API</li>
+</ul>
+<h3>Secondary design goals:</h3>
+<ul>
+<li>All logical operations have pluggable behaviors</li>
+<li>All operations have sane defaults</li>
+<li>Performance isn&#39;t impractically bad</li>
+<li>AMD, Node, and global-script compatible</li>
+</ul>
+<h2>Contributing</h2>
+<p>Please do.</p>
+
+  </body>
+</html>

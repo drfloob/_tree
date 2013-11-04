@@ -16,6 +16,3 @@ node_modules
 
 .sizecache.json
 
-.grunt
-_SpecRunner.html
-README.html
