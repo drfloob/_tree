@@ -7,49 +7,58 @@
 > 
 > -- <cite>[Edsger W. Dijkstra][EWD1243]</cite>
 
-This library provides a tree model (data structure) implementation and
-a pluggable tree behavior for your data. It maintains *zero* internal
-state, provides only immutable objects, and does not alter your data
-or trample on the global scope.
+This library provides an immutable tree model (data structure)
+implementation and a pluggable tree behavior for hierarchical data. It
+maintains zero internal state, does not alter your data, and does not
+trample on the global scope (unless you tell it to).
 
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
 
 ## Example
 
-To get a feel for the library, check out the
-[tests](https://github.com/drfloob/_tree/tree/master/test). Also, the
-`docs/` folder contains the annotated source code. Website coming soon!
-
-
 ```javascript
 'use strict';
-var Patronage, FamilyTree;
+var patronage, familyTree, charlie, chuckFamilyTree, printLineage;
 
-Patronage = {'name': 'Jake', 'children': [
+patronage = {'name': 'Jake', 'children': [
     {'name': 'Jake Jr.'},
     {'name': 'T.V.'},
     {'name': 'Charlie'},
     {'name': 'Viola'}
 ]};
-FamilyTree = _tree.inflate(Patronage);
+familyTree = _tree.inflate(patronage);
 
 // add a child, and save the new tree.
-FamilyTree = FamilyTree.root().parseAndAddChild({'name': 'Kim Kil Wam'});
+familyTree = familyTree.root().parseAndAddChild({'name': 'Kim Kil Wam'});
 
-// Log the tree, with everyone's name and their father's name
-FamilyTree.walk(function(node) {
+// Prints the tree with everyone's name and their father's name
+printLineage = function(node) {
     var origin = ', origin unknown';
     if (node.parent())
         origin = 'is the child of ' + node.parent().data().name;
     console.log(node.data().name, origin);
-});
+};
 
-// Delete a child node
-FamilyTree = FamilyTree.findNodeByData({name: 'Charlie'}).remove();
+familyTree.walk(printLineage);
 
-FamilyTree.findNodeByData({name: 'Charlie'}) === false; // true
+// Charlie goes by Chuck now
+charlie = familyTree.findNodeByData({name: 'Charlie'});
+chuckFamilyTree = charlie.data({'name': 'Chuck'});
+
+// Make sure Chuck's name is changed in the new tree ...
+chuckFamilyTree.walk(printLineage);
+
+// ... and *not* in the old tree
+familyTree.walk(printLineage);
+
 ```
+
+To get a feel for the library, check out the
+[tests](https://github.com/drfloob/_tree/tree/master/test). Also, the
+`docs/` folder contains the annotated source code. Website coming
+soon!
+
 
 ## Quality Metrics
 
@@ -77,12 +86,13 @@ but object immutability tests fail:
  * iPad: 2, 3rd
  * iPhone 4S (5.1)
 
-IE7 and below are not currently tested or supported. 
+IE7 and below are currently untested and unsupported. 
 
 You can run tests at the command line via PhantonJS with: `grunt test`
 
-<a name="note-strict-mode"></a>
-Also Keep in mind that IE9 doesn't support strict mode. Trying to alter an
+<a name="note-strict-mode"></a> 
+
+Keep in mind that IE9 doesn't support strict mode. Trying to alter an
 immutable object will fail silently. Altering a `_tree` in a modern
 browser under `strict mode` throws an error.
 

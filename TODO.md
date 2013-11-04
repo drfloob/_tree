@@ -1,18 +1,15 @@
-# Implementation
+# Must Happen
 
  * Make errors explicit in the API.
+ * parse vertex-edge representations
 
-# Support
-
- * build a simple supporting website
- * package and host test page
- * package and host docs
- * package and host benchmark page
- * (ask for and) collect test & benchmark stats.
+ * host test page
+ * host benchmark page
+ * host docs
  * `grunt release` impl
  * npm distribution
 
-# Tests
+ * Setup performance comparisons between libraries
 
  * spec: adjacency list with root siblings.
  * test on NodeJS
@@ -21,16 +18,14 @@
  * ensure unique node ids after all operations on various trees
  * analyze test robustness, outline what needs better testing
 
-# Benchmarks
-
- * Setup performance comparisons between libraries
- 
 # Nice-to-haves
 
- * implement more tree builtin behaviors
-   - balanced binary tree
+ * (ask for and) collect test & benchmark stats.
+ * implement tree plugins
    - red black tree
- * implement a tree visualizer
+   - toposort
+   - tarjan's offline LCA
+ * implement a tree visualizer like [João Nuno Silva's](http://jnuno.com/tree-model-js/) (his is neat!)
  * wire up some visual examples in jsfiddle
  * benchmark uuid vs _.uniqueId
 
@@ -41,4 +36,5 @@
  * port to haxe; compare expressability, performance, and size.
  * see about emscripten or duetto for a C++ tree lib; compare size and
    performance.
+ 
 
