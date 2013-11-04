@@ -52,10 +52,10 @@
         it('are not configurable', function () {
             // IE9 doesn't throw errors here (no strict mode
             // support). Not what I'm testing.
-            try {delete root.__id;} catch(e){};
-            try {delete root.__tree;} catch(e){};
-            try {delete root.__data;} catch(e){};
-            try {delete root.__children;} catch(e){};
+            try {delete root.__id;} catch(e){}
+            try {delete root.__tree;} catch(e){}
+            try {delete root.__data;} catch(e){}
+            try {delete root.__children;} catch(e){}
 
             // but it does respect the configurable setting
             expect(root.__id).toBeDefined();

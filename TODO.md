@@ -3,10 +3,8 @@
  * Make errors explicit in the API.
  * parse vertex-edge representations
 
- * host test page
  * host benchmark page
- * host docs
- * `grunt release` impl
+ * `grunt release` impl (what was this supposed to do?)
  * npm distribution
 
  * Setup performance comparisons between libraries
