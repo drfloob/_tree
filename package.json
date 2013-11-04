@@ -1,0 +1,33 @@
+{
+  "name": "_tree",
+  "private": true,
+  "version": "0.2.1",
+  "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
+  "author": "A.J. Heller",
+  "license": "MIT",
+  "keywords": [
+    "tree",
+    "data structure",
+    "model",
+    "wrapper",
+    "graph"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drfloob/_tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/drfloob/_tree/issues"
+  },
+  "main": "_tree",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-connect": "~0.5.0"
+  }
+}
