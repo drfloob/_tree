@@ -1,15 +1,15 @@
 # Must Happen
 
+ * Autogenerate API
  * Make errors explicit in the API.
  * parse vertex-edge representations
 
  * host benchmark page
- * `grunt release` impl (what was this supposed to do?)
  * npm distribution
 
  * Setup performance comparisons between libraries
 
- * spec: adjacency list with root siblings.
+ * test adjacency list with root siblings.
  * test on NodeJS
  * get continuous integration setup for at least one environment
  * refactor random.spec.js into multiple files

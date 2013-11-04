@@ -42,6 +42,9 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-markdown": "~0.4.0"
   },
+  "scripts": {
+    "test": "grunt test --verbose"
+  },
   "testling": {
     "scripts": [
       "test/vendor/jasmine.js",
