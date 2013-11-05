@@ -5,13 +5,13 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['_tree', '../../../test/helper/envDetect'], factory);
+        define(['_tree', '../../../test/helper/envDetect.js'], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('../../../test/helper/envDetect'));
+        module.exports = factory(require('_tree'), require('envDetect'));
     } else {
         // Browser globals (root is window)
         factory(root._tree, root.envDetect);
