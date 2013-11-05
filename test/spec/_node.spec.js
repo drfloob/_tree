@@ -11,7 +11,7 @@
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('../../../test/helper/envDetect'));
+        module.exports = factory(require('_tree'), require('envDetect'));
     } else {
         // Browser globals (root is window)
         factory(root._tree, root.envDetect);

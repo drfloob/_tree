@@ -5,17 +5,16 @@
  * parse vertex-edge representations
 
  * host benchmark page
- * figure out npm distribution
 
  * test adjacency list with root siblings.
  * test on NodeJS
- * get continuous integration setup for at least one environment
  * refactor random.spec.js into multiple files
  * ensure unique node ids after all operations on various trees
  * analyze test robustness, outline what needs better testing
 
 # Nice-to-haves
 
+ * replace envDetect with ua-parser
  * Setup performance comparisons between libraries
  * (ask for and) collect test & benchmark stats.
  * implement tree plugins
@@ -25,6 +24,7 @@
  * implement a tree visualizer like [João Nuno Silva's](http://jnuno.com/tree-model-js/) (his is neat!)
  * wire up some visual examples in jsfiddle
  * benchmark uuid vs _.uniqueId
+ * consider npm publish
 
 # For the sake of meta awesomeness
 

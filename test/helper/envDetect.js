@@ -13,6 +13,11 @@
 
     return {
         supportsImmutability: function() {
+            // Temporary NodeJS hack
+            if (typeof navigator === 'undefined') {
+                return true;
+            }
+
             var pt, match;
             if ((pt=navigator.userAgent.indexOf('Midori')) > -1) {
                 match = 'Midori/0.4';
