@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                     templateOptions: {
                         requireConfig: {
                             baseUrl: 'src/',
-                            paths: { 'underscore': '../node_modules/underscore/underscore-min' },
+                            paths: { 'underscore': '../test/vendor/underscore-min' },
                             shim: { 'underscore': { exports: '_' } }
                         }
                     }
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
                     templateOptions: {
                         requireConfig: {
                             baseUrl: 'src/',
-                            paths: { 'underscore': '/node_modules/underscore/underscore-min' },
+                            paths: { 'underscore': '../test/vendor/underscore-min' },
                             shim: { 'underscore': { exports: '_' } }
                         }
                     }
