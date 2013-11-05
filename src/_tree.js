@@ -74,12 +74,9 @@ THE SOFTWARE.
             _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
         }
 
-        try {
-            Object.freeze(tree);
-        } catch (e) {
-            // environments that don't support `Object.freeze` will
-            // still work, but without guaranteed immutability.
-        }
+        // Environments that don't support `Object.freeze` will still
+        // work, but without guaranteed tree immutability.
+        try { Object.freeze(tree); } catch (e) {}
         __finalizeMutableChildNodes(tree.root());
     }
 

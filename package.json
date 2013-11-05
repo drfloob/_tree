@@ -12,6 +12,7 @@
     "wrapper",
     "graph"
   ],
+  "homepage": "http://tree.drfloob.com/",
   "repository": {
     "type": "git",
     "url": "https://github.com/drfloob/_tree.git"
@@ -20,9 +21,6 @@
     "url": "https://github.com/drfloob/_tree/issues"
   },
   "main": "_tree",
-  "directories": {
-    "test": "tests"
-  },
   "dependencies": {
     "underscore": "~1.5.2"
   },

@@ -142,7 +142,7 @@ like Node.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="function"><span class="keyword">function</span> <span class="title">uuid</span> <span class="params">()</span> {</span>
-        <span class="keyword">return</span> <span class="string">'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</span>.replace(<span class="regexp">/[xy]/g</span>, <span class="keyword">function</span>(c) {
+        <span class="keyword">return</span> <span class="string">'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</span>.replace(<span class="regexp">/[xy]/g</span>, <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>
             <span class="comment">/* jshint bitwise:false */</span></pre></div></div>
             
         </li>
@@ -192,11 +192,7 @@ nodes need to be given a reference to their tree.</p>
                 Object.freeze(node.__children);
             } <span class="keyword">catch</span> (e) {}
             _.each(node.children(), <span class="function"><span class="keyword">function</span> <span class="params">(c)</span> {</span>__finalizeMutableChildNodes(c, node); });
-        }
-
-        <span class="keyword">try</span> {
-            Object.freeze(tree);
-        } <span class="keyword">catch</span> (e) {</pre></div></div>
+        }</pre></div></div>
             
         </li>
         
@@ -207,12 +203,12 @@ nodes need to be given a reference to their tree.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>environments that don&#39;t support <code>Object.freeze</code> will
-still work, but without guaranteed immutability.</p>
+              <p>Environments that don&#39;t support <code>Object.freeze</code> will still
+work, but without guaranteed tree immutability.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        }
+            <div class="content"><div class='highlight'><pre>        <span class="keyword">try</span> { Object.freeze(tree); } <span class="keyword">catch</span> (e) {}
         __finalizeMutableChildNodes(tree.root());
     }</pre></div></div>
             
@@ -222,10 +218,10 @@ still work, but without guaranteed immutability.</p>
         <li id="section-10">
             <div class="annotation">
               
-              <div class="pilwrap for-h1">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <h1>Public API</h1>
+              <h1 id="public-api">Public API</h1>
 
             </div>
             
@@ -416,10 +412,10 @@ considered <em>not to be</em> a clone of the node&#39;s original tree.</p>
         <li id="section-17">
             <div class="annotation">
               
-              <div class="pilwrap for-h1">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
-              <h1>Tree</h1>
+              <h1 id="tree">Tree</h1>
 
             </div>
             
@@ -492,10 +488,10 @@ work without guaranteed immutability.</p>
         <li id="section-19">
             <div class="annotation">
               
-              <div class="pilwrap for-h2">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <h2>Internal Static Tree Methods</h2>
+              <h2 id="internal-static-tree-methods">Internal Static Tree Methods</h2>
 
             </div>
             
@@ -537,7 +533,7 @@ inflation/parsing/deserialization.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.inflate = <span class="keyword">function</span>(tree, obj, inflateMethod) {
+            <div class="content"><div class='highlight'><pre>    Tree.inflate = <span class="function"><span class="keyword">function</span><span class="params">(tree, obj, inflateMethod)</span> {</span>
         <span class="keyword">var</span> thisnode = <span class="keyword">new</span> Node(tree), _<span class="keyword">this</span>;
         tree.__root = thisnode;</pre></div></div>
             
@@ -584,10 +580,10 @@ processes and inflates a set of child node objects.</li>
         <li id="section-23">
             <div class="annotation">
               
-              <div class="pilwrap for-h2">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <h2>Tree Instance Methods</h2>
+              <h2 id="tree-instance-methods">Tree Instance Methods</h2>
 
             </div>
             
@@ -904,7 +900,7 @@ exists in the <code>Tree</code>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.containsData = <span class="keyword">function</span>(someData) {
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.containsData = <span class="function"><span class="keyword">function</span><span class="params">(someData)</span> {</span>
         <span class="keyword">return</span> (<span class="keyword">this</span>.findNodeByData(someData) <span class="keyword">instanceof</span> Node);
     };</pre></div></div>
             
@@ -938,10 +934,10 @@ exists in the <code>Tree</code>.</p>
         <li id="section-39">
             <div class="annotation">
               
-              <div class="pilwrap for-h1">
+              <div class="pilwrap ">
                 <a class="pilcrow" href="#section-39">&#182;</a>
               </div>
-              <h1>Node</h1>
+              <h1 id="node">Node</h1>
 
             </div>
             
@@ -1015,8 +1011,8 @@ well.</p>
         <span class="keyword">var</span> newNode = <span class="keyword">new</span> Node(newTree);
         newNode.__data = node.__data;
 
-        newNode.__children = _.map(node.children(), <span class="keyword">function</span>(c) { <span class="keyword">return</span> Node.clone(newTree, c, differentId); });
-        _.each(newNode.__children, <span class="keyword">function</span>(c) {c.__parent = newNode;});
+        newNode.__children = _.map(node.children(), <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span> <span class="keyword">return</span> Node.clone(newTree, c, differentId); });
+        _.each(newNode.__children, <span class="function"><span class="keyword">function</span><span class="params">(c)</span> {</span>c.__parent = newNode;});
 
         <span class="keyword">if</span> (!differentId) {
             newNode.__id = node.__id;
@@ -1167,7 +1163,7 @@ returned, <em>not</em> a <code>Node</code>.</p>
 
 
 
-    Node.prototype.addChildNode = <span class="keyword">function</span>(node) {
+    Node.prototype.addChildNode = <span class="function"><span class="keyword">function</span><span class="params">(node)</span> {</span>
         <span class="keyword">var</span> newTree, newParentNode, nodeClone;
 
         newTree = Tree.clone(<span class="keyword">this</span>.tree());
@@ -1198,7 +1194,7 @@ the same object in memory.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Node.prototype.equals = <span class="keyword">function</span>(otherNode) {
+            <div class="content"><div class='highlight'><pre>    Node.prototype.equals = <span class="function"><span class="keyword">function</span><span class="params">(otherNode)</span> {</span>
         <span class="keyword">return</span> <span class="keyword">this</span>.__tree.equals(otherNode.__tree) &amp;&amp;
             <span class="keyword">this</span>.__id === otherNode.__id;
     };

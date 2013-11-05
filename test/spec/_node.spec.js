@@ -5,18 +5,18 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['_tree', 'underscore'], factory);
+        define(['_tree', '../../../test/helper/envDetect'], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('underscore'));
+        module.exports = factory(require('_tree'), require('../../../test/helper/envDetect'));
     } else {
         // Browser globals (root is window)
-        factory(root._tree, root._);
+        factory(root._tree, root.envDetect);
     }
-}(this, function (_tree) {
+}(this, function (_tree, envD) {
     'use strict';
 
 
@@ -52,10 +52,10 @@
         it('are not configurable', function () {
             // IE9 doesn't throw errors here (no strict mode
             // support). Not what I'm testing.
-            try {delete root.__id;} catch(e){};
-            try {delete root.__tree;} catch(e){};
-            try {delete root.__data;} catch(e){};
-            try {delete root.__children;} catch(e){};
+            try {delete root.__id;} catch(e){}
+            try {delete root.__tree;} catch(e){}
+            try {delete root.__data;} catch(e){}
+            try {delete root.__children;} catch(e){}
 
             // but it does respect the configurable setting
             expect(root.__id).toBeDefined();
@@ -66,26 +66,47 @@
     });
  
 
-    // This does not pass on PhantomJS
     describe('node.children', function () {
-        it('is immutable', function () {
 
-            var tree, kids, tmpLen;
-            tree = _tree.inflate({a: 1, children: [{a: 2}]});
-            kids = tree.root().children();
-            tmpLen = kids.length;
+        // test immutability in immutable-supporting environments
+        if (envD.supportsImmutability()) {
+            it('is immutable', function () {
 
-            expect(Object.isFrozen(kids)).toBe(true);
+                var tree, kids, tmpLen;
+                tree = _tree.inflate({a: 1, children: [{a: 2}]});
+                kids = tree.root().children();
+                tmpLen = kids.length;
 
-            try {
-                kids.push('test');
-            } catch (e) {
-                // firefox 25 throws TypeError: kids.push(...) is not extensible
-                // chrome doesn't throw
-            }
-            expect(tmpLen).toEqual(kids.length);
-            expect(kids[1]).toBeUndefined();
-        });
+                expect(Object.isFrozen(kids)).toBe(true);
+
+                // firefox 25 throws TypeError: kids.push(...) is not
+                // extensible. Chrome doesn't throw
+                try { kids.push('test'); } catch (e) {}
+
+                expect(tmpLen).toEqual(kids.length);
+                expect(kids[1]).toBeUndefined();
+            });
+        } else {
+            // ensure environments that we think DO NOT support
+            // immutability actually do not support immutability.
+
+            it('is *not* immutable', function () {
+                var tree, kids, tmpLen;
+                tree = _tree.inflate({a: 1, children: [{a: 2}]});
+                kids = tree.root().children();
+                tmpLen = kids.length;
+
+                expect(tmpLen).toBe(1);
+                expect(Object.isFrozen(kids)).toBe(true);
+
+                // firefox 25 throws TypeError: kids.push(...) is not
+                // extensible. Chrome doesn't throw
+                try { kids.push('test'); } catch (e) {}
+
+                expect(kids.length).toEqual(2);
+                expect(kids[1]).toBe('test');
+            });
+        }
     });
 
     describe('node.remove', function () {
