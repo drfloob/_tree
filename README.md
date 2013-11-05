@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/drfloob/_tree.png?branch=master)](https://travis-ci.org/drfloob/_tree)
+
 # _tree
 
 > "Computing's core challenge is how not to make a mess of it. ... All
@@ -15,8 +17,6 @@ trample on the global scope (unless you tell it to).
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
 
-
-[![Build Status - not fully integrated yet](https://travis-ci.org/drfloob/_tree.png?branch=master)](https://travis-ci.org/drfloob/_tree)
 
 ## Example
 
@@ -70,25 +70,28 @@ yourself. Also, consider reading the
 
 **Tests**: All tests pass for:
 
- * Chrome: 26 - current
- * Firefox: 10 - current
- * Internet Explorer: 9<sup>[note](#note-strict-mode)</sup> - current
+ * Chrome: >= 12
+ * Firefox: >= 4
+ * Internet Explorer: >= 9<sup>[note](#note-strict-mode)</sup>
  * Safari 6
  * iPhone 5, 4S (6.0)
  * Kindle Fire 2
  * iPad mini
  * Samsung Galaxy Nexus
+ * Epiphany: >= 3.6.1
 
 The following environments do not support immutability, whether via
 `Object.freeze` or `Object.defineProperty`. `_tree` is fully usable,
-but object immutability tests fail:
+but object immutability tests are skipped, and mutability is asserted
+instead (to make the environment's behavior clear).
 
  * Internet Explorer 8
- * Opera: 12.*
+ * Opera: 11.*, 12.*
  * Safari: 5.0.6, 5.1
  * PhantomJS
  * iPad: 2, 3rd
  * iPhone 4S (5.1)
+ * Rekonq >= 0.9.2
 
 IE7 and below are currently untested and unsupported. 
 

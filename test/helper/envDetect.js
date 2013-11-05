@@ -14,14 +14,25 @@
     return {
         supportsImmutability: function() {
             var pt, match;
-            if ((pt=navigator.userAgent.indexOf('Chrome')) > -1) {
-                return navigator.userAgent.slice(pt, pt+9) >= 'Chrome/18';
+            if ((pt=navigator.userAgent.indexOf('Midori')) > -1) {
+                match = 'Midori/0.4';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
             }
-            if ((pt=navigator.userAgent.indexOf('Firefox')) > -1) {
-                return navigator.userAgent.slice(pt, pt+10) >= 'Firefox/10';
+            if ((pt=navigator.userAgent.indexOf('Epiphany')) > -1) {
+                match = 'Epiphany/3.6.1';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
             }
             if ((pt=navigator.userAgent.indexOf('MSIE')) > -1) {
-                return navigator.userAgent.slice(pt, pt+6) >= 'MSIE 9';
+                match = 'MSIE 9  ';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
+            }
+            if ((pt=navigator.userAgent.indexOf('Chrome')) > -1) {
+                match = 'Chrome/12';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
+            }
+            if ((pt=navigator.userAgent.indexOf('Firefox')) > -1) {
+                match = 'Firefox/4 ';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
             }
             if ((pt=navigator.userAgent.indexOf('Version/')) > -1) {
                 return navigator.userAgent.slice(pt, pt+9) >= 'Version/6';
