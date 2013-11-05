@@ -28,7 +28,7 @@ module.exports = function(grunt) {
             options: { jshintrc: '.jshintrc' },
             src: { src: ['src/**/*.js'] },
             grunt: { src: ['Gruntfile.js'] },
-            tests: { src: ['test/*.js'] }
+            tests: { src: ['test/spec/**/*.js'] }
         },
         jsonlint: {
             'pkg': { src: ['package.json'] }
@@ -48,7 +48,7 @@ module.exports = function(grunt) {
                 src: ['src/**/*.js'],
                 options: {
                     keepRunner: true,
-                    specs: ['test/*.js'],
+                    specs: ['test/spec/**/*.js'],
                     template: require('grunt-template-jasmine-requirejs'),
                     templateOptions: {
                         requireConfig: {
@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 src: ['src/**/*.js'],
                 options: {
                     keepRunner: true,
-                    specs: ['test/*.js'],
+                    specs: ['test/spec/**/*.js'],
                     host: 'http://127.0.0.1:8042',
                     template: require('grunt-template-jasmine-requirejs'),
                     templateOptions: {
@@ -79,7 +79,7 @@ module.exports = function(grunt) {
                 src: ['src/**/*.js'],
                 options: {
                     // keepRunner: true,
-                    specs: ['test/*.js'],
+                    specs: ['test/spec/**/*.js'],
                     host: 'http://127.0.0.1:8042',
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
