@@ -66,8 +66,9 @@
     });
  
 
-    // This does not pass on PhantomJS
     describe('node.children', function () {
+
+        // test immutability in immutable-supporting environments
         if (envD.supportsImmutability()) {
             it('is immutable', function () {
 
@@ -79,11 +80,31 @@
                 expect(Object.isFrozen(kids)).toBe(true);
 
                 // firefox 25 throws TypeError: kids.push(...) is not
-                // extensible chrome doesn't throw
+                // extensible. Chrome doesn't throw
                 try { kids.push('test'); } catch (e) {}
 
                 expect(tmpLen).toEqual(kids.length);
                 expect(kids[1]).toBeUndefined();
+            });
+        } else {
+            // ensure environments that we think DO NOT support
+            // immutability actually do not support immutability.
+
+            it('is *not* immutable', function () {
+                var tree, kids, tmpLen;
+                tree = _tree.inflate({a: 1, children: [{a: 2}]});
+                kids = tree.root().children();
+                tmpLen = kids.length;
+
+                expect(tmpLen).toBe(1);
+                expect(Object.isFrozen(kids)).toBe(true);
+
+                // firefox 25 throws TypeError: kids.push(...) is not
+                // extensible. Chrome doesn't throw
+                try { kids.push('test'); } catch (e) {}
+
+                expect(kids.length).toEqual(2);
+                expect(kids[1]).toBe('test');
             });
         }
     });
