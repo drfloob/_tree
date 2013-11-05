@@ -78,7 +78,7 @@ module.exports = function(grunt) {
             cover: {
                 src: ['src/**/*.js'],
                 options: {
-                    // keepRunner: true,
+                    keepRunner: true,
                     specs: ['test/spec/**/*.js'],
                     host: 'http://127.0.0.1:8042',
                     template: require('grunt-template-jasmine-istanbul'),
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
                         templateOptions: {
                             requireConfig: {
                                 baseUrl: '.grunt/grunt-contrib-jasmine/src/',
-                                paths: { 'underscore': '/node_modules/underscore/underscore-min' },
+                                paths: { 'underscore': '../../../test/vendor/underscore-min' },
                                 shim: { 'underscore': { exports: '_' } }
                             }
                         }
