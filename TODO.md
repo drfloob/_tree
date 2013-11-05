@@ -1,13 +1,11 @@
 # Must Happen
 
- * Autogenerate API
+ * Autogenerate API docs
  * Make errors explicit in the API.
  * parse vertex-edge representations
 
  * host benchmark page
  * figure out npm distribution
-
- * Setup performance comparisons between libraries
 
  * test adjacency list with root siblings.
  * test on NodeJS
@@ -18,6 +16,7 @@
 
 # Nice-to-haves
 
+ * Setup performance comparisons between libraries
  * (ask for and) collect test & benchmark stats.
  * implement tree plugins
    - red black tree

@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/drfloob/_tree.png?branch=master)](https://travis-ci.org/drfloob/_tree)
+
 # _tree
 
 > "Computing's core challenge is how not to make a mess of it. ... All
@@ -14,6 +16,7 @@ trample on the global scope (unless you tell it to).
 
 `_tree` supports AMD (RequireJs), Node, and global-script loading
 scenarios.
+
 
 ## Example
 
