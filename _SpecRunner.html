@@ -37,7 +37,7 @@
       require.config({
   "baseUrl": "src/",
   "paths": {
-    "underscore": "//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min"
+    "underscore": "/node_modules/underscore/underscore-min"
   },
   "shim": {
     "underscore": {
@@ -57,7 +57,7 @@
       
     ],
     function(){
-      require(['test/_node.addChildNode.spec.js','test/_node.spec.js','test/_tree.contains.spec.js','test/_tree.findByData.spec.js','test/_tree.findNode.spec.js','test/_tree.fromNode.spec.js','test/_tree.moveNode.spec.js','test/_tree.random.js','test/_tree.walk.spec.js','test/random.spec.js','test/serializeExamples.js','.grunt/grunt-contrib-jasmine/reporter.js'], function(){
+      require(['test/spec/_node.addChildNode.spec.js','test/spec/_node.spec.js','test/spec/_tree.contains.spec.js','test/spec/_tree.findByData.spec.js','test/spec/_tree.findNode.spec.js','test/spec/_tree.fromNode.spec.js','test/spec/_tree.moveNode.spec.js','test/spec/_tree.random.js','test/spec/_tree.walk.spec.js','test/spec/random.spec.js','test/spec/serializeExamples.js','.grunt/grunt-contrib-jasmine/reporter.js'], function(){
         require(['.grunt/grunt-contrib-jasmine/jasmine-helper.js'], function(){
           // good to go! Our tests should already be running.
         })
