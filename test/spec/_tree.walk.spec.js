@@ -131,7 +131,7 @@
                     rt = otherTree.root(),
                     err = function() {
                         try {
-                            tree.walk(this, function(){}, tree.walk.dfpre, rt);
+                            tree.walk(function(){}, tree.walk.dfpre, rt);
                         } catch (e) {
                             return e.message;
                         }

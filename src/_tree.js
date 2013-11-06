@@ -334,6 +334,10 @@ THE SOFTWARE.
     // find a matching node in a cloned tree, since ids are designed
     // to be invariant across clones.
     Tree.prototype.findNode = function (fromNode, walkMethod) {
+        if (! (fromNode instanceof Node)) {
+            throw 'not a node';
+        }
+
         if (!this.equals(fromNode.__tree)) {
             return false;
         }

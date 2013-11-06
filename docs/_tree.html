@@ -621,6 +621,10 @@ to be invariant across clones.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="function"><span class="keyword">function</span> <span class="params">(fromNode, walkMethod)</span> {</span>
+        <span class="keyword">if</span> (! (fromNode <span class="keyword">instanceof</span> Node)) {
+            <span class="keyword">throw</span> <span class="string">'not a node'</span>;
+        }
+
         <span class="keyword">if</span> (!<span class="keyword">this</span>.equals(fromNode.__tree)) {
             <span class="keyword">return</span> <span class="literal">false</span>;
         }
