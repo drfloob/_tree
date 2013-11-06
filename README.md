@@ -72,6 +72,7 @@ yourself. Also, consider reading the
 
  * Chrome: >= 12
  * Firefox: >= 4
+ * NodeJS ~0.10.21
  * Internet Explorer: >= 9<sup>[note](#note-strict-mode)</sup>
  * Safari 6
  * iPhone 5, 4S (6.0)
@@ -85,7 +86,6 @@ The following environments do not support immutability, whether via
 but object immutability tests are skipped, and mutability is asserted
 instead (to make the environment's behavior clear).
 
- * Internet Explorer 8
  * Opera: 11.*, 12.*
  * Safari: 5.0.6, 5.1
  * PhantomJS
@@ -93,9 +93,11 @@ instead (to make the environment's behavior clear).
  * iPhone 4S (5.1)
  * Rekonq >= 0.9.2
 
-IE7 and below are currently untested and unsupported. 
+IE7 and below are currently untested and unsupported. The test
+framework doesn't currently support IE8.
 
-You can run tests at the command line via PhantonJS with: `grunt test`
+You can run tests at the command line via PhantonJS with `grunt
+phantom_test`, or via Node with `grunt test`
 
 <a name="note-strict-mode"></a> 
 

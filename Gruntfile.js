@@ -97,6 +97,10 @@ module.exports = function(grunt) {
                 }
             }
         },
+        jasmine_node: {
+            projectRoot: 'test/spec',
+            forceExit: true
+        },
         docco: {
             main: {
                 src: ['src/**/*.js'],
@@ -140,10 +144,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-benchmark');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-markdown');
+    grunt.loadNpmTasks('grunt-jasmine-node');
 
 
-    grunt.registerTask('test', ['copy:vendor', 'connect:test', 'jasmine:run']);
-    grunt.registerTask('cover', ['copy:vendor', 'connect:test', 'jasmine:cover']);
+    grunt.registerTask('phantom_test', ['copy:vendor', 'connect:test', 'jasmine:run']);
+    grunt.registerTask('phantom_cover', ['copy:vendor', 'connect:test', 'jasmine:cover']);
+    grunt.registerTask('test', ['jasmine_node']);
     grunt.registerTask('docs', ['docco']);
     grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docs']);
     
