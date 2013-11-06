@@ -8,7 +8,7 @@ module.exports = function(grunt) {
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
-                    '    (c) 2013 A. J. Heller\n' +
+                    '    (c) 2013 A.J. Heller\n' +
                     '    _tree.js may be freely distributed under the MIT License.\n' +
                     '*/\n',
                 mangle: {},
