@@ -65,7 +65,7 @@
             expect(_.uniq(ids).length).toBe(8);
         });
 
-        it('are unique after tree additions', function () {
+        it('are unique after node additions', function () {
             var tree, tree2, ids = [];
             tree = _tree.inflate(
                 {n: 1, k: [
@@ -85,6 +85,28 @@
             });
             expect(ids).toEqual(_.uniq(ids));
             expect(_.uniq(ids).length).toBe(9);
+        });
+
+        // this is the most nonsensical assertion here, present only
+        // for completeness' sake.
+        it('are unique after tree deletions', function () {
+            var tree, ids = [];
+            tree = _tree.inflate(
+                {n: 1, k: [
+                    {n: 1, k: [{n: 1}, {n: 1}]},
+                    {n: 1, k: [{n: 1}, {n: 1}]}
+                ]},
+                _tree.inflate.byKey('k'));
+            
+
+            // adding a childNode should reestablish valid ids
+            tree = tree.root().children()[0].remove();
+
+            tree.walk(function (n) {
+                ids.push(n.id());
+            });
+            expect(ids).toEqual(_.uniq(ids));
+            expect(ids.length).toBe(4);
         });
 
         it('are unique after moving nodes', function () {

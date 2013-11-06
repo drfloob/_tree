@@ -2,11 +2,11 @@
 
  * test adjacency list with root siblings.
  * refactor random.spec.js into multiple files
- * ensure unique node ids after all operations on various trees
  * analyze test robustness, outline what needs better testing
 
 # Nice-to-haves
 
+ * eliminate internal implementation details from tests
  * Autogenerate API docs
  * Make errors explicit in the API.
  * parse vertex-edge representations
