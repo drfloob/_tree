@@ -1,18 +1,17 @@
 # Must Happen
 
- * Autogenerate API docs
- * Make errors explicit in the API.
- * parse vertex-edge representations
-
- * host benchmark page
-
  * test adjacency list with root siblings.
- * test on NodeJS
  * refactor random.spec.js into multiple files
  * ensure unique node ids after all operations on various trees
  * analyze test robustness, outline what needs better testing
 
 # Nice-to-haves
+
+ * Autogenerate API docs
+ * Make errors explicit in the API.
+ * parse vertex-edge representations
+
+ * host benchmark page
 
  * replace envDetect with ua-parser
  * Setup performance comparisons between libraries
