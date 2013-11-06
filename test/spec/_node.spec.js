@@ -5,7 +5,7 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['_tree', '../../../test/helper/envDetect.js'], factory);
+        define(['_tree', 'test/helper/envDetect.js'], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
