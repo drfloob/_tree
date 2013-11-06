@@ -51,6 +51,7 @@
       "test/vendor/jasmine.tap_reporter.js",
       "test/vendor/underscore-min.js",
       "src/_tree.js",
+      "test/helper/*.js",
       "test/spec/*.js",
       "test/ling/jasmine_bootstrap.js"
     ],
