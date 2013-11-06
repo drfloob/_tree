@@ -23,6 +23,10 @@
                 match = 'Midori/0.4';
                 return navigator.userAgent.slice(pt, pt+match.length) >= match;
             }
+            if ((pt=navigator.userAgent.indexOf('PhantomJS')) > -1) {
+                match = 'PhantomJS/1.9.2';
+                return navigator.userAgent.slice(pt, pt+match.length) >= match;
+            }
             if ((pt=navigator.userAgent.indexOf('Epiphany')) > -1) {
                 match = 'Epiphany/3.6.1';
                 return navigator.userAgent.slice(pt, pt+match.length) >= match;

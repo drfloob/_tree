@@ -17,6 +17,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-markdown');
+    grunt.loadNpmTasks('grunt-jasmine-node');
 
 
     grunt.registerTask('default', ['connect']);

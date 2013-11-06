@@ -5,18 +5,18 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['_tree', '../../../test/helper/envDetect.js'], factory);
+        define(['_tree'], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('envDetect'));
+        module.exports = factory(require('_tree'));
     } else {
         // Browser globals (root is window)
-        factory(root._tree, root.envDetect);
+        factory(root._tree);
     }
-}(this, function (_tree, envD) {
+}(this, function (_tree) {
     'use strict';
 
 
@@ -63,50 +63,6 @@
             expect(root.__data).toBeDefined();
             expect(root.__children).toBeDefined();
         });
-    });
- 
-
-    describe('node.children', function () {
-
-        // test immutability in immutable-supporting environments
-        if (envD.supportsImmutability()) {
-            it('is immutable', function () {
-
-                var tree, kids, tmpLen;
-                tree = _tree.inflate({a: 1, children: [{a: 2}]});
-                kids = tree.root().children();
-                tmpLen = kids.length;
-
-                expect(Object.isFrozen(kids)).toBe(true);
-
-                // firefox 25 throws TypeError: kids.push(...) is not
-                // extensible. Chrome doesn't throw
-                try { kids.push('test'); } catch (e) {}
-
-                expect(tmpLen).toEqual(kids.length);
-                expect(kids[1]).toBeUndefined();
-            });
-        } else {
-            // ensure environments that we think DO NOT support
-            // immutability actually do not support immutability.
-
-            it('is *not* immutable', function () {
-                var tree, kids, tmpLen;
-                tree = _tree.inflate({a: 1, children: [{a: 2}]});
-                kids = tree.root().children();
-                tmpLen = kids.length;
-
-                expect(tmpLen).toBe(1);
-                expect(Object.isFrozen(kids)).toBe(true);
-
-                // firefox 25 throws TypeError: kids.push(...) is not
-                // extensible. Chrome doesn't throw
-                try { kids.push('test'); } catch (e) {}
-
-                expect(kids.length).toEqual(2);
-                expect(kids[1]).toBe('test');
-            });
-        }
     });
 
     describe('node.remove', function () {
