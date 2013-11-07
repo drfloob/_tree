@@ -194,8 +194,11 @@ THE SOFTWARE.
     //             child3
     //
     _tree.inflate.onlyLeavesList = function (Obj) {
+        if (!_.isArray(Obj) || Obj.length > 1) {
+            throw 'invalid leaves list';
+        }
         if (_.isArray(_.first(Obj))) {
-            this.children(_.first(Obj));
+            this.children(_.map(_.first(Obj), function (n) {return [n];}));
         } else {
             this.emit(_.first(Obj));
         }

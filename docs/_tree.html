@@ -376,8 +376,11 @@ inflation method to parse arrays like this:</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    _tree.inflate.onlyLeavesList = <span class="function"><span class="keyword">function</span> <span class="params">(Obj)</span> {</span>
+        <span class="keyword">if</span> (!_.isArray(Obj) || Obj.length &gt; <span class="number">1</span>) {
+            <span class="keyword">throw</span> <span class="string">'invalid leaves list'</span>;
+        }
         <span class="keyword">if</span> (_.isArray(_.first(Obj))) {
-            <span class="keyword">this</span>.children(_.first(Obj));
+            <span class="keyword">this</span>.children(_.map(_.first(Obj), <span class="function"><span class="keyword">function</span> <span class="params">(n)</span> {</span><span class="keyword">return</span> [n];}));
         } <span class="keyword">else</span> {
             <span class="keyword">this</span>.emit(_.first(Obj));
         }
