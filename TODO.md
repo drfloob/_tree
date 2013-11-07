@@ -3,6 +3,7 @@
  * test adjacency list with root siblings.
  * refactor random.spec.js into multiple files
  * analyze test robustness, outline what needs better testing
+ * ditch environment-specific tests
 
 # Nice-to-haves
 
@@ -13,7 +14,6 @@
 
  * host benchmark page
 
- * replace envDetect with ua-parser
  * Setup performance comparisons between libraries
  * (ask for and) collect test & benchmark stats.
  * implement tree plugins
