@@ -164,7 +164,10 @@ THE SOFTWARE.
     _tree.inflate.byAdjacencyList = function (Obj) {
         var kids, tmpObj, i;
         this.emit(_.first(Obj));
-        if (Obj.length > 1 && _.isArray(Obj[1])) {
+        if (Obj.length > 1) {
+            if (!_.isArray(Obj[1]) || Obj.length > 2) {
+                throw 'invalid adjacency list';
+            }
             kids = Obj[1];
             for (i = 0; i < kids.length; i++) {
                 tmpObj = [kids[i]];

@@ -1,9 +1,7 @@
 # Must Happen
 
- * test adjacency list with root siblings.
  * refactor random.spec.js into multiple files
  * analyze test robustness, outline what needs better testing
- * ditch environment-specific tests
 
 # Nice-to-haves
 

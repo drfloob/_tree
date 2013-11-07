@@ -72,7 +72,7 @@ yourself. Also, consider reading the
 
  * Chrome: >= 12
  * Firefox: >= 4
- * NodeJS ~0.10.21
+ * NodeJS >= 0.8
  * Internet Explorer: >= 9<sup>[note](#note-strict-mode)</sup>
  * Safari 6
  * iPhone 5, 4S (6.0)
@@ -119,14 +119,14 @@ You can run the benchmarks with `grunt benchmark:all`
 
 
 
-**Coverage**: Test coverage is currently only measured for
-PhantomJS. Branches for Node and global script definitions aren't
-executed, nor are the `Object.defineProperty` fallbacks.
+**Coverage**: Current PhantomJS coverage is at 94% statements, 93%
+branches, 98% functions, and 94% lines.
 
-Current PhantomJS coverage is at 94% statements, 93% branches, 98%
-functions, and 94% lines.
+Test coverage is currently measured for PhantomJS. Branches for Node
+and global script definitions aren't executed, nor are the
+`Object.defineProperty` fallbacks.
 
-Coverage is analyzed by running `grunt cover`. You can view the
+Coverage is analyzed by running `grunt phantom_cover`. You can view the
 coverage report locally at `coverage/index.html`.
 
 

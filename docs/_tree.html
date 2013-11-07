@@ -339,7 +339,10 @@ the children of the previous node. An example to clarify:</p>
             <div class="content"><div class='highlight'><pre>    _tree.inflate.byAdjacencyList = <span class="function"><span class="keyword">function</span> <span class="params">(Obj)</span> {</span>
         <span class="keyword">var</span> kids, tmpObj, i;
         <span class="keyword">this</span>.emit(_.first(Obj));
-        <span class="keyword">if</span> (Obj.length &gt; <span class="number">1</span> &amp;&amp; _.isArray(Obj[<span class="number">1</span>])) {
+        <span class="keyword">if</span> (Obj.length &gt; <span class="number">1</span>) {
+            <span class="keyword">if</span> (!_.isArray(Obj[<span class="number">1</span>]) || Obj.length &gt; <span class="number">2</span>) {
+                <span class="keyword">throw</span> <span class="string">'invalid adjacency list'</span>;
+            }
             kids = Obj[<span class="number">1</span>];
             <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; kids.length; i++) {
                 tmpObj = [kids[i]];

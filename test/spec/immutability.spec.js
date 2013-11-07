@@ -5,18 +5,18 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['_tree', 'underscore'], factory);
+        define(['_tree'], factory);
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('underscore'));
+        module.exports = factory(require('_tree'));
     } else {
         // Browser globals (root is window)
-        factory(root._tree, root._);
+        factory(root._tree);
     }
-}(this, function (_tree, _) {
+}(this, function (_tree) {
 
     'use strict';
 
