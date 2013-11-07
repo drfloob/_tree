@@ -59,10 +59,10 @@ familyTree.walk(printLineage);
 ```
 
 To get a feel for the library, check out the
-[tests](https://github.com/drfloob/_tree/tree/master/test) and
-[run them in your browser](http://tree.drfloob.com/_SpecRunner.html)
-yourself. Also, consider reading the
-[annotated source code](http://tree.drfloob.com/docs/_tree.html).
+[tests](https://github.com/drfloob/_tree/tree/master/test/spec/) and
+[**run them in your browser**](http://tree.drfloob.com/_SpecRunner.html). The
+[annotated source code](http://tree.drfloob.com/docs/_tree.html) is
+also available.
 
 
 ## Quality Metrics
