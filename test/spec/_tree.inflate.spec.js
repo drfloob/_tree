@@ -94,6 +94,51 @@
                 expect(tree.root().children()[0].data()).toBe('test2');
             });
         });
+
+
+        describe('.onlyLeavesList', function () {
+            it('works trivially', function () {
+                var tree, root, c2;
+                tree = _tree.inflate([['child1', ['child3']]], _tree.inflate.onlyLeavesList);
+                root = tree.root();
+                c2 = root.children()[1];
+
+                expect(root.data()).toBeUndefined();
+
+                expect(root.children().length).toBe(2);
+                expect(root.children()[0].data()).toBe('child1');
+
+                expect(c2.data()).toBeUndefined();
+                expect(c2.children().length).toBe(1);
+                expect(c2.children()[0].data()).toBe('child3');
+
+            });
+            it('fails on root siblings', function () {
+                expect(function () {_tree.inflate([0, 'bad'], _tree.inflate.onlyLeavesList);}).toThrow();
+            });
+            it('works on empty trees', function () {
+                var tree;
+                tree = _tree.inflate([], _tree.inflate.onlyLeavesList);
+                expect(tree.root().data).toBeDefined();
+                expect(tree.root().data()).toBeUndefined();
+                expect(tree.root().children().length).toBe(0);
+            });
+            it('works on root-only trees', function () {
+                var tree;
+                tree = _tree.inflate(['test'], _tree.inflate.onlyLeavesList);
+                expect(tree.root().data).toBeDefined();
+                expect(tree.root().data()).toBe('test');
+                expect(tree.root().children().length).toBe(0);
+            });
+            it('works on single-child trees', function () {
+                var tree;
+                tree = _tree.inflate([['test']], _tree.inflate.onlyLeavesList);
+                expect(tree.root().data).toBeDefined();
+                expect(tree.root().data()).toBeUndefined();
+                expect(tree.root().children().length).toBe(1);
+                expect(tree.root().children()[0].data()).toBe('test');
+            });
+        });
     });
 
 }));

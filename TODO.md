@@ -1,3 +1,7 @@
+# Must Haves
+ 
+ * fail on inflate with invalid function
+ 
 # Nice-to-haves
 
  * eliminate internal implementation details from tests

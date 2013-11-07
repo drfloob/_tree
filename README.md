@@ -120,8 +120,8 @@ You can run the benchmarks with `grunt benchmark:all`
 
 
 
-**Coverage**: Current PhantomJS coverage is at 94% statements, 93%
-branches, 98% functions, and 94% lines.
+**Coverage**: Current PhantomJS coverage is at 95% statements, 96%
+branches, 100% functions, and 95% lines.
 
 Test coverage is currently measured for PhantomJS. Branches for Node
 and global script definitions aren't executed, nor are the

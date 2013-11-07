@@ -1,6 +1,6 @@
 {
   "name": "_tree",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
   "author": "A.J. Heller",
   "license": "MIT",
