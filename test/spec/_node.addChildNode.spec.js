@@ -26,6 +26,13 @@
                                  _tree.inflate.byAdjacencyList);
         });
 
+        it('works trivially', function () {
+            var tmpTree = _tree.inflate({'test': 'data'}),
+            newTree = tree.root().addChildNode(tmpTree.root());
+            
+            expect(_.last(newTree.root().children()).data()).toEqual({'test': 'data'});
+        });
+
         it('throws if not a node', function () {
             expect(_.bind(tree.root().addChildNode, tree.root())).toThrow();
             expect(_.bind(tree.root().addChildNode, tree.root(), null)).toThrow();
@@ -37,13 +44,6 @@
             expect(_.bind(tree.root().addChildNode, this, tree.root())).toThrow();
         });
 
-        it('works trivially', function () {
-            var tmpTree = _tree.inflate({'test': 'data'}),
-            newTree = tree.root().addChildNode(tmpTree.root());
-            
-            expect(_.last(newTree.root().children()).data()).toEqual({'test': 'data'});
-        });
-
         
         it('contains valid ids', function () {
             var vals = [], tmpTree = _tree.inflate({'test': 'data'}),
@@ -52,24 +52,18 @@
             expect(_.every(vals, function(v) {return !_.isUndefined(v);})).toEqual(true);
         });
 
-        it('contains unique ids', function () {
-            var vals = [], tmpTree = _tree.inflate({'test': 'data'}),
-            newTree = tree.root().addChildNode(tmpTree.root());
-            
-            newTree.walk(function (n) { vals.push(n.id()); }, tree.walk.dfpre);
-            expect(_.uniq(vals)).toEqual(vals);
-        });
-
+        // this tests a specific internal representation of node ids.
         it('sets a single node id properly', function () {
             var tmpTree = _tree.inflate({'test': 'data'}),
             expectedId = tree.__nextNodeId,
             newTree = tree.root().addChildNode(tmpTree.root());
             
-            expect(newTree.findNodeByData({test: 'data'}).__id).toEqual(expectedId);
+            expect(newTree.findNodeByData({test: 'data'}).id()).toEqual(expectedId);
             expect(newTree.__nextNodeId).toBe(expectedId+1);
         });
 
 
+        // this tests a specific internal representation of node ids.
         it('sets a tree of node ids properly', function () {
             var ids = [],
             tmpTree = _tree.inflate(['six', [7, [8, 9], 10, [11, [12]]]],
@@ -82,6 +76,7 @@
         });
 
 
+        // this tests a specific internal representation of node ids.
         it('increments nextNodeId properly for one node', function () {
             var tmpTree = _tree.inflate({'test': 'data'}),
             expectedNextId = tree.__nextNodeId+1,
@@ -90,6 +85,7 @@
             expect(newTree.__nextNodeId).toBe(expectedNextId);
         });
 
+        // this tests a specific internal representation of node ids.
         it('increments nextNodeId properly for a tree', function () {
             var tmpTree = _tree.inflate(['six', [7, [8, 9], 10, [11, [12]]]],
                                     _tree.inflate.byAdjacencyList),
