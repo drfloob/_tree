@@ -47,9 +47,6 @@
     });
 
     describe('_tree.containsData', function () {
-        // TODO: empty tree look for null
-        // TODO: nonempty tree look for null
-
         it('works trivially', function () {
             var tree = _tree.inflate([1, [2,3]], _tree.inflate.byAdjacencyList);
 
@@ -59,6 +56,26 @@
             expect(tree.containsData(3)).toBe(true);
             expect(tree.containsData(4)).toBe(false);
         });
-    });
+
+        it('finds nothing in an empty tree', function () {
+            var tree = _tree.create();
+            expect(tree.containsData()).toBe(false);
+            expect(tree.containsData(null)).toBe(false);
+            expect(tree.containsData(0)).toBe(false);
+            expect(tree.containsData(tree.__id)).toBe(false);
+            expect(tree.containsData(tree.root().id())).toBe(false);
+        });
+
+        it('is not tripped up by ids, nulls, or other related data', function () {
+            var tree = _tree.inflate([1], _tree.inflate.byAdjacencyList);
+
+            expect(tree.containsData()).toBe(false);
+            expect(tree.containsData(null)).toBe(false);
+            expect(tree.containsData(0)).toBe(false);
+            expect(tree.containsData(tree.__id)).toBe(false);
+            expect(tree.containsData(tree.root().id())).toBe(false);
+            expect(tree.containsData(1)).toBe(true);
+        });
+});
 
 }));
