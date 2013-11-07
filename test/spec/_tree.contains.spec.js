@@ -62,6 +62,8 @@
             expect(tree.containsData()).toBe(false);
             expect(tree.containsData(null)).toBe(false);
             expect(tree.containsData(0)).toBe(false);
+            expect(tree.containsData(tree)).toBe(false);
+            expect(tree.containsData(tree.root())).toBe(false);
             expect(tree.containsData(tree.__id)).toBe(false);
             expect(tree.containsData(tree.root().id())).toBe(false);
         });
@@ -72,6 +74,8 @@
             expect(tree.containsData()).toBe(false);
             expect(tree.containsData(null)).toBe(false);
             expect(tree.containsData(0)).toBe(false);
+            expect(tree.containsData(tree)).toBe(false);
+            expect(tree.containsData(tree.root())).toBe(false);
             expect(tree.containsData(tree.__id)).toBe(false);
             expect(tree.containsData(tree.root().id())).toBe(false);
             expect(tree.containsData(1)).toBe(true);
