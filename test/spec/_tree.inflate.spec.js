@@ -1,4 +1,4 @@
-/*global define, describe, it, expect */
+/*global define, describe, it, expect, beforeEach */
 
 (function (root, factory) {
     'use strict';

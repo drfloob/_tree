@@ -80,6 +80,5 @@
             expect(tree.containsData(tree.root().id())).toBe(false);
             expect(tree.containsData(1)).toBe(true);
         });
-});
-
+    });
 }));
