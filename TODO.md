@@ -1,8 +1,3 @@
-# Must Happen
-
- * refactor random.spec.js into multiple files
- * analyze test robustness, outline what needs better testing
-
 # Nice-to-haves
 
  * eliminate internal implementation details from tests
