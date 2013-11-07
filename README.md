@@ -38,8 +38,9 @@ familyTree = familyTree.root().parseAndAddChild({'name': 'Kim Kil Wam'});
 // Prints the tree with everyone's name and their father's name
 printLineage = function(node) {
     var origin = ', origin unknown';
-    if (node.parent())
+    if (node.parent()) {
         origin = 'is the child of ' + node.parent().data().name;
+    }
     console.log(node.data().name, origin);
 };
 
