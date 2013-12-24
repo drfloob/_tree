@@ -19,7 +19,6 @@
   "bugs": {
     "url": "https://github.com/drfloob/_tree/issues"
   },
-  "main": "_tree",
   "dependencies": {
     "underscore": "~1.5.2"
   },
