@@ -2,13 +2,6 @@
 
 # _tree
 
-> "Computing's core challenge is how not to make a mess of it. ... All
-> unmastered complexity is of our own making; there is no one else to
-> blame and so we had better learn how not to introduce the complexity
-> in the first place."
-> 
-> -- <cite>[Edsger W. Dijkstra][EWD1243]</cite>
-
 This library provides an immutable tree model (data structure)
 implementation and a pluggable tree behavior for hierarchical data. It
 maintains zero internal state, does not alter your data, and does not
@@ -189,6 +182,13 @@ grunt --force
 
 
 ## Development Stuff
+
+> "Computing's core challenge is how not to make a mess of it. ... All
+> unmastered complexity is of our own making; there is no one else to
+> blame and so we had better learn how not to introduce the complexity
+> in the first place."
+> 
+> -- <cite>[Edsger W. Dijkstra][EWD1243]</cite>
 
 `_tree` does not maintain any internal state, which has a number of
 benefits:
