@@ -2,13 +2,13 @@
 
 **Table of Contents**
 
- * [Intro][#_tree]
- * [Example][#example]
- * [Quality Metrics][#quality-metrics]
- * [API][#api]
- * [Building][#building]
- * [Development Stuff][#development-stuff]
- * [Contributing][#contributing]
+ * [Intro](#_tree)
+ * [Example](#example)
+ * [Quality Metrics](#quality-metrics)
+ * [API](#api)
+ * [Building](#building)
+ * [Development Stuff](#development-stuff)
+ * [Contributing](#contributing)
 
 **Additional Links**
 
