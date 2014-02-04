@@ -79,6 +79,17 @@ THE SOFTWARE.
         // work, but without guaranteed tree immutability.
         try { Object.freeze(tree); } catch (e) {}
         __finalizeMutableChildNodes(tree.root());
+
+        // call each afterUpdate callback with the new tree
+        _.each(tree.defaults.callbacks.afterUpdate, function(cb) { cb(tree); });
+    }
+
+
+    function __cloneDefaults(defaults) {
+        defaults = defaults ? _.clone(defaults) : {};
+        defaults.callbacks = _.defaults(_.clone(defaults.callbacks || {}), __defaults.callbacks);
+        defaults = _.defaults(defaults, __defaults);
+        return defaults;
     }
 
 
@@ -97,8 +108,7 @@ THE SOFTWARE.
     // the object parsing logic fully pluggable. You can define your
     // own `inflateMethod`, or use one of the handful of built-ins.
     _tree.inflate = function (obj, inflateMethod, defaults) {
-        defaults = _.defaults(_.clone(defaults || {}), __defaults);
-
+        defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
         var tree = new Tree(defaults, obj, inflateMethod);
@@ -214,7 +224,7 @@ THE SOFTWARE.
         if (! (node instanceof Node)) {
             throw new Error('invalid node: ' + JSON.stringify(node));
         }
-        defaults = _.defaults(_.clone(defaults || {}), node.__tree.__defaults);
+        defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
         __finalizeMutableTreeClone(tree);
@@ -500,6 +510,37 @@ THE SOFTWARE.
             .addChildNode(movingNode);
     };
 
+
+    // Registers callbacks for tree events. Currently, `event` can
+    // only be 'afterUpdate', and `callback` can either be a single
+    // function or an array of functions.
+    //
+    // Note that adding callbacks generates a new tree, much as any
+    // other tree modification
+    Tree.prototype.on = function(event, callback) {
+        var newTree, cb;
+        newTree = Tree.clone(this);
+        cb = _.isArray(callback) ? callback : [callback];
+        newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
+
+    // Unregisters callbacks for tree events. Currently, `event` can
+    // only be 'afterUpdate', and `callback` can either be a single
+    // function or an array of functions. This also generates a new
+    // tree.
+    Tree.prototype.off = function(event, callback) {
+        var newTree, cb;
+        newTree = Tree.clone(this);
+        cb = _.isArray(callback) ? callback : [callback];
+        newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
+
+
+
     // # Node
     
 
@@ -685,7 +726,8 @@ THE SOFTWARE.
     __defaults =  {
         'inflate': _tree.inflate.byKey(),
         'walk': Tree.prototype.walk.dfpre,
-        'deleteRecursive': true
+        'deleteRecursive': true,
+        'callbacks': {'afterUpdate': []}
     };
 
     // And we're done.
