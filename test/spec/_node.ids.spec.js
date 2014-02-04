@@ -11,7 +11,7 @@
         // only CommonJS-like enviroments that support module.exports,
         // like Node.
         /* global module, require */
-        module.exports = factory(require('_tree'), require('underscore'));
+        module.exports = factory(require('../../src/_tree'), require('underscore'));
     } else {
         // Browser globals (root is window)
         factory(root._tree, root._);
