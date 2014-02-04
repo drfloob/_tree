@@ -15,7 +15,7 @@ scenarios.
 
 ```javascript
 'use strict';
-var patronage, familyTree, charlie, chuckFamilyTree, printLineage;
+var patronage, familyTree, charlie, chuckFamilyTree, printLineage, logger;
 
 patronage = {'name': 'Jake', 'children': [
     {'name': 'Jake Jr.'},
@@ -25,8 +25,16 @@ patronage = {'name': 'Jake', 'children': [
 ]};
 familyTree = _tree.inflate(patronage);
 
+// log all familyTree updates
+logger = function(tree) {
+    console.log('tree update detected', tree);
+};
+familyTree = familyTree.on('afterUpdate', logger);
+// logs 'tree update detected [ ... ]'
+
 // add a child, and save the new tree.
 familyTree = familyTree.root().parseAndAddChild({'name': 'Kim Kil Wam'});
+// logs 'tree update detected [ ... ]'
 
 // Prints the tree with everyone's name and their father's name
 printLineage = function(node) {
@@ -42,6 +50,7 @@ familyTree.walk(printLineage);
 // Charlie goes by Chuck now
 charlie = familyTree.findNodeByData({name: 'Charlie'});
 chuckFamilyTree = charlie.data({'name': 'Chuck'});
+// logs 'tree update detected [ ... ]'
 
 // Make sure Chuck's name is changed in the new tree ...
 chuckFamilyTree.walk(printLineage);
@@ -49,6 +58,10 @@ chuckFamilyTree.walk(printLineage);
 // ... and *not* in the old tree
 familyTree.walk(printLineage);
 
+
+// before going out of scope, prevent memory leaks by unbinding the logger
+familyTree.off('afterUpdate', logger);
+chuckFamilyTree.off('afterUpdate', logger); 
 ```
 
 To get a feel for the library, check out the
@@ -113,12 +126,13 @@ You can run the benchmarks with `grunt benchmark:all`
 
 
 
-**Coverage**: Current PhantomJS coverage is at 95% statements, 96%
-branches, 100% functions, and 95% lines.
+**Coverage**: Current PhantomJS coverage is at 96% statements, 96%
+branches, 100% functions, and 96% lines.
 
-Test coverage is currently measured for PhantomJS. Branches for Node
-and global script definitions aren't executed, nor are the
-`Object.defineProperty` fallbacks.
+Test coverage is measured for PhantomJS. Branches for Node and global
+script definitions aren't executed, nor are the
+`Object.defineProperty` fallbacks, so coverage is slightly
+misreported.
 
 Coverage is analyzed by running `grunt phantom_cover`. You can view the
 coverage report locally at `coverage/index.html`.
@@ -165,7 +179,11 @@ The `Tree` consists of `Node`s, which have the following API:
  * `equals`: returns `boolean` that representse the clone-agnostic
    equality of nodes.
  * `remove`: removes a `Node` from the tree, returning a new `Tree`.
-
+ * `on('afterUpdate', callback)` or `on('afterUpdate', [callbacks])`:
+   register callbacks for the afterUpdate event, which is called after
+   a new/updated tree is finalized.
+ * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
+   unregisters callbacks.
 
 
 ## Building
