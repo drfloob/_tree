@@ -57,9 +57,10 @@ THE SOFTWARE.
     }
 
     // Before returning a mutable cloned tree, it needs to be properly
-    // frozen to maintain our guarantee. Also, since node-to-tree
-    // references aren't useful until all modifications are done, all
-    // nodes need to be given a reference to their tree.
+    // frozen to maintain its immutability guarantee. Also, since
+    // trees aren't immutable until all node modifications are done,
+    // all nodes need to be given this last-stage reference to the
+    // tree.
     function __finalizeMutableTreeClone(tree) {
 
         function __finalizeMutableChildNodes(node, parent) {
@@ -206,9 +207,9 @@ THE SOFTWARE.
 
 
 
-    // The final public API method, `_tree.fromNode`, allows the
-    // creation of a new tree from an existing `Node`. The new tree is
-    // considered *not to be* a clone of the node's original tree.
+    // `_tree.fromNode`, allows the creation of a new tree from an
+    // existing `Node`. The new tree is considered to *not* be a clone
+    // of the node's original tree.
     _tree.fromNode = function (node, defaults) {
         if (! (node instanceof Node)) {
             throw new Error('invalid node: ' + JSON.stringify(node));
@@ -227,7 +228,7 @@ THE SOFTWARE.
     // This is the `Tree` constructor. It is intended to be used
     // internally, and so it returns a mutable object that must be
     // frozen before it's returned. For the sake of IE8, and all other
-    // environments that don't support Object.definePropert{y|ies},
+    // environments that don't support Object.definePropert(y|ies),
     // the nasty bit of try/catch here allows those environments to
     // work without guaranteed immutability.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
