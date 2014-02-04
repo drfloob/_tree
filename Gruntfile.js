@@ -83,7 +83,7 @@ module.exports = function(grunt) {
             }
         },
         jasmine_node: {
-            projectRoot: 'test/spec',
+            specFolders: ['test/spec'],
             forceExit: true
         },
         docco: {
