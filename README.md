@@ -135,10 +135,10 @@ browser under `strict mode` throws an error.
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
   using Chrome 30 on Debian Wheezy:
 
- * 1024 node trees can be inflated at ~15/sec
- * 30 node trees can be inflated at ~600/sec
- * 11 node trees can be inflated at ~1,500/sec
- * empty trees can be created at ~12,000/sec
+ * 1024 node trees can be inflated at ~10/sec
+ * 30 node trees can be inflated at ~375/sec
+ * 11 node trees can be inflated at ~1,000/sec
+ * empty trees can be created at ~8,000/sec
 
 You can run the benchmarks with `grunt benchmark:all`
 
