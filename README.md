@@ -1,5 +1,23 @@
 [![Build Status](https://travis-ci.org/drfloob/_tree.png?branch=master)](https://travis-ci.org/drfloob/_tree)
 
+**Table of Contents**
+
+ * [Intro][#_tree]
+ * [Example][#example]
+ * [Quality Metrics][#quality-metrics]
+ * [API][#api]
+ * [Building][#building]
+ * [Development Stuff][#development-stuff]
+ * [Contributing][#contributing]
+
+**Additional Links**
+
+ * [Homepage][home]
+ * [Annotated source code][annsrc]
+ * [Live in-browser tests][tests]
+
+
+
 # _tree
 
 This library provides an immutable tree model (data structure)
@@ -248,3 +266,6 @@ Please do.
 [REFTRAN]: https://en.wikipedia.org/wiki/Referential_transparency_(computer_science)
 [_]: http://underscorejs.org/
 [docco]: http://jashkenas.github.io/docco/
+[home]: http://tree.drfloob.com/
+[annsrc]: http://tree.drfloob.com/docs/_tree.html
+[tests]: http://tree.drfloob.com/_SpecRunner.html
