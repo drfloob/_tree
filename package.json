@@ -22,7 +22,8 @@
   },
   "main": "_tree",
   "dependencies": {
-    "underscore": "~1.5.2"
+      "underscore": "~1.5.2",
+      "benchmark": ""
   },
   "devDependencies": {
     "grunt": "~0.4.1",

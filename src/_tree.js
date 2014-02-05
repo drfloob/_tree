@@ -57,9 +57,10 @@ THE SOFTWARE.
     }
 
     // Before returning a mutable cloned tree, it needs to be properly
-    // frozen to maintain our guarantee. Also, since node-to-tree
-    // references aren't useful until all modifications are done, all
-    // nodes need to be given a reference to their tree.
+    // frozen to maintain its immutability guarantee. Also, since
+    // trees aren't immutable until all node modifications are done,
+    // all nodes need to be given this last-stage reference to the
+    // tree.
     function __finalizeMutableTreeClone(tree) {
 
         function __finalizeMutableChildNodes(node, parent) {
@@ -78,6 +79,17 @@ THE SOFTWARE.
         // work, but without guaranteed tree immutability.
         try { Object.freeze(tree); } catch (e) {}
         __finalizeMutableChildNodes(tree.root());
+
+        // call each afterUpdate callback with the new tree
+        _.each(tree.defaults.callbacks.afterUpdate, function(cb) { cb(tree); });
+    }
+
+
+    function __cloneDefaults(defaults) {
+        defaults = defaults ? _.clone(defaults) : {};
+        defaults.callbacks = _.defaults(_.clone(defaults.callbacks || {}), __defaults.callbacks);
+        defaults = _.defaults(defaults, __defaults);
+        return defaults;
     }
 
 
@@ -96,8 +108,7 @@ THE SOFTWARE.
     // the object parsing logic fully pluggable. You can define your
     // own `inflateMethod`, or use one of the handful of built-ins.
     _tree.inflate = function (obj, inflateMethod, defaults) {
-        defaults = _.defaults(_.clone(defaults || {}), __defaults);
-
+        defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
         var tree = new Tree(defaults, obj, inflateMethod);
@@ -206,14 +217,14 @@ THE SOFTWARE.
 
 
 
-    // The final public API method, `_tree.fromNode`, allows the
-    // creation of a new tree from an existing `Node`. The new tree is
-    // considered *not to be* a clone of the node's original tree.
+    // `_tree.fromNode`, allows the creation of a new tree from an
+    // existing `Node`. The new tree is considered to *not* be a clone
+    // of the node's original tree.
     _tree.fromNode = function (node, defaults) {
         if (! (node instanceof Node)) {
             throw new Error('invalid node: ' + JSON.stringify(node));
         }
-        defaults = _.defaults(_.clone(defaults || {}), node.__tree.__defaults);
+        defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
         __finalizeMutableTreeClone(tree);
@@ -227,7 +238,7 @@ THE SOFTWARE.
     // This is the `Tree` constructor. It is intended to be used
     // internally, and so it returns a mutable object that must be
     // frozen before it's returned. For the sake of IE8, and all other
-    // environments that don't support Object.definePropert{y|ies},
+    // environments that don't support Object.definePropert(y|ies),
     // the nasty bit of try/catch here allows those environments to
     // work without guaranteed immutability.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
@@ -361,13 +372,26 @@ THE SOFTWARE.
     // Matches a node by its data using deep comparison, without
     // requiring object equality, via `_.isEqual(node.data(), data)`
     Tree.prototype.findNodeByData = function (data, walkMethod) {
+        var isMatch, keys, found = false;
         if (_.isUndefined(data)) {
             return false;
         }
+        if (_.isObject(data) && !_.isArray(data)) {
+            keys = _.keys(data);
+            isMatch = function(nodeData) {
+                if (!_.isObject(nodeData) || _.isArray(nodeData)) {
+                    return false;
+                }
+                return _.isEqual(data, _.partial(_.pick, nodeData).apply(_, keys));
+            };
+        } else {
+            isMatch = function(nodeData) {
+                return _.isEqual(data, nodeData);
+            };
+        }
 
-        var found = false;
         this.walk(function (visitNode) {
-            if (!found && _.isEqual(data, visitNode.__data)) {
+            if (!found && isMatch(visitNode.__data)) {
                 found = visitNode;
             }
         }, walkMethod);
@@ -498,6 +522,37 @@ THE SOFTWARE.
             .findNode(toParent)
             .addChildNode(movingNode);
     };
+
+
+    // Registers callbacks for tree events. Currently, `event` can
+    // only be 'afterUpdate', and `callback` can either be a single
+    // function or an array of functions.
+    //
+    // Note that adding callbacks generates a new tree, much as any
+    // other tree modification
+    Tree.prototype.on = function(event, callback) {
+        var newTree, cb;
+        newTree = Tree.clone(this);
+        cb = _.isArray(callback) ? callback : [callback];
+        newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
+
+    // Unregisters callbacks for tree events. Currently, `event` can
+    // only be 'afterUpdate', and `callback` can either be a single
+    // function or an array of functions. This also generates a new
+    // tree.
+    Tree.prototype.off = function(event, callback) {
+        var newTree, cb;
+        newTree = Tree.clone(this);
+        cb = _.isArray(callback) ? callback : [callback];
+        newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
+
+
 
     // # Node
     
@@ -684,7 +739,8 @@ THE SOFTWARE.
     __defaults =  {
         'inflate': _tree.inflate.byKey(),
         'walk': Tree.prototype.walk.dfpre,
-        'deleteRecursive': true
+        'deleteRecursive': true,
+        'callbacks': {'afterUpdate': []}
     };
 
     // And we're done.

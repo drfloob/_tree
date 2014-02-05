@@ -41,14 +41,17 @@
 
     var ideep = deep(1024), iwide = wide(1024);
 
+    var self = this;
     return { 
         name: '1024 Deep - vs - 1024 Wide',
         tests: {
             '1024 wide': function() {
+                console.log('wide', _tree, this);
                 _tree.inflate(iwide, _tree.inflate.byAdjacencyList);
             },
             '1024 deep': function () {
-                tree = _tree.inflate(ideep, _tree.inflate.byAdjacencyList);
+                console.log('deep');
+                _tree.inflate(ideep, _tree.inflate.byAdjacencyList);
             }
         }
     };
