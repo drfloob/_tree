@@ -1,6 +1,6 @@
 {
   "name": "under_tree",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
   "author": "A.J. Heller",
   "license": "MIT",

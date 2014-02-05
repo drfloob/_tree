@@ -75,6 +75,13 @@ THE SOFTWARE.
             _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
         }
 
+        // engage mixins before finalization
+        _.each(tree.defaults.mixins, function(mix) {
+            _.each(mix, function(f, key) {
+                tree[key] = f;
+            });
+        });
+
         // Environments that don't support `Object.freeze` will still
         // work, but without guaranteed tree immutability.
         try { Object.freeze(tree); } catch (e) {}
@@ -88,6 +95,7 @@ THE SOFTWARE.
     function __cloneDefaults(defaults) {
         defaults = defaults ? _.clone(defaults) : {};
         defaults.callbacks = _.defaults(_.clone(defaults.callbacks || {}), __defaults.callbacks);
+        defaults.mixins = _.union((defaults.mixins || []), __defaults.mixins);
         defaults = _.defaults(defaults, __defaults);
         return defaults;
     }
@@ -553,6 +561,20 @@ THE SOFTWARE.
     };
 
 
+    // Adds mixin properties and functions to the tree. These mixins
+    // are preserved across all tree operations. Be careful, you can
+    // overwrite core _tree methods with mixins. No effort is made to
+    // protect you there. Namespacing your mixins is probably good
+    // practice.
+    Tree.prototype.mixin = function(mixin) {
+        var newTree;
+        newTree = Tree.clone(this);
+        if (!_.contains(newTree.defaults.mixins, mixin)) {
+            newTree.defaults.mixins.push(mixin);
+        }
+        __finalizeMutableTreeClone(newTree);
+        return newTree;
+    };
 
     // # Node
     
@@ -740,7 +762,8 @@ THE SOFTWARE.
         'inflate': _tree.inflate.byKey(),
         'walk': Tree.prototype.walk.dfpre,
         'deleteRecursive': true,
-        'callbacks': {'afterUpdate': []}
+        'callbacks': {'afterUpdate': []},
+        'mixins': []
     };
 
     // And we're done.

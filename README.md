@@ -183,6 +183,10 @@ following methods:
    `Node` in the `Tree`
  * `moveNode`: move a `Node` and its descendants from one point in the
    tree to another.
+ * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
+   unregisters callbacks.
+ * `mixin`: mixes any object into your tree. Mixins are preserved
+   across tree operations.
  
 The `Tree` consists of `Node`s, which have the following API:
  
@@ -201,8 +205,6 @@ The `Tree` consists of `Node`s, which have the following API:
  * `on('afterUpdate', callback)` or `on('afterUpdate', [callbacks])`:
    register callbacks for the afterUpdate event, which is called after
    a new/updated tree is finalized.
- * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
-   unregisters callbacks.
 
 
 ## Building
