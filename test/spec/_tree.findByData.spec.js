@@ -73,6 +73,23 @@
         });
 
 
+        describe('inflated from object', function () {
+            it('finds node with only a partial description of the data', function () {
+                var tree;
+
+                tree = _tree.inflate({'name': 'Jake', 'children': [
+                    {'name': 'Jake Jr.'},
+                    {'name': 'T.V.'},
+                    {'name': 'Charlie'},
+                    {'name': 'Viola', instrument: 'trumpet'}
+                ]});
+
+                expect(tree.findNodeByData({name: 'Jake'})).toBe(tree.root());
+                expect(tree.findNodeByData({name: 'Viola'})).toBe(tree.root().children()[3]);
+            });
+        });
+
+
         describe('with non-unique data', function () {
             var tree;
             beforeEach(function () {

@@ -175,7 +175,8 @@ following methods:
  * `equals`: determines if two `Tree`s are related clones.
  * `findNode`: finds the equivalent `Node` in a tree (works across
    clones)
- * `findNodeByData`: finds the first `Node` containing matching data
+ * `findNodeByData(matchData)`: finds the first `Node` containing matching data,
+   even if supplied with a partial match.
  * `containsNode`: returns `boolean` whether the `Node` exists in the
    `Tree`
  * `containsData`: returns `boolean` whether the data exists in any

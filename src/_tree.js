@@ -372,13 +372,26 @@ THE SOFTWARE.
     // Matches a node by its data using deep comparison, without
     // requiring object equality, via `_.isEqual(node.data(), data)`
     Tree.prototype.findNodeByData = function (data, walkMethod) {
+        var isMatch, keys, found = false;
         if (_.isUndefined(data)) {
             return false;
         }
+        if (_.isObject(data) && !_.isArray(data)) {
+            keys = _.keys(data);
+            isMatch = function(nodeData) {
+                if (!_.isObject(nodeData) || _.isArray(nodeData)) {
+                    return false;
+                }
+                return _.isEqual(data, _.partial(_.pick, nodeData).apply(_, keys));
+            };
+        } else {
+            isMatch = function(nodeData) {
+                return _.isEqual(data, nodeData);
+            };
+        }
 
-        var found = false;
         this.walk(function (visitNode) {
-            if (!found && _.isEqual(data, visitNode.__data)) {
+            if (!found && isMatch(visitNode.__data)) {
                 found = visitNode;
             }
         }, walkMethod);
