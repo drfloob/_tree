@@ -682,13 +682,26 @@ requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Tree.prototype.findNodeByData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data, walkMethod)</span> {</span>
+        <span class="hljs-keyword">var</span> isMatch, keys, found = <span class="hljs-literal">false</span>;
         <span class="hljs-keyword">if</span> (_.isUndefined(data)) {
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
         }
+        <span class="hljs-keyword">if</span> (_.isObject(data) &amp;&amp; !_.isArray(data)) {
+            keys = _.keys(data);
+            isMatch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(nodeData)</span> {</span>
+                <span class="hljs-keyword">if</span> (!_.isObject(nodeData) || _.isArray(nodeData)) {
+                    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+                }
+                <span class="hljs-keyword">return</span> _.isEqual(data, _.partial(_.pick, nodeData).apply(_, keys));
+            };
+        } <span class="hljs-keyword">else</span> {
+            isMatch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(nodeData)</span> {</span>
+                <span class="hljs-keyword">return</span> _.isEqual(data, nodeData);
+            };
+        }
 
-        <span class="hljs-keyword">var</span> found = <span class="hljs-literal">false</span>;
         <span class="hljs-keyword">this</span>.walk(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(visitNode)</span> {</span>
-            <span class="hljs-keyword">if</span> (!found &amp;&amp; _.isEqual(data, visitNode.__data)) {
+            <span class="hljs-keyword">if</span> (!found &amp;&amp; isMatch(visitNode.__data)) {
                 found = visitNode;
             }
         }, walkMethod);
