@@ -197,7 +197,10 @@ coverage report locally at `coverage/index.html`.
 
 ## API
 
-The `_tree` library exposes the following functions:
+The `_tree` library creates `Tree` objects, comprised of `Node`
+objects.
+
+### The `_tree` library
 
  * `create([defaults])`: creates an empty `Tree`
  * `inflate(object [, method [, defaults]])`: parses your data into a
@@ -205,8 +208,7 @@ The `_tree` library exposes the following functions:
  * `fromNode(node [, defaults])`: creates a new tree using a `Node`
    from another tree.
 
-All of the `_tree` methods return a `Tree` object, which has the
-following methods: 
+### Tree objects
 
  * `root()`: returns the root `Node`
  * `walk(callback [, walkMethod, [, startNode]])`: traverses the
@@ -229,7 +231,7 @@ following methods:
    on all tree modifications. Note that all nodes will share the same
    mixin object.
  
-The `Tree` consists of `Node`s, which have the following API:
+### Node objects
  
  * `data([data])`: gets or sets the data on a node. Setting data
    generates a new `Tree`.
