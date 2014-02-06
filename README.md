@@ -133,7 +133,7 @@ browser under `strict mode` throws an error.
 
 
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
-  using Chrome 30 on Debian Wheezy:
+  Debian wheezy:
 
 ```
 $ grunt benchmark:all
@@ -207,27 +207,29 @@ coverage report locally at `coverage/index.html`.
 
 The `_tree` library exposes the following functions:
 
- * `create`: creates an empty `Tree`
- * `inflate`: parses your data into a `Tree`
- * `fromNode`: creates a new tree using a `Node` from another tree
+ * `create([defaults])`: creates an empty `Tree`
+ * `inflate(object [, method [, defaults]])`: parses your data into a
+   `Tree`
+ * `fromNode(node [, defaults])`: creates a new tree using a `Node`
+   from another tree.
 
 All of the `_tree` methods return a `Tree` object, which has the
 following methods: 
 
- * `root`: returns the root `Node`
- * `walk`: traverses the `Tree`, executing a callback for each node in
-   the order you specify
- * `equals`: determines if two `Tree`s are related clones.
+ * `root()`: returns the root `Node`
+ * `walk(callback [, walkMethod, [, startNode]])`: traverses the
+   `Tree`, executing a callback for each node in the order you specify
+ * `equals(otherTree)`: determines if two `Tree`s are related clones.
  * `findNode`: finds the equivalent `Node` in a tree (works across
    clones)
- * `findNodeByData(matchData)`: finds the first `Node` containing matching data,
-   even if supplied with a partial match.
- * `containsNode`: returns `boolean` whether the `Node` exists in the
+ * `findNodeByData(matchData)`: finds the first `Node` containing
+   matching data, even if supplied with a partial match.
+ * `containsNode(node)`: returns `boolean` whether the `Node` exists in the
    `Tree`
- * `containsData`: returns `boolean` whether the data exists in any
-   `Node` in the `Tree`
- * `moveNode`: move a `Node` and its descendants from one point in the
-   tree to another.
+ * `containsData(data)`: returns `boolean` whether the data exists in
+   any `Node` in the `Tree`. Works for partial matches.
+ * `moveNode(movingNode, toParentNode)`: move a `Node` and its
+   descendants from one point in the tree to another.
  * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
    unregisters callbacks.
  * `mixin({tree: [], node: []}`: mixes an object into your tree and
@@ -237,18 +239,20 @@ following methods:
  
 The `Tree` consists of `Node`s, which have the following API:
  
- * `data`: gets or sets the data on a node. Setting data generates a new `Tree`.
- * `children`: returns the child `Node`s of a node
- * `parent`: returns the `Node`'s parent
- * `tree`: returns the `Node`'s tree
- * `id`: returns the tree-unique internal id of the `Node`
- * `parseAndAddChild`: parses an object (much like inflate) and adds
-   it as a child of the `Node`. Returns a new `Tree`.
- * `addChildNode`: adds a `Node` as a child. Errors are thrown if the
-   `Node` already exists in the tree. Returns a new `Tree`.
- * `equals`: returns `boolean` that representse the clone-agnostic
-   equality of nodes.
- * `remove`: removes a `Node` from the tree, returning a new `Tree`.
+ * `data([data])`: gets or sets the data on a node. Setting data
+   generates a new `Tree`.
+ * `children()`: returns the child `Node`s of a node
+ * `parent()`: returns the `Node`'s parent
+ * `tree()`: returns the `Node`'s tree
+ * `id()`: returns the tree-unique internal id of the `Node`
+ * `parseAndAddChild(obj [, inflateMethod])`: parses an object (much
+   like inflate) and adds it as a child of the `Node`. Returns a new
+   `Tree`.
+ * `addChildNode(node)`: adds a `Node` as a child. Errors are thrown
+   if the `Node` already exists in the tree. Returns a new `Tree`.
+ * `equals(otherNode)`: returns `boolean` that representse the
+   clone-agnostic equality of nodes.
+ * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
  * `on('afterUpdate', callback)` or `on('afterUpdate', [callbacks])`:
    register callbacks for the afterUpdate event, which is called after
    a new/updated tree is finalized.
