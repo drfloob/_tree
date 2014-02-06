@@ -44,18 +44,6 @@ THE SOFTWARE.
 
     var _tree = {}, Tree, Node, __defaults;
 
-    // A rfc4122-compatible GUID generator, with thanks to 
-    // [broofa](http://stackoverflow.com/a/2117523)
-    function uuid () {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            /* jshint bitwise:false */
-            // Bitwise logic is intentional here. Chill out, `jshint`
-            var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
-            /* jshint bitwise:true */
-            return v.toString(16);
-        });
-    }
-
     // Before returning a mutable cloned tree, it needs to be properly
     // frozen to maintain its immutability guarantee. Also, since
     // trees aren't immutable until all node modifications are done,
@@ -261,7 +249,7 @@ THE SOFTWARE.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
         this.defaults = defaults;
         var  __id, __nextNodeId, __root;
-        __id = uuid();
+        __id = _.uniqueId();
         __nextNodeId = nextNodeId || 0;
         try {
             Object.defineProperties(this, {
