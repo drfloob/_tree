@@ -209,9 +209,18 @@ tree.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>        _.each(tree.defaults.mixins, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mix)</span> {</span>
-            _.each(mix, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
-                tree[key] = f;
-            });
+            <span class="hljs-keyword">if</span> (mix.tree) {
+                _.each(mix.tree, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
+                    tree[key] = f;
+                });
+            }
+            <span class="hljs-keyword">if</span> (mix.node) {
+                _.each(mix.node, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
+                    tree.walk(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(visitNode)</span> {</span>
+                        visitNode[key] = f;
+                    });
+                });
+            }
         });</pre></div></div>
             
         </li>
