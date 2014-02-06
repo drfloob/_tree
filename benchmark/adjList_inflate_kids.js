@@ -27,8 +27,14 @@
             'two children': function() {
                 _tree.inflate([1, [2, 3]], _tree.inflate.byAdjacencyList);
             },
-            'three children': function() {
-                _tree.inflate([1, [2, 3, 4]], _tree.inflate.byAdjacencyList);
+            'four children': function() {
+                _tree.inflate([1, [2, 3, 4, 5]], _tree.inflate.byAdjacencyList);
+            },
+            'eight children': function() {
+                _tree.inflate([1, [2, 3, 4, 5, 6, 7, 8, 9]], _tree.inflate.byAdjacencyList);
+            },
+            'sixteen children': function() {
+                _tree.inflate([1, [2, 3, 4, 5, 6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 18, 19]], _tree.inflate.byAdjacencyList);
             }
         }
     };
