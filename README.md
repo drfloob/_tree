@@ -125,60 +125,60 @@ $ grunt benchmark:all
 Running "benchmark:all" (benchmark) task
 
 Running suite 1024 Deep - vs - 1024 Wide [benchmark/1024deep_vs_1024wide.js]...
->> 1024 wide x 9.93 ops/sec ±6.70% (29 runs sampled)
->> 1024 deep x 8.19 ops/sec ±7.07% (25 runs sampled)
-Fastest test is 1024 wide at 1.21x faster than 1024 deep
+>> 1024 wide x 10.64 ops/sec ±7.32% (31 runs sampled)
+>> 1024 deep x 9.58 ops/sec ±6.19% (28 runs sampled)
+Fastest test is 1024 wide at 1.11x faster than 1024 deep
 
 Running suite 30 Deep - vs - 30 Wide [benchmark/30deep_vs_30wide.js]...
->> 30 wide x 365 ops/sec ±2.11% (91 runs sampled)
->> 30 deep x 370 ops/sec ±2.36% (92 runs sampled)
-Fastest tests are 30 deep,30 wide
+>> 30 wide x 444 ops/sec ±2.23% (92 runs sampled)
+>> 30 deep x 439 ops/sec ±2.47% (91 runs sampled)
+Fastest test is 30 wide at 1.01x faster than 30 deep
 
 Running suite Big list inflations [benchmark/adjList_inflate_big.js]...
->> 11 kids x 943 ops/sec ±2.33% (94 runs sampled)
->> complex x 919 ops/sec ±1.93% (94 runs sampled)
-Fastest test is 11 kids at 1.03x faster than complex
+>> 11 kids x 1,066 ops/sec ±2.85% (92 runs sampled)
+>> complex x 1,043 ops/sec ±2.33% (93 runs sampled)
+Fastest test is 11 kids at 1.02x faster than complex
 
 Running suite Inflate empty vs simple lists [benchmark/adjList_inflate_empty.js]...
->> empty obj x 6,880 ops/sec ±4.74% (88 runs sampled)
->> simple obj x 5,916 ops/sec ±5.61% (79 runs sampled)
-Fastest test is empty obj at 1.16x faster than simple obj
+>> empty obj x 7,402 ops/sec ±2.70% (87 runs sampled)
+>> simple obj x 7,476 ops/sec ±2.86% (87 runs sampled)
+Fastest tests are simple obj,empty obj
 
 Running suite Inflating lists with children [benchmark/adjList_inflate_kids.js]...
->> one child x 3,864 ops/sec ±5.38% (83 runs sampled)
->> two children x 3,019 ops/sec ±2.77% (89 runs sampled)
->> four children x 1,971 ops/sec ±3.66% (90 runs sampled)
->> eight children x 1,201 ops/sec ±2.25% (92 runs sampled)
->> sixteen children x 552 ops/sec ±5.65% (78 runs sampled)
-Fastest test is one child at 1.28x faster than two children
+>> one child x 4,513 ops/sec ±3.52% (87 runs sampled)
+>> two children x 3,351 ops/sec ±3.77% (88 runs sampled)
+>> four children x 2,186 ops/sec ±3.68% (86 runs sampled)
+>> eight children x 1,332 ops/sec ±3.22% (89 runs sampled)
+>> sixteen children x 798 ops/sec ±1.84% (95 runs sampled)
+Fastest test is one child at 1.35x faster than two children
 
 Running benchmark create tests [benchmark/object_create.js]...
->> create tests x 6,494 ops/sec ±3.47% (21 runs sampled)
+>> create tests x 7,604 ops/sec ±5.71% (19 runs sampled)
 
 Running suite Big object inflations [benchmark/object_inflate_big.js]...
->> 11 kids x 1,007 ops/sec ±2.89% (92 runs sampled)
->> complex x 913 ops/sec ±2.33% (91 runs sampled)
-Fastest test is 11 kids at 1.10x faster than complex
+>> 11 kids x 1,180 ops/sec ±2.86% (93 runs sampled)
+>> complex x 1,108 ops/sec ±2.14% (95 runs sampled)
+Fastest test is 11 kids at 1.07x faster than complex
 
 Running suite Inflate empty vs simple objects [benchmark/object_inflate_empty.js]...
->> empty obj x 7,651 ops/sec ±6.09% (90 runs sampled)
->> simple obj x 7,000 ops/sec ±6.97% (88 runs sampled)
-Fastest test is empty obj at 1.09x faster than simple obj
+>> empty obj x 8,845 ops/sec ±2.66% (93 runs sampled)
+>> simple obj x 8,873 ops/sec ±2.42% (92 runs sampled)
+Fastest tests are simple obj,empty obj
 
 Running suite Inflating objects with children [benchmark/object_inflate_kids.js]...
->> one kid x 4,305 ops/sec ±4.88% (87 runs sampled)
->> two kids x 3,000 ops/sec ±6.36% (86 runs sampled)
->> three kids x 2,579 ops/sec ±2.39% (94 runs sampled)
-Fastest test is one kid at 1.44x faster than two kids
+>> one kid x 5,149 ops/sec ±2.87% (92 runs sampled)
+>> two kids x 3,745 ops/sec ±2.91% (95 runs sampled)
+>> three kids x 2,735 ops/sec ±3.70% (87 runs sampled)
+Fastest test is one kid at 1.37x faster than two kids
 
 Running benchmark A big tree and a bunch of stuff done to it [benchmark/realworld.js]...
->> A big tree and a bunch of stuff done to it x 70,065,881 ops/sec ±6.07% (71 runs sampled)
+>> A big tree and a bunch of stuff done to it x 72,800,057 ops/sec ±5.73% (73 runs sampled)
 
 ```
 
 [This fiddle](http://jsfiddle.net/9x7aJ/2734/) shows the logarithmic
 performance of increasing the number of child nodes during tree
-inflation.
+inflation. Data is from a previous run.
 
 
 
