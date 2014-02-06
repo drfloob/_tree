@@ -77,9 +77,18 @@ THE SOFTWARE.
 
         // engage mixins before finalization
         _.each(tree.defaults.mixins, function(mix) {
-            _.each(mix, function(f, key) {
-                tree[key] = f;
-            });
+            if (mix.tree) {
+                _.each(mix.tree, function(f, key) {
+                    tree[key] = f;
+                });
+            }
+            if (mix.node) {
+                _.each(mix.node, function(f, key) {
+                    tree.walk(function(visitNode) {
+                        visitNode[key] = f;
+                    });
+                });
+            }
         });
 
         // Environments that don't support `Object.freeze` will still

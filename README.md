@@ -135,17 +135,62 @@ browser under `strict mode` throws an error.
 **Performance**: On an Intel Core 2 CPU T5600 @ 1.83GHz, 3GB Memory,
   using Chrome 30 on Debian Wheezy:
 
- * 1024 node trees can be inflated at ~10/sec
- * 30 node trees can be inflated at ~375/sec
- * 11 node trees can be inflated at ~1,000/sec
- * empty trees can be created at ~8,000/sec
+```
+$ grunt benchmark:all
+Running "benchmark:all" (benchmark) task
 
-You can run the benchmarks with `grunt benchmark:all`
+Running suite 1024 Deep - vs - 1024 Wide [benchmark/1024deep_vs_1024wide.js]...
+>> 1024 wide x 9.80 ops/sec ±6.74% (29 runs sampled)
+>> 1024 deep x 8.11 ops/sec ±7.41% (25 runs sampled)
+Fastest test is 1024 wide at 1.21x faster than 1024 deep
+
+Running suite 30 Deep - vs - 30 Wide [benchmark/30deep_vs_30wide.js]...
+>> 30 wide x 363 ops/sec ±2.04% (90 runs sampled)
+>> 30 deep x 363 ops/sec ±2.37% (90 runs sampled)
+Fastest tests are 30 wide,30 deep
+
+Running suite Big list inflations [benchmark/adjList_inflate_big.js]...
+>> 11 kids x 925 ops/sec ±2.52% (91 runs sampled)
+>> complex x 894 ops/sec ±2.45% (93 runs sampled)
+Fastest test is 11 kids at 1.03x faster than complex
+
+Running suite Inflate empty vs simple lists [benchmark/adjList_inflate_empty.js]...
+>> empty obj x 7,043 ops/sec ±2.78% (90 runs sampled)
+>> simple obj x 7,098 ops/sec ±2.81% (90 runs sampled)
+Fastest tests are simple obj,empty obj
+
+Running suite Inflating lists with children [benchmark/adjList_inflate_kids.js]...
+>> one child x 4,274 ops/sec ±2.53% (92 runs sampled)
+>> two children x 3,146 ops/sec ±2.48% (97 runs sampled)
+>> three children x 2,436 ops/sec ±2.72% (93 runs sampled)
+Fastest test is one child at 1.36x faster than two children
+
+Running benchmark create tests [benchmark/object_create.js]...
+>> create tests x 7,433 ops/sec ±7.59% (21 runs sampled)
+
+Running suite Big object inflations [benchmark/object_inflate_big.js]...
+>> 11 kids x 1,015 ops/sec ±2.85% (91 runs sampled)
+>> complex x 933 ops/sec ±2.06% (93 runs sampled)
+Fastest test is 11 kids at 1.09x faster than complex
+
+Running suite Inflate empty vs simple objects [benchmark/object_inflate_empty.js]...
+>> empty obj x 7,963 ops/sec ±2.50% (89 runs sampled)
+>> simple obj x 8,090 ops/sec ±2.19% (94 runs sampled)
+Fastest test is simple obj at 1.02x faster than empty obj
+
+Running suite Inflating objects with children [benchmark/object_inflate_kids.js]...
+>> one kid x 4,680 ops/sec ±2.32% (96 runs sampled)
+>> two kids x 3,362 ops/sec ±2.06% (96 runs sampled)
+>> three kids x 2,640 ops/sec ±2.26% (97 runs sampled)
+Fastest test is one kid at 1.39x faster than two kids
+
+Running benchmark A big tree and a bunch of stuff done to it [benchmark/realworld.js]...
+>> A big tree and a bunch of stuff done to it x 72,709,918 ops/sec ±6.09% (74 runs sampled)
+```
 
 
 
-**Coverage**: Current PhantomJS coverage is at 96% statements, 96%
-branches, 100% functions, and 96% lines.
+**Test Coverage**: [Close to 100%][coverage].
 
 Test coverage is measured for PhantomJS. Branches for Node and global
 script definitions aren't executed, nor are the
@@ -185,8 +230,10 @@ following methods:
    tree to another.
  * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
    unregisters callbacks.
- * `mixin`: mixes any object into your tree. Mixins are preserved
-   across tree operations.
+ * `mixin({tree: [], node: []}`: mixes an object into your tree and
+   all of your nodes, respectively. Mixins are rebound to the new tree
+   on all tree modifications. Note that all nodes will share the same
+   mixin object.
  
 The `Tree` consists of `Node`s, which have the following API:
  
@@ -272,3 +319,4 @@ Please do.
 [home]: http://tree.drfloob.com/
 [annsrc]: http://tree.drfloob.com/docs/_tree.html
 [tests]: http://tree.drfloob.com/_SpecRunner.html
+[coverage]: http://tree.drfloob.com/coverage/

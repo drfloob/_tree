@@ -138,6 +138,6 @@ module.exports = function(grunt) {
     grunt.registerTask('docs', ['docco']);
     grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docs']);
     
-    grunt.registerTask('default', ['build']);
+    grunt.registerTask('default', ['build', 'docs', 'phantom_cover']);
 
 };
