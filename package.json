@@ -1,7 +1,7 @@
 {
   "name": "_tree",
     "main": "./dist/_tree.min.js",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
   "author": "A.J. Heller",
   "license": "MIT",
