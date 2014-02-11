@@ -232,6 +232,24 @@ objects. Callbacks can be registered for supported `Events`.
    on all tree modifications. Note that all nodes will share the same
    mixin object.
  
+### Node objects
+ 
+ * `data([data])`: gets or sets the data on a node. Setting data
+   generates a new `Tree`.
+ * `children()`: returns the child `Node`s of a node
+ * `parent()`: returns the `Node`'s parent
+ * `tree()`: returns the `Node`'s tree
+ * `id()`: returns the tree-unique internal id of the `Node`
+ * `parseAndAddChild(obj [, inflateMethod])`: parses an object (much
+   like inflate) and adds it as a child of the `Node`. Returns a new
+   `Tree`.
+ * `addChildNode(node)`: adds a `Node` as a child. Errors are thrown
+   if the `Node` already exists in the tree. Returns a new `Tree`.
+ * `equals(otherNode)`: returns `boolean` that representse the
+   clone-agnostic equality of nodes.
+ * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
+
+
 ### Supported Events 
 
  * **'afterUpdate'**: called after finalizing the new tree on any tree
@@ -251,22 +269,6 @@ objects. Callbacks can be registered for supported `Events`.
    the `node.remove` operation. `function callback(newTree,
    parentOfRemovedNode) { ... }`
 
-### Node objects
- 
- * `data([data])`: gets or sets the data on a node. Setting data
-   generates a new `Tree`.
- * `children()`: returns the child `Node`s of a node
- * `parent()`: returns the `Node`'s parent
- * `tree()`: returns the `Node`'s tree
- * `id()`: returns the tree-unique internal id of the `Node`
- * `parseAndAddChild(obj [, inflateMethod])`: parses an object (much
-   like inflate) and adds it as a child of the `Node`. Returns a new
-   `Tree`.
- * `addChildNode(node)`: adds a `Node` as a child. Errors are thrown
-   if the `Node` already exists in the tree. Returns a new `Tree`.
- * `equals(otherNode)`: returns `boolean` that representse the
-   clone-agnostic equality of nodes.
- * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
 
 
 ## Building
