@@ -52,29 +52,8 @@ THE SOFTWARE.
     }
 
 
-    // Since tree and nodes are not set until this point, a
-    // meaningful ancestry needs to be setup here at this last
-    // step.
-    function __setupAncestry(tree, node, parent) {
-        if (!node) {
-            node = tree.root();
-        }
-        node.__tree = tree;
-        if (parent) {
-            node.__parent = parent;
-        }
-        _.each(node.children(), function(c) {__setupAncestry(tree, c, node); });
-    }
-
-
-    // Before returning a mutable cloned tree, it needs to be properly
-    // frozen to maintain its immutability guarantee. Also, since
-    // trees aren't immutable until all node modifications are done,
-    // all nodes need to be given this last-stage reference to the
-    // tree.
-    function __finalizeMutableTreeClone(tree) {
-
-        // engage mixins before finalization
+    function __preFinalizeTree(tree) {
+        // engage mixins before calling the tree pre-finalized
         _.each(tree.defaults.mixins, function(mix) {
             if (mix.tree) {
                 _.each(mix.tree, function(f, key) {
@@ -89,6 +68,33 @@ THE SOFTWARE.
                 });
             }
         });
+
+        __setupAncestry(tree);
+    }
+
+
+    // Since tree and nodes are not set until this point, a
+    // meaningful ancestry needs to be setup here at this last
+    // step.
+    function __setupAncestry(tree, node, parent) {
+        if (!node) {
+            node = tree.root();
+        }
+        node.__tree = tree;
+        if (parent) {
+            node.__parent = parent;
+        }
+
+        _.each(node.children(), function(c) {__setupAncestry(tree, c, node); });
+    }
+
+
+    // Before returning a mutable cloned tree, it needs to be properly
+    // frozen to maintain its immutability guarantee. Also, since
+    // trees aren't immutable until all node modifications are done,
+    // all nodes need to be given this last-stage reference to the
+    // tree.
+    function __finalizeMutableTreeClone(tree) {
 
         // Environments that don't support `Object.freeze` will still
         // work, but without guaranteed tree immutability.
@@ -135,7 +141,7 @@ THE SOFTWARE.
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
         var tree = new Tree(defaults, obj, inflateMethod);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
@@ -252,7 +258,7 @@ THE SOFTWARE.
         defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
@@ -562,7 +568,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -577,7 +583,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -595,7 +601,7 @@ THE SOFTWARE.
         if (!_.contains(newTree.defaults.mixins, mixin)) {
             newTree.defaults.mixins.push(mixin);
         }
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -685,7 +691,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
         newNode.__data = Obj;
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.data', newNode);
         __finalizeMutableTreeClone(newTree);
@@ -734,7 +740,7 @@ THE SOFTWARE.
         newNode.__children.push(childTree.root());
         newTree.__nextNodeId = childTree.__nextNodeId;
 
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.parseAndAddChild', childTree.root());
         __finalizeMutableTreeClone(newTree);
@@ -754,7 +760,7 @@ THE SOFTWARE.
         nodeClone = Node.clone(newTree, node, true);
         newParentNode.__children.push(nodeClone);
 
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.addChildNode', nodeClone);
         __finalizeMutableTreeClone(newTree);
@@ -782,7 +788,7 @@ THE SOFTWARE.
         parNode = newTree.findNode(this.__parent);
 
         parNode.__children = _.without(parNode.__children, newNode);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.remove', parNode);
         __finalizeMutableTreeClone(newTree);
