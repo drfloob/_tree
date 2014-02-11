@@ -44,24 +44,35 @@ THE SOFTWARE.
 
     var _tree = {}, Tree, Node, __defaults;
 
+    function __callback(tree, event) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        _.each(tree.defaults.callbacks[event], function(cb) {
+            _.partial(cb, tree).apply(null, args);
+        });
+    }
+
+
+    // Since tree and nodes are not set until this point, a
+    // meaningful ancestry needs to be setup here at this last
+    // step.
+    function __setupAncestry(tree, node, parent) {
+        if (!node) {
+            node = tree.root();
+        }
+        node.__tree = tree;
+        if (parent) {
+            node.__parent = parent;
+        }
+        _.each(node.children(), function(c) {__setupAncestry(tree, c, node); });
+    }
+
+
     // Before returning a mutable cloned tree, it needs to be properly
     // frozen to maintain its immutability guarantee. Also, since
     // trees aren't immutable until all node modifications are done,
     // all nodes need to be given this last-stage reference to the
     // tree.
     function __finalizeMutableTreeClone(tree) {
-
-        function __finalizeMutableChildNodes(node, parent) {
-            node.__tree = tree;
-            if (parent) {
-                node.__parent = parent;
-            }
-            try {
-                Object.freeze(node);
-                Object.freeze(node.__children);
-            } catch (e) {}
-            _.each(node.children(), function (c) {__finalizeMutableChildNodes(c, node); });
-        }
 
         // engage mixins before finalization
         _.each(tree.defaults.mixins, function(mix) {
@@ -82,10 +93,17 @@ THE SOFTWARE.
         // Environments that don't support `Object.freeze` will still
         // work, but without guaranteed tree immutability.
         try { Object.freeze(tree); } catch (e) {}
-        __finalizeMutableChildNodes(tree.root());
 
+        // finalizeMutableChildNodes
+        tree.walk(function(node) {
+            try {
+                Object.freeze(node);
+                Object.freeze(node.__children);
+            } catch (e) {}
+        });
+        
         // call each afterUpdate callback with the new tree
-        _.each(tree.defaults.callbacks.afterUpdate, function(cb) { cb(tree); });
+        __callback(tree, 'afterUpdate');
     }
 
 
@@ -117,6 +135,8 @@ THE SOFTWARE.
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
         var tree = new Tree(defaults, obj, inflateMethod);
+        __setupAncestry(tree);
+        __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
     };
@@ -232,6 +252,8 @@ THE SOFTWARE.
         defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
+        __setupAncestry(tree);
+        __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
     };
@@ -540,6 +562,8 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
     };
@@ -553,6 +577,8 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
     };
@@ -569,6 +595,8 @@ THE SOFTWARE.
         if (!_.contains(newTree.defaults.mixins, mixin)) {
             newTree.defaults.mixins.push(mixin);
         }
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
     };
@@ -657,6 +685,9 @@ THE SOFTWARE.
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
         newNode.__data = Obj;
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
+        __callback(newTree, 'beforeFreeze.data', newNode);
         __finalizeMutableTreeClone(newTree);
         return newTree;
     };
@@ -701,9 +732,11 @@ THE SOFTWARE.
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(this);
         newNode.__children.push(childTree.root());
-        childTree.root().__parent = newNode;
         newTree.__nextNodeId = childTree.__nextNodeId;
 
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
+        __callback(newTree, 'beforeFreeze.parseAndAddChild', childTree.root());
         __finalizeMutableTreeClone(newTree);
 
         return newTree;
@@ -720,8 +753,10 @@ THE SOFTWARE.
         newTree.__nextNodeId = this.tree().__nextNodeId;
         nodeClone = Node.clone(newTree, node, true);
         newParentNode.__children.push(nodeClone);
-        nodeClone.__parent = newParentNode;
 
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
+        __callback(newTree, 'beforeFreeze.addChildNode', nodeClone);
         __finalizeMutableTreeClone(newTree);
 
         return newTree;
@@ -747,6 +782,9 @@ THE SOFTWARE.
         parNode = newTree.findNode(this.__parent);
 
         parNode.__children = _.without(parNode.__children, newNode);
+        __setupAncestry(newTree);
+        __callback(newTree, 'beforeFreeze');
+        __callback(newTree, 'beforeFreeze.remove', parNode);
         __finalizeMutableTreeClone(newTree);
 
         return newTree;
@@ -759,7 +797,13 @@ THE SOFTWARE.
         'inflate': _tree.inflate.byKey(),
         'walk': Tree.prototype.walk.dfpre,
         'deleteRecursive': true,
-        'callbacks': {'afterUpdate': []},
+        'callbacks': {'afterUpdate': [],
+                      'beforeFreeze': [],
+                      'beforeFreeze.data': [],
+                      'beforeFreeze.parseAndAddChild': [],
+                      'beforeFreeze.addChildNode': [],
+                      'beforeFreeze.remove': []
+                     },
         'mixins': []
     };
 
