@@ -197,7 +197,7 @@ coverage report locally at `coverage/index.html`.
 ## API
 
 The `_tree` library creates `Tree` objects, comprised of `Node`
-objects.
+objects. Callbacks can be registered for supported `Events`.
 
 ### The `_tree` library
 
@@ -223,13 +223,34 @@ objects.
    any `Node` in the `Tree`. Works for partial matches.
  * `moveNode(movingNode, toParentNode)`: move a `Node` and its
    descendants from one point in the tree to another.
- * `off('afterUpdate', callback)` or `off('afterUpdate', [callbacks])`:
+ * `on(event, callback)` or `on(event, [callbacks])`: register
+   callbacks for the named event.
+ * `off(event, callback)` or `off('afterUpdate', [callbacks])`:
    unregisters callbacks.
  * `mixin({tree: [], node: []}`: mixes an object into your tree and
    all of your nodes, respectively. Mixins are rebound to the new tree
    on all tree modifications. Note that all nodes will share the same
    mixin object.
  
+### Supported Events 
+
+ * **'afterUpdate'**: called after finalizing the new tree on any tree
+   modification. `function callback(newTree) { ... }`
+ * **'beforeFreeze'**: called before freezing the new tree on any tree
+   modification. The tree can be modified. `function callback(newTree) { ... }`
+ * **'beforeFreeze.data'**: called before freezing a new tree, only for
+   the `node.data` operation. `function callback(newTree,
+   modifiedNode) { ... }`
+ * **'beforeFreeze.parseAndAddChild'**: called before freezing a new tree,
+   only for the `node.parseAndAddChild` operation. `function
+   callback(newTree, newChildNode) { ... }`
+ * **'beforeFreeze.addChildNode'**: called before freezing a new tree,
+   only for the `node.addChildNode` operation. `function
+   callback(newTree, newChildNode) { ... }`
+ * **'beforeFreeze.remove'**: called before freezing a new tree, only for
+   the `node.remove` operation. `function callback(newTree,
+   parentOfRemovedNode) { ... }`
+
 ### Node objects
  
  * `data([data])`: gets or sets the data on a node. Setting data
@@ -246,9 +267,6 @@ objects.
  * `equals(otherNode)`: returns `boolean` that representse the
    clone-agnostic equality of nodes.
  * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
- * `on('afterUpdate', callback)` or `on('afterUpdate', [callbacks])`:
-   register callbacks for the afterUpdate event, which is called after
-   a new/updated tree is finalized.
 
 
 ## Building
