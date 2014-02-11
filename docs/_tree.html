@@ -132,7 +132,10 @@ like Node.</p>
         _.each(tree.defaults.callbacks[event], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(cb)</span> {</span>
             _.partial(cb, tree).apply(<span class="hljs-literal">null</span>, args);
         });
-    }</pre></div></div>
+    }
+
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__preFinalizeTree</span><span class="hljs-params">(tree)</span> {</span></pre></div></div>
             
         </li>
         
@@ -143,52 +146,7 @@ like Node.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Since tree and nodes are not set until this point, a
-meaningful ancestry needs to be setup here at this last
-step.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__setupAncestry</span><span class="hljs-params">(tree, node, parent)</span> {</span>
-        <span class="hljs-keyword">if</span> (!node) {
-            node = tree.root();
-        }
-        node.__tree = tree;
-        <span class="hljs-keyword">if</span> (parent) {
-            node.__parent = parent;
-        }
-        _.each(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>__setupAncestry(tree, c, node); });
-    }</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>Before returning a mutable cloned tree, it needs to be properly
-frozen to maintain its immutability guarantee. Also, since
-trees aren’t immutable until all node modifications are done,
-all nodes need to be given this last-stage reference to the
-tree.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__finalizeMutableTreeClone</span><span class="hljs-params">(tree)</span> {</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>engage mixins before finalization</p>
+              <p>engage mixins before calling the tree pre-finalized</p>
 
             </div>
             
@@ -205,7 +163,56 @@ tree.</p>
                     });
                 });
             }
-        });</pre></div></div>
+        });
+
+        __setupAncestry(tree);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Since tree and nodes are not set until this point, a
+meaningful ancestry needs to be setup here at this last
+step.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__setupAncestry</span><span class="hljs-params">(tree, node, parent)</span> {</span>
+        <span class="hljs-keyword">if</span> (!node) {
+            node = tree.root();
+        }
+        node.__tree = tree;
+        <span class="hljs-keyword">if</span> (parent) {
+            node.__parent = parent;
+        }
+
+        _.each(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>__setupAncestry(tree, c, node); });
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Before returning a mutable cloned tree, it needs to be properly
+frozen to maintain its immutability guarantee. Also, since
+trees aren’t immutable until all node modifications are done,
+all nodes need to be given this last-stage reference to the
+tree.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__finalizeMutableTreeClone</span><span class="hljs-params">(tree)</span> {</span></pre></div></div>
             
         </li>
         
@@ -308,7 +315,7 @@ own <code>inflateMethod</code>, or use one of the handful of built-ins.</p>
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
         <span class="hljs-keyword">var</span> tree = <span class="hljs-keyword">new</span> Tree(defaults, obj, inflateMethod);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(tree);
         <span class="hljs-keyword">return</span> tree;
@@ -465,7 +472,7 @@ of the node’s original tree.</p>
         defaults = __cloneDefaults(defaults);
         <span class="hljs-keyword">var</span> tree = <span class="hljs-keyword">new</span> Tree(defaults);
         tree.__root = Node.clone(tree, node);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(tree);
         <span class="hljs-keyword">return</span> tree;
@@ -1032,7 +1039,7 @@ other tree modification</p>
         newTree = Tree.clone(<span class="hljs-keyword">this</span>);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
@@ -1059,7 +1066,7 @@ tree.</p>
         newTree = Tree.clone(<span class="hljs-keyword">this</span>);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
@@ -1088,7 +1095,7 @@ practice.</p>
         <span class="hljs-keyword">if</span> (!_.contains(newTree.defaults.mixins, mixin)) {
             newTree.defaults.mixins.push(mixin);
         }
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
@@ -1218,7 +1225,7 @@ after being made immutable.</p>
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
         newNode.__data = Obj;
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __callback(newTree, <span class="hljs-string">'beforeFreeze.data'</span>, newNode);
         __finalizeMutableTreeClone(newTree);
@@ -1324,7 +1331,7 @@ returned, <em>not</em> a <code>Node</code>.</p>
         newNode.__children.push(childTree.root());
         newTree.__nextNodeId = childTree.__nextNodeId;
 
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __callback(newTree, <span class="hljs-string">'beforeFreeze.parseAndAddChild'</span>, childTree.root());
         __finalizeMutableTreeClone(newTree);
@@ -1344,7 +1351,7 @@ returned, <em>not</em> a <code>Node</code>.</p>
         nodeClone = Node.clone(newTree, node, <span class="hljs-literal">true</span>);
         newParentNode.__children.push(nodeClone);
 
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __callback(newTree, <span class="hljs-string">'beforeFreeze.addChildNode'</span>, nodeClone);
         __finalizeMutableTreeClone(newTree);
@@ -1384,7 +1391,7 @@ the same object in memory.</p>
         parNode = newTree.findNode(<span class="hljs-keyword">this</span>.__parent);
 
         parNode.__children = _.without(parNode.__children, newNode);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __callback(newTree, <span class="hljs-string">'beforeFreeze.remove'</span>, parNode);
         __finalizeMutableTreeClone(newTree);

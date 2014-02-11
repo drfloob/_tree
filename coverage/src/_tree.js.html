@@ -199,16 +199,16 @@
     <h1>Code coverage report for <span class="entity">src/_tree.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">96.68% <small>(291 / 301)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">96.7% <small>(293 / 303)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Branches: <span class="metric">96% <small>(96 / 100)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Functions: <span class="metric">100% <small>(64 / 64)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(65 / 65)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">96.62% <small>(286 / 296)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">96.64% <small>(288 / 298)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
@@ -1028,7 +1028,13 @@
 810
 811
 812
-813</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+813
+814
+815
+816
+817
+818
+819</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1082,28 +1088,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">832</span>
-<span class="cline-any cline-yes">261</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">832</span>
-<span class="cline-any cline-yes">832</span>
-<span class="cline-any cline-yes">571</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">832</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">261</span>
 <span class="cline-any cline-yes">33</span>
@@ -1119,6 +1104,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">261</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">832</span>
+<span class="cline-any cline-yes">261</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">832</span>
+<span class="cline-any cline-yes">832</span>
+<span class="cline-any cline-yes">571</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">832</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1894,29 +1906,8 @@ THE SOFTWARE.
     }
 &nbsp;
 &nbsp;
-    // Since tree and nodes are not set until this point, a
-    // meaningful ancestry needs to be setup here at this last
-    // step.
-    function __setupAncestry(tree, node, parent) {
-        if (!node) {
-            node = tree.root();
-        }
-        node.__tree = tree;
-        if (parent) {
-            node.__parent = parent;
-        }
-        _.each(node.children(), function(c) {__setupAncestry(tree, c, node); });
-    }
-&nbsp;
-&nbsp;
-    // Before returning a mutable cloned tree, it needs to be properly
-    // frozen to maintain its immutability guarantee. Also, since
-    // trees aren't immutable until all node modifications are done,
-    // all nodes need to be given this last-stage reference to the
-    // tree.
-    function __finalizeMutableTreeClone(tree) {
-&nbsp;
-        // engage mixins before finalization
+    function __preFinalizeTree(tree) {
+        // engage mixins before calling the tree pre-finalized
         _.each(tree.defaults.mixins, function(mix) {
             if (mix.tree) {
                 _.each(mix.tree, function(f, key) {
@@ -1931,6 +1922,33 @@ THE SOFTWARE.
                 });
             }
         });
+&nbsp;
+        __setupAncestry(tree);
+    }
+&nbsp;
+&nbsp;
+    // Since tree and nodes are not set until this point, a
+    // meaningful ancestry needs to be setup here at this last
+    // step.
+    function __setupAncestry(tree, node, parent) {
+        if (!node) {
+            node = tree.root();
+        }
+        node.__tree = tree;
+        if (parent) {
+            node.__parent = parent;
+        }
+&nbsp;
+        _.each(node.children(), function(c) {__setupAncestry(tree, c, node); });
+    }
+&nbsp;
+&nbsp;
+    // Before returning a mutable cloned tree, it needs to be properly
+    // frozen to maintain its immutability guarantee. Also, since
+    // trees aren't immutable until all node modifications are done,
+    // all nodes need to be given this last-stage reference to the
+    // tree.
+    function __finalizeMutableTreeClone(tree) {
 &nbsp;
         // Environments that don't support `Object.freeze` will still
         // work, but without guaranteed tree immutability.
@@ -1977,7 +1995,7 @@ THE SOFTWARE.
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 &nbsp;
         var tree = new Tree(defaults, obj, inflateMethod);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
@@ -2094,7 +2112,7 @@ THE SOFTWARE.
         defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
         tree.__root = Node.clone(tree, node);
-        __setupAncestry(tree);
+        __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
         return tree;
@@ -2404,7 +2422,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -2419,7 +2437,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -2437,7 +2455,7 @@ THE SOFTWARE.
         <span class="missing-if-branch" title="else path not taken" >E</span>if (!_.contains(newTree.defaults.mixins, mixin)) {
             newTree.defaults.mixins.push(mixin);
         }
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
@@ -2527,7 +2545,7 @@ THE SOFTWARE.
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
         newNode.__data = Obj;
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.data', newNode);
         __finalizeMutableTreeClone(newTree);
@@ -2576,7 +2594,7 @@ THE SOFTWARE.
         newNode.__children.push(childTree.root());
         newTree.__nextNodeId = childTree.__nextNodeId;
 &nbsp;
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.parseAndAddChild', childTree.root());
         __finalizeMutableTreeClone(newTree);
@@ -2596,7 +2614,7 @@ THE SOFTWARE.
         nodeClone = Node.clone(newTree, node, true);
         newParentNode.__children.push(nodeClone);
 &nbsp;
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.addChildNode', nodeClone);
         __finalizeMutableTreeClone(newTree);
@@ -2624,7 +2642,7 @@ THE SOFTWARE.
         parNode = newTree.findNode(this.__parent);
 &nbsp;
         parNode.__children = _.without(parNode.__children, newNode);
-        __setupAncestry(newTree);
+        __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.remove', parNode);
         __finalizeMutableTreeClone(newTree);
@@ -2657,7 +2675,7 @@ THE SOFTWARE.
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Feb 10 2014 18:23:53 GMT-0800 (PST)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Feb 10 2014 20:37:32 GMT-0800 (PST)</div>
 </div>
 
 <script src="../prettify.js"></script>
