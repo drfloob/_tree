@@ -88,6 +88,28 @@
             expect(newT.root().children()[0].data()).toEqual('winner');
         });
 
+        it('executes one callback for multiple removeAll', function () {
+            var t, k1, k2, newT, spy;
+            spy = jasmine.createSpy('spy');
+            t = _tree.inflate(['rt', [1,2,3,'winner']], _tree.inflate.byAdjacencyList, {callbacks: {afterUpdate: [spy]}});
+            expect(spy.calls.length).toBe(1);
+
+            k1 = [t.root().children()[0], t.root().children()[1]];
+            k2 = [t.root().children()[2]];
+
+            newT = t.batch()
+                .root().removeAll(k1)
+                .root().removeAll(k2)
+                .root().removeAll([])
+                .end();
+            
+            expect(spy.calls.length).toBe(2);
+            expect(newT.equals(t)).toBe(true);
+
+            expect(newT.root().children().length).toBe(1);
+            expect(newT.root().children()[0].data()).toEqual('winner');
+        });
+
         it('executes one callback for multiple data', function () {
             var t, newT, spy;
             spy = jasmine.createSpy('spy');
@@ -140,20 +162,22 @@
                 .root().parseAndAddChild([{name: 'batch 1'}])
                 .root().parseAndAddChild([{name: 'batch 2'}])
 
+            // removeAll
+                .root().removeAll([t.root().children()[3]])
+    
                 .end();
             
             expect(spy.calls.length).toBe(2);
             expect(newT.equals(t)).toBe(true);
 
-            expect(newT.root().children().length).toBe(7);
+            expect(newT.root().children().length).toBe(6);
             expect(newT.root().data()).toBe('changed rt');
-            expect(newT.root().children()[0].data()).toEqual('winner');
-            expect(newT.root().children()[1].data()).toEqual('a');
-            expect(newT.root().children()[2].data()).toEqual('b');
-            expect(newT.root().children()[3].data()).toEqual('c');
-            expect(newT.root().children()[4].data()).toEqual({name: 'batch 0'});
-            expect(newT.root().children()[5].data()).toEqual({name: 'batch 1'});
-            expect(newT.root().children()[6].data()).toEqual({name: 'batch 2'});
+            expect(newT.root().children()[0].data()).toEqual('a');
+            expect(newT.root().children()[1].data()).toEqual('b');
+            expect(newT.root().children()[2].data()).toEqual('c');
+            expect(newT.root().children()[3].data()).toEqual({name: 'batch 0'});
+            expect(newT.root().children()[4].data()).toEqual({name: 'batch 1'});
+            expect(newT.root().children()[5].data()).toEqual({name: 'batch 2'});
         });
     });
 }));

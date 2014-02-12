@@ -389,7 +389,7 @@ THE SOFTWARE.
     // the Node or `false` if no match was found. This can be used to
     // find a matching node in a cloned tree, since ids are designed
     // to be invariant across clones.
-    Tree.prototype.findNode = function (fromNode, walkMethod) {
+    Tree.prototype.findNode = function (fromNode, walkMethod, startNode) {
         if (! (fromNode instanceof Node)) {
             throw 'not a node';
         }
@@ -403,14 +403,14 @@ THE SOFTWARE.
             if (!found && fromNode.equals(visitNode)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         return found;
     };
 
 
     // Matches a node by its data using deep comparison, without
     // requiring object equality, via `_.isEqual(node.data(), data)`
-    Tree.prototype.findNodeByData = function (data, walkMethod) {
+    Tree.prototype.findNodeByData = function (data, walkMethod, startNode) {
         var isMatch, keys, found = false;
         if (_.isUndefined(data)) {
             return false;
@@ -433,7 +433,7 @@ THE SOFTWARE.
             if (!found && isMatch(visitNode.__data)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         return found;
     };
 
@@ -831,6 +831,7 @@ THE SOFTWARE.
             this.__id === otherNode.__id;
     };
 
+
     Node.prototype.remove = function () {
         if (this === this.tree().root()) {
             throw new Error('cannot delete the root node');
@@ -854,6 +855,38 @@ THE SOFTWARE.
         __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.remove', parNode);
+        __finalizeMutableTreeClone(newTree);
+
+        return newTree;
+    };
+
+
+    // removes all immediate children of this node specified in
+    // `kidsToRemove`. 
+    Node.prototype.removeAll = function (kidsToRemove) {
+        var tree, self, newTree, newNode, newKids;
+
+        tree = this.tree();
+        self = this;
+        if (this.tree().isBatch()) {
+            newKids = _.map(kidsToRemove, function(k) {
+                return tree.findNode(k, undefined, self);
+            });
+            this.__children = _.difference(this.__children, newKids);
+            __preFinalizeTree(this.tree());
+            return this.tree();
+        }
+
+        newTree = Tree.clone(this.__tree);
+        newNode = newTree.findNode(this);
+        newKids = _.map(kidsToRemove, function(k) {
+            return newTree.findNode(k, undefined, newNode);
+        });
+
+        newNode.__children = _.difference(newNode.__children, newKids);
+        __preFinalizeTree(newTree);
+        __callback(newTree, 'beforeFreeze');
+        __callback(newTree, 'beforeFreeze.removeAll', newNode);
         __finalizeMutableTreeClone(newTree);
 
         return newTree;

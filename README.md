@@ -262,6 +262,9 @@ objects. Callbacks can be registered for supported `Events`.
  * `equals(otherNode)`: returns `boolean` that representse the
    clone-agnostic equality of nodes.
  * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
+ * `removeAll([childNodes])`: removes all matching `childNodes` from
+   the this node, returning a new `Tree`. `childNodes` may be from a
+   tree clone.
 
 
 ### Supported events 
@@ -282,6 +285,9 @@ objects. Callbacks can be registered for supported `Events`.
  * **'beforeFreeze.remove'**: called before freezing a new tree, only for
    the `node.remove` operation. `function callback(newTree,
    parentOfRemovedNode) { ... }`
+ * **'beforeFreeze.removeAll'**: called before freezing a new tree,
+   only for the `node.removeAll` operation. `function
+   callback(newTree, thisNode) { ... }`
 
 
 ### Batch Mode

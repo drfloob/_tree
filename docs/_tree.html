@@ -698,7 +698,7 @@ to be invariant across clones.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fromNode, walkMethod)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fromNode, walkMethod, startNode)</span> {</span>
         <span class="hljs-keyword">if</span> (! (fromNode <span class="hljs-keyword">instanceof</span> Node)) {
             <span class="hljs-keyword">throw</span> <span class="hljs-string">'not a node'</span>;
         }
@@ -712,7 +712,7 @@ to be invariant across clones.</p>
             <span class="hljs-keyword">if</span> (!found &amp;&amp; fromNode.equals(visitNode)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         <span class="hljs-keyword">return</span> found;
     };</pre></div></div>
             
@@ -730,7 +730,7 @@ requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNodeByData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data, walkMethod)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNodeByData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data, walkMethod, startNode)</span> {</span>
         <span class="hljs-keyword">var</span> isMatch, keys, found = <span class="hljs-literal">false</span>;
         <span class="hljs-keyword">if</span> (_.isUndefined(data)) {
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -753,7 +753,7 @@ requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
             <span class="hljs-keyword">if</span> (!found &amp;&amp; isMatch(visitNode.__data)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         <span class="hljs-keyword">return</span> found;
     };</pre></div></div>
             
@@ -1434,6 +1434,7 @@ the same object in memory.</p>
             <span class="hljs-keyword">this</span>.__id === otherNode.__id;
     };
 
+
     Node.prototype.remove = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> === <span class="hljs-keyword">this</span>.tree().root()) {
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'cannot delete the root node'</span>);
@@ -1471,6 +1472,49 @@ the same object in memory.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
+              <p>removes all immediate children of this node specified in
+<code>kidsToRemove</code>. </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Node.prototype.removeAll = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(kidsToRemove)</span> {</span>
+        <span class="hljs-keyword">var</span> tree, self, newTree, newNode, newKids;
+
+        tree = <span class="hljs-keyword">this</span>.tree();
+        self = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+                <span class="hljs-keyword">return</span> tree.findNode(k, <span class="hljs-literal">undefined</span>, self);
+            });
+            <span class="hljs-keyword">this</span>.__children = _.difference(<span class="hljs-keyword">this</span>.__children, newKids);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
+
+        newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
+        newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
+        newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+            <span class="hljs-keyword">return</span> newTree.findNode(k, <span class="hljs-literal">undefined</span>, newNode);
+        });
+
+        newNode.__children = _.difference(newNode.__children, newKids);
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.removeAll'</span>, newNode);
+        __finalizeMutableTreeClone(newTree);
+
+        <span class="hljs-keyword">return</span> newTree;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
               <p>Finally, we setup some library-wide defaults.</p>
 
             </div>
@@ -1492,11 +1536,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-55">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>And we’re done.</p>
 
