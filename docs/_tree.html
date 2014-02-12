@@ -1116,6 +1116,7 @@ practice.</p>
         <span class="hljs-keyword">var</span> batchTree;
         batchTree = Tree.clone(<span class="hljs-keyword">this</span>);
         batchTree.__batch++;
+        __preFinalizeTree(batchTree);
         <span class="hljs-keyword">return</span> batchTree;
     };
 

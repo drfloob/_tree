@@ -622,6 +622,7 @@ THE SOFTWARE.
         var batchTree;
         batchTree = Tree.clone(this);
         batchTree.__batch++;
+        __preFinalizeTree(batchTree);
         return batchTree;
     };
 
