@@ -28,9 +28,18 @@
             toNode = tree.findNodeByData(7);
             newTree = tree.moveNode(movingNode, toNode);
             expectedId = tree.__nextNodeId;
+            // the resulting data should be: 
+            //   [1, [5, [6, 7, [2, [3,4]]]]]
 
+            // the '2' child is removed from root
             expect(newTree.root().children().length).toEqual(1);
+
+            // and is added as a child of '7'
+            //                  1             5             7             2
             expect(newTree.root().children()[0].children()[1].children()[0].data()).toEqual(2);
+
+            // with the correct __id
+            //                  1             5             7             2
             expect(newTree.root().children()[0].children()[1].children()[0].id()).toEqual(expectedId);
         });
     });

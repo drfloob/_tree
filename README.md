@@ -2,19 +2,24 @@
 
 **Table of Contents**
 
- * [Intro](#_tree)
- * [Example](#example)
- * [Quality Metrics](#quality-metrics)
- * [API](#api)
- * [Building](#building)
- * [Development Stuff](#development-stuff)
- * [Contributing](#contributing)
+* [Intro](#_tree)
+* [Example](#example)
+* [Quality Metrics](#quality-metrics)
+* [API](#api)
+    * [The `_tree` library](#the-_tree-library)
+    * [Tree objects](#tree-objects)
+    * [Node objects](#node-objects)
+    * [Supported events](#supported-events)
+    * [Batch mode](#batch-mode)
+* [Building](#building)
+* [Development Stuff](#development-stuff)
+* [Contributing](#contributing)
 
 **Additional Links**
 
- * [Homepage][home]
- * [Annotated source code][annsrc]
- * [Live in-browser tests][tests]
+* [Homepage][home]
+* [Annotated source code][annsrc]
+* [Live in-browser tests][tests]
 
 
 
@@ -78,7 +83,10 @@ also a great learning resource.
 
 
 
-**Tests**: All tests pass for:
+**Tests**
+
+Regular testing is performed with NodeJS locally, Chrome (stable), and
+via TravisCI. Around ~v0.2.0, all tests passed for:
 
  * Chrome: >= 12
  * Firefox: >= 4
@@ -231,7 +239,13 @@ objects. Callbacks can be registered for supported `Events`.
    all of your nodes, respectively. Mixins are rebound to the new tree
    on all tree modifications. Note that all nodes will share the same
    mixin object.
- 
+ * `batch()`: begins batch mode operation, where all modifications
+   return the same *mutable* tree. Callbacks are suspended during all
+   batch mode updates.
+ * `end()`: ends batch mode, finalizing, freezing, and returning the
+   tree, then issuing a single `afterUpdate` event for callbacks.
+ * `isBatch()`: returns true if in batch mode.
+
 ### Node objects
  
  * `data([data])`: gets or sets the data on a node. Setting data
@@ -250,7 +264,7 @@ objects. Callbacks can be registered for supported `Events`.
  * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
 
 
-### Supported Events 
+### Supported events 
 
  * **'afterUpdate'**: called after finalizing the new tree on any tree
    modification. `function callback(newTree) { ... }`
@@ -268,6 +282,21 @@ objects. Callbacks can be registered for supported `Events`.
  * **'beforeFreeze.remove'**: called before freezing a new tree, only for
    the `node.remove` operation. `function callback(newTree,
    parentOfRemovedNode) { ... }`
+
+
+### Batch Mode
+
+`_tree` provides a batch mode of operation that lets you bundle
+together multiple modifications into one atomic action. Callbacks are
+disabled while batching, and the tree is not finalized until `.end()`
+is called.
+
+[See the tests for some examples](https://github.com/drfloob/_tree/blob/master/test/spec/_tree.batch.spec.js)
+
+You *could* manually edit the tree object in batch mode, but your
+changes may be lost, and you could ruin the integrity of the tree if
+you're unsure of what you're doing. To persist interesting tree
+modifications, see mixins.
 
 
 

@@ -292,6 +292,12 @@ THE SOFTWARE.
                     writable: true,
                     enumerable: false,
                     configurable: false
+                },
+                '__batch': {
+                    value: 0,
+                    writable: true,
+                    enumerable: false,
+                    configurable: false
                 }
             });
         } catch (e) {
@@ -551,9 +557,11 @@ THE SOFTWARE.
     //  * finding the destination parent node in the new `Tree` context, and
     //  * adding the `movingNode` as a child
     Tree.prototype.moveNode = function (movingNode, toParent) {
-        return movingNode.remove()
+        return this.batch()
+            .findNode(movingNode).remove()
             .findNode(toParent)
-            .addChildNode(movingNode);
+            .addChildNode(movingNode)
+            .end();
     };
 
 
@@ -605,6 +613,32 @@ THE SOFTWARE.
         __callback(newTree, 'beforeFreeze');
         __finalizeMutableTreeClone(newTree);
         return newTree;
+    };
+
+
+
+
+    Tree.prototype.batch = function() {
+        var batchTree;
+        batchTree = Tree.clone(this);
+        batchTree.__batch++;
+        return batchTree;
+    };
+
+    Tree.prototype.isBatch = function() {
+        return this.__batch > 0;
+    };
+
+    Tree.prototype.end = function() {
+        if (!this.isBatch()) {
+            throw 'Called `tree.end` when not in batch mode.';
+        }
+
+        this.__batch--;
+        if (!this.isBatch()) {
+            __finalizeMutableTreeClone(this);
+        }
+        return this;
     };
 
     // # Node
@@ -688,9 +722,15 @@ THE SOFTWARE.
 
         var newTree, newNode;
 
-        newTree = Tree.clone(this.__tree);
+        if (this.tree().isBatch()) {
+            this.__data = Obj;
+            return this.tree();
+        }
+
+        newTree = Tree.clone(this.tree());
         newNode = newTree.findNode(this);
         newNode.__data = Obj;
+
         __preFinalizeTree(newTree);
         __callback(newTree, 'beforeFreeze');
         __callback(newTree, 'beforeFreeze.data', newNode);
@@ -732,8 +772,15 @@ THE SOFTWARE.
     Node.prototype.parseAndAddChild = function (childObj, inflateMethod) {
         inflateMethod = inflateMethod || this.__tree.defaults.inflate;
         var childTree, newTree, newNode, tree;
-        tree = this.__tree;
+        tree = this.tree();
         childTree = new Tree(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+
+        if (tree.isBatch()) {
+            this.__children.push(childTree.root());
+            tree.__nextNodeId = childTree.__nextNodeId;
+            __preFinalizeTree(tree);
+            return tree;
+        }
 
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(this);
@@ -752,6 +799,13 @@ THE SOFTWARE.
 
     Node.prototype.addChildNode = function(node) {
         var newTree, newParentNode, nodeClone;
+
+        if (this.tree().isBatch()) {
+            nodeClone = Node.clone(this.tree(), node, true);
+            this.__children.push(nodeClone);
+            __preFinalizeTree(this.tree());
+            return this.tree();
+        }
 
         newTree = Tree.clone(this.tree());
         newParentNode = newTree.findNode(this);
@@ -777,11 +831,19 @@ THE SOFTWARE.
     };
 
     Node.prototype.remove = function () {
-        if (this === this.__tree.__root) {
+        if (this === this.tree().root()) {
             throw new Error('cannot delete the root node');
         }
 
         var newTree, newNode, parNode;
+
+        if (this.tree().isBatch()) {
+            parNode = this.parent();
+            parNode.__children = _.without(parNode.__children, this);
+            __preFinalizeTree(this.tree());
+            return parNode.tree();
+        }
+
 
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);

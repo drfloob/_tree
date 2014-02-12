@@ -527,6 +527,12 @@ work without guaranteed immutability.</p>
                     writable: <span class="hljs-literal">true</span>,
                     enumerable: <span class="hljs-literal">false</span>,
                     configurable: <span class="hljs-literal">false</span>
+                },
+                <span class="hljs-string">'__batch'</span>: {
+                    value: <span class="hljs-number">0</span>,
+                    writable: <span class="hljs-literal">true</span>,
+                    enumerable: <span class="hljs-literal">false</span>,
+                    configurable: <span class="hljs-literal">false</span>
                 }
             });
         } <span class="hljs-keyword">catch</span> (e) {
@@ -1012,9 +1018,11 @@ exists in the <code>Tree</code>.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Tree.prototype.moveNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(movingNode, toParent)</span> {</span>
-        <span class="hljs-keyword">return</span> movingNode.remove()
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.batch()
+            .findNode(movingNode).remove()
             .findNode(toParent)
-            .addChildNode(movingNode);
+            .addChildNode(movingNode)
+            .end();
     };</pre></div></div>
             
         </li>
@@ -1099,6 +1107,32 @@ practice.</p>
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
+    };
+
+
+
+
+    Tree.prototype.batch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> batchTree;
+        batchTree = Tree.clone(<span class="hljs-keyword">this</span>);
+        batchTree.__batch++;
+        <span class="hljs-keyword">return</span> batchTree;
+    };
+
+    Tree.prototype.isBatch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.__batch &gt; <span class="hljs-number">0</span>;
+    };
+
+    Tree.prototype.end = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isBatch()) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-string">'Called `tree.end` when not in batch mode.'</span>;
+        }
+
+        <span class="hljs-keyword">this</span>.__batch--;
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isBatch()) {
+            __finalizeMutableTreeClone(<span class="hljs-keyword">this</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
     };</pre></div></div>
             
         </li>
@@ -1222,9 +1256,15 @@ after being made immutable.</p>
 
         <span class="hljs-keyword">var</span> newTree, newNode;
 
-        newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            <span class="hljs-keyword">this</span>.__data = Obj;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
+
+        newTree = Tree.clone(<span class="hljs-keyword">this</span>.tree());
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
         newNode.__data = Obj;
+
         __preFinalizeTree(newTree);
         __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __callback(newTree, <span class="hljs-string">'beforeFreeze.data'</span>, newNode);
@@ -1323,8 +1363,15 @@ returned, <em>not</em> a <code>Node</code>.</p>
             <div class="content"><div class='highlight'><pre>    Node.prototype.parseAndAddChild = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(childObj, inflateMethod)</span> {</span>
         inflateMethod = inflateMethod || <span class="hljs-keyword">this</span>.__tree.defaults.inflate;
         <span class="hljs-keyword">var</span> childTree, newTree, newNode, tree;
-        tree = <span class="hljs-keyword">this</span>.__tree;
+        tree = <span class="hljs-keyword">this</span>.tree();
         childTree = <span class="hljs-keyword">new</span> Tree(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+
+        <span class="hljs-keyword">if</span> (tree.isBatch()) {
+            <span class="hljs-keyword">this</span>.__children.push(childTree.root());
+            tree.__nextNodeId = childTree.__nextNodeId;
+            __preFinalizeTree(tree);
+            <span class="hljs-keyword">return</span> tree;
+        }
 
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
@@ -1343,6 +1390,13 @@ returned, <em>not</em> a <code>Node</code>.</p>
 
     Node.prototype.addChildNode = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(node)</span> {</span>
         <span class="hljs-keyword">var</span> newTree, newParentNode, nodeClone;
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            nodeClone = Node.clone(<span class="hljs-keyword">this</span>.tree(), node, <span class="hljs-literal">true</span>);
+            <span class="hljs-keyword">this</span>.__children.push(nodeClone);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
 
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.tree());
         newParentNode = newTree.findNode(<span class="hljs-keyword">this</span>);
@@ -1380,11 +1434,19 @@ the same object in memory.</p>
     };
 
     Node.prototype.remove = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> === <span class="hljs-keyword">this</span>.__tree.__root) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> === <span class="hljs-keyword">this</span>.tree().root()) {
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'cannot delete the root node'</span>);
         }
 
         <span class="hljs-keyword">var</span> newTree, newNode, parNode;
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            parNode = <span class="hljs-keyword">this</span>.parent();
+            parNode.__children = _.without(parNode.__children, <span class="hljs-keyword">this</span>);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> parNode.tree();
+        }
+
 
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
