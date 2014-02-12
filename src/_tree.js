@@ -870,7 +870,9 @@ THE SOFTWARE.
         self = this;
         if (this.tree().isBatch()) {
             newKids = _.map(kidsToRemove, function(k) {
-                return tree.findNode(k, undefined, self);
+                return _.find(self.children(), function(c) {
+                    return c.equals(k);
+                });
             });
             this.__children = _.difference(this.__children, newKids);
             __preFinalizeTree(this.tree());
@@ -879,8 +881,11 @@ THE SOFTWARE.
 
         newTree = Tree.clone(this.__tree);
         newNode = newTree.findNode(this);
+        // it would be great if we could do away with the findNode
         newKids = _.map(kidsToRemove, function(k) {
-            return newTree.findNode(k, undefined, newNode);
+            return _.find(newNode.children(), function(c) {
+                return c.equals(k);
+            });
         });
 
         newNode.__children = _.difference(newNode.__children, newKids);

@@ -97,7 +97,8 @@ module.exports = function(grunt) {
         benchmark: {
             all: { src: ['benchmark/**/*.js'] },
             object: { src: ['benchmark/**/object_*.js'] },
-            adjList: { src: ['benchmark/**/adjList_*.js'] }
+            adjList: { src: ['benchmark/**/adjList_*.js'] },
+            removeAll: {src: ['benchmark/**/removeAll*.js']}
         },
         copy: {
             vendor: {

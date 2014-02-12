@@ -1484,7 +1484,9 @@ the same object in memory.</p>
         self = <span class="hljs-keyword">this</span>;
         <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
             newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
-                <span class="hljs-keyword">return</span> tree.findNode(k, <span class="hljs-literal">undefined</span>, self);
+                <span class="hljs-keyword">return</span> _.find(self.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
+                    <span class="hljs-keyword">return</span> c.equals(k);
+                });
             });
             <span class="hljs-keyword">this</span>.__children = _.difference(<span class="hljs-keyword">this</span>.__children, newKids);
             __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
@@ -1492,9 +1494,25 @@ the same object in memory.</p>
         }
 
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
-        newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
-        newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
-            <span class="hljs-keyword">return</span> newTree.findNode(k, <span class="hljs-literal">undefined</span>, newNode);
+        newNode = newTree.findNode(<span class="hljs-keyword">this</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-55">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-55">&#182;</a>
+              </div>
+              <p>it would be great if we could do away with the findNode</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+            <span class="hljs-keyword">return</span> _.find(newNode.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
+                <span class="hljs-keyword">return</span> c.equals(k);
+            });
         });
 
         newNode.__children = _.difference(newNode.__children, newKids);
@@ -1509,11 +1527,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-55">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>Finally, we setup some library-wide defaults.</p>
 
@@ -1536,11 +1554,11 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-56">
+        <li id="section-57">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-56">&#182;</a>
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <p>And we’re done.</p>
 

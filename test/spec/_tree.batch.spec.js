@@ -94,11 +94,12 @@
             t = _tree.inflate(['rt', [1,2,3,'winner']], _tree.inflate.byAdjacencyList, {callbacks: {afterUpdate: [spy]}});
             expect(spy.calls.length).toBe(1);
 
-            k1 = [t.root().children()[0], t.root().children()[1]];
-            k2 = [t.root().children()[2]];
+            newT = t.batch();
 
-            newT = t.batch()
-                .root().removeAll(k1)
+            k1 = [newT.root().children()[0], newT.root().children()[1]];
+            k2 = [newT.root().children()[2]];
+            
+            newT.root().removeAll(k1)
                 .root().removeAll(k2)
                 .root().removeAll([])
                 .end();
@@ -134,7 +135,7 @@
 
 
         it('executes one callback for everything', function () {
-            var t, t2, newT, spy;
+            var t, t2, k1, newT, spy;
             spy = jasmine.createSpy('spy');
             t = _tree.inflate(['rt', [0,1,2,'winner']], _tree.inflate.byAdjacencyList, {callbacks: {afterUpdate: [spy]}});
             expect(spy.calls.length).toBe(1);
@@ -160,10 +161,12 @@
             // parseAndAddChild
                 .root().parseAndAddChild([{name: 'batch 0'}])
                 .root().parseAndAddChild([{name: 'batch 1'}])
-                .root().parseAndAddChild([{name: 'batch 2'}])
+                .root().parseAndAddChild([{name: 'batch 2'}]);
+
+            k1 = [newT.root().children()[0]];
 
             // removeAll
-                .root().removeAll([t.root().children()[3]])
+            newT.root().removeAll(k1)
     
                 .end();
             
