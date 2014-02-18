@@ -42,7 +42,7 @@ THE SOFTWARE.
 }(this, function (_) {
     'use strict';
 
-    var _tree = {}, Tree, Node, __defaults;
+    var _tree = {}, Tree, Node, __defaults, extend;
 
     function __callback(tree, event) {
         var args = Array.prototype.slice.call(arguments, 2);
@@ -135,7 +135,7 @@ THE SOFTWARE.
         defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
-        var tree = new Tree(defaults, obj, inflateMethod);
+        var tree = new defaults.treeClass(defaults, obj, inflateMethod);
         __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
@@ -248,11 +248,9 @@ THE SOFTWARE.
     // existing `Node`. The new tree is considered to *not* be a clone
     // of the node's original tree.
     _tree.fromNode = function (node, defaults) {
-        if (! (node instanceof Node)) {
-            throw new Error('invalid node: ' + JSON.stringify(node));
-        }
+        var tree;
         defaults = __cloneDefaults(defaults);
-        var tree = new Tree(defaults);
+        tree = new defaults.treeClass(defaults);
         tree.__root = node.constructor.clone(tree, node);
         __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
@@ -336,7 +334,7 @@ THE SOFTWARE.
     // mutable clone. This method provides the base for all Tree
     // modifications.
     Tree.clone = function (tree) {
-        var newTree = new Tree(tree.defaults);
+        var newTree = new tree.constructor(tree.defaults);
         newTree.__root = tree.root().constructor.clone(newTree, tree.root());
         newTree.__nextNodeId = tree.__nextNodeId;
         newTree.__id = tree.__id;
@@ -365,7 +363,7 @@ THE SOFTWARE.
             },
             children: function (Nodes) {
                 _.each(Nodes, function (kidObj) {
-                    var kidTree = new Tree(tree.defaults, kidObj, inflateMethod, tree.__nextNodeId);
+                    var kidTree = new tree.constructor(tree.defaults, kidObj, inflateMethod, tree.__nextNodeId);
                     thisnode.__children.push(kidTree.root());
                     kidTree.root().__parent = thisnode;
                     tree.__nextNodeId = kidTree.__nextNodeId;
@@ -715,7 +713,7 @@ THE SOFTWARE.
     // effectively subclass any subclass of Node. Modified from
     // [Backbone.js](http://backbonejs.org/docs/backbone.html#section-206),
     // under the [MIT License](https://github.com/drfloob/_tree/blob/master/LICENSE-MIT)
-    Node.extend = function(protoProps, staticProps) {
+    extend = function(protoProps, staticProps) {
         var parent, child;
         parent = this;
 
@@ -749,7 +747,7 @@ THE SOFTWARE.
 
         return child;        
     }
-
+    Tree.extend = Node.extend = extend;
 
 
 
@@ -823,7 +821,7 @@ THE SOFTWARE.
         inflateMethod = inflateMethod || this.__tree.defaults.inflate;
         var childTree, newTree, newNode, tree;
         tree = this.tree();
-        childTree = new Tree(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+        childTree = new tree.constructor(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
 
         if (tree.isBatch()) {
             this.__children.push(childTree.root());
@@ -950,6 +948,7 @@ THE SOFTWARE.
 
     // Finally, we setup some library-wide defaults.
     __defaults =  {
+        'treeClass': _tree.Tree,
         'inflate': _tree.inflate.byKey(),
         'walk': Tree.prototype.walk.dfpre,
         'deleteRecursive': true,
