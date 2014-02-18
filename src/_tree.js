@@ -262,32 +262,6 @@ THE SOFTWARE.
 
 
 
-    _tree.node = {};
-    _tree.node.createClass = function(Properties) {
-        var ctor, props;
-
-        ctor= function() {
-            Node.apply(this, arguments);
-            if (this.init) {
-                this.init.apply(this, arguments);
-            }
-        };
-
-        if (Properties && _.has(Properties, 'constructor')) {
-            throw "You supplied a 'constructor'. I think you meant 'init'";
-        }
-        props = _.omit((Properties || {}), 'constructor');
-        _.each(props, function(val, k) {
-            props[k] = {value: val, enumerable: true, writable: false, configurable: false};
-        });
-        props.constructor = {value: ctor, enumerable: true, writable: false, configurable: false};
-        
-        ctor.prototype = Object.create(Node.prototype, props);
-        return ctor;
-    }
-
-
-
     // # Tree
     //
     // This is the `Tree` constructor. It is intended to be used
@@ -719,6 +693,7 @@ THE SOFTWARE.
     };
     _tree.Node = Node;
 
+
     // A static copy constructor for `Node` objects, much like
     // `Tree.clone`, but recursive. All child nodes are cloned as
     // well.
@@ -736,6 +711,31 @@ THE SOFTWARE.
 
         return newNode;
     };
+
+    Node.extend = function(Properties) {
+        var ctor, props;
+
+        ctor= function() {
+            Node.apply(this, arguments);
+            if (this.init) {
+                this.init.apply(this, arguments);
+            }
+        };
+
+        if (Properties && _.has(Properties, 'constructor')) {
+            throw "You supplied a 'constructor'. I think you meant 'init'";
+        }
+        props = _.omit((Properties || {}), 'constructor');
+        _.each(props, function(val, k) {
+            props[k] = {value: val, enumerable: true, writable: false, configurable: false};
+        });
+        props.constructor = {value: ctor, enumerable: true, writable: false, configurable: false};
+        
+        ctor.prototype = Object.create(Node.prototype, props);
+        return ctor;
+    }
+
+
 
 
 
