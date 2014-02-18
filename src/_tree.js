@@ -174,7 +174,7 @@ THE SOFTWARE.
     _tree.inflate.byKey = function (Key) {
         Key = Key || 'children';
         return function (Obj) {
-            this.emitData(Obj);
+            this.setNode(new _tree.Node(this.tree, Obj));
             if (_.has(Obj, Key)) {
                 this.children(Obj[Key]);
             }
@@ -200,7 +200,7 @@ THE SOFTWARE.
     //             child3
     _tree.inflate.byAdjacencyList = function (Obj) {
         var kids, tmpObj, i;
-        this.emitData(_.first(Obj));
+        this.setNode(new _tree.Node(this.tree, _.first(Obj)));
         if (Obj.length > 1) {
             if (!_.isArray(Obj[1]) || Obj.length > 2) {
                 throw 'invalid adjacency list';
@@ -235,9 +235,10 @@ THE SOFTWARE.
             throw 'invalid leaves list';
         }
         if (_.isArray(_.first(Obj))) {
+            this.setNode(new _tree.Node(this.tree));
             this.children(_.map(_.first(Obj), function (n) {return [n];}));
         } else {
-            this.emitData(_.first(Obj));
+            this.setNode(new _tree.Node(this.tree, _.first(Obj)));
         }
     };
 
@@ -258,6 +259,32 @@ THE SOFTWARE.
         __finalizeMutableTreeClone(tree);
         return tree;
     };
+
+
+
+    _tree.node = {};
+    _tree.node.createClass = function(Properties) {
+        var ctor, props;
+
+        ctor= function() {
+            Node.apply(this, arguments);
+            if (this.init) {
+                this.init.apply(this, arguments);
+            }
+        };
+
+        if (Properties && _.has(Properties, 'constructor')) {
+            throw "You supplied a 'constructor'. I think you meant 'init'";
+        }
+        props = _.omit((Properties || {}), 'constructor');
+        _.each(props, function(val, k) {
+            props[k] = {value: val, enumerable: true, writable: false, configurable: false};
+        });
+        props.constructor = {value: ctor, enumerable: true, writable: false, configurable: false};
+        
+        ctor.prototype = Object.create(Node.prototype, props);
+        return ctor;
+    }
 
 
 
@@ -323,6 +350,7 @@ THE SOFTWARE.
             this.__root = __root;
         }
     };
+    _tree.Tree = Tree;
 
 
 
@@ -346,18 +374,20 @@ THE SOFTWARE.
     Tree.inflate = function(tree, obj, inflateMethod) {
         var thisnode, _this;
 
-        thisnode = new Node(tree);
+        // thisnode = new Node(tree)
 
         // When `inflateMethod` is called to navigate `obj`, `this` is
         // bound to the following object:
         //
-        //  * `this.emitData(data)`: Sets the data for the current node.
+        //  * `this.setNode(Node)`: Sets the current node. Must be
+        //    done before `this.children` is called.
         //  * `this.children([child])`: Calling this immediately
         //    processes and inflates a set of child node objects.
         //
         _this = {
-            emitData: function (Data) {
-                thisnode.__data = Data;
+            tree: tree,
+            setNode: function(node) {
+                thisnode = node;
             },
             children: function (Nodes) {
                 _.each(Nodes, function (kidObj) {
@@ -651,7 +681,7 @@ THE SOFTWARE.
     // This defines the `Node` constructor, and much like `Tree`, the
     // resulting object is mutable until just before being exposed to
     // the external world.
-    Node = function (tree) {
+    Node = function (tree, data) {
         try {
             Object.defineProperties(this, {
                 '__tree': {
@@ -661,6 +691,7 @@ THE SOFTWARE.
                     configurable: false
                 },
                 '__data': {
+                    value: data,
                     writable: true,
                     enumerable: false,
                     configurable: false
@@ -686,6 +717,7 @@ THE SOFTWARE.
         }
         tree.__nextNodeId = tree.__nextNodeId + 1;
     };
+    _tree.Node = Node;
 
     // A static copy constructor for `Node` objects, much like
     // `Tree.clone`, but recursive. All child nodes are cloned as
