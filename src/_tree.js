@@ -253,7 +253,7 @@ THE SOFTWARE.
         }
         defaults = __cloneDefaults(defaults);
         var tree = new Tree(defaults);
-        tree.__root = Node.clone(tree, node);
+        tree.__root = node.constructor.clone(tree, node);
         __preFinalizeTree(tree);
         __callback(tree, 'beforeFreeze');
         __finalizeMutableTreeClone(tree);
@@ -337,7 +337,7 @@ THE SOFTWARE.
     // modifications.
     Tree.clone = function (tree) {
         var newTree = new Tree(tree.defaults);
-        newTree.__root = Node.clone(newTree, tree.root());
+        newTree.__root = tree.root().constructor.clone(newTree, tree.root());
         newTree.__nextNodeId = tree.__nextNodeId;
         newTree.__id = tree.__id;
         return newTree;
@@ -698,10 +698,10 @@ THE SOFTWARE.
     // `Tree.clone`, but recursive. All child nodes are cloned as
     // well.
     Node.clone = function (newTree, node, differentId) {
-        var newNode = new Node(newTree);
+        var newNode = new node.constructor(newTree);
         newNode.__data = node.__data;
 
-        newNode.__children = _.map(node.children(), function(c) { return Node.clone(newTree, c, differentId); });
+        newNode.__children = _.map(node.children(), function(c) { return node.constructor.clone(newTree, c, differentId); });
         _.each(newNode.__children, function(c) {c.__parent = newNode;});
 
         if (!differentId) {
@@ -712,27 +712,42 @@ THE SOFTWARE.
         return newNode;
     };
 
-    Node.extend = function(Properties) {
-        var ctor, props;
+    // effectively subclass any subclass of Node. Modified from
+    // [Backbone.js](http://backbonejs.org/docs/backbone.html#section-206),
+    // under the [MIT License](https://github.com/drfloob/_tree/blob/master/LICENSE-MIT)
+    Node.extend = function(protoProps, staticProps) {
+        var parent, child;
+        parent = this;
 
-        ctor= function() {
-            Node.apply(this, arguments);
-            if (this.init) {
-                this.init.apply(this, arguments);
-            }
-        };
-
-        if (Properties && _.has(Properties, 'constructor')) {
-            throw "You supplied a 'constructor'. I think you meant 'init'";
+        // The constructor function for the new subclass is either
+        // defined by you (the “constructor” property in your extend
+        // definition), or defaulted by us to simply call the parent’s
+        // constructor.
+        if (protoProps && _.has(protoProps, 'constructor')) {
+            child = protoProps.constructor;
+        } else {
+            child = function(){ return parent.apply(this, arguments); };
         }
-        props = _.omit((Properties || {}), 'constructor');
-        _.each(props, function(val, k) {
-            props[k] = {value: val, enumerable: true, writable: false, configurable: false};
-        });
-        props.constructor = {value: ctor, enumerable: true, writable: false, configurable: false};
         
-        ctor.prototype = Object.create(Node.prototype, props);
-        return ctor;
+        // Add static properties to the constructor function, if
+        //supplied.
+        _.extend(child, parent, staticProps);
+        
+        // Set the prototype chain to inherit from parent, without
+        // calling parent‘s constructor function.
+        var Surrogate = function(){ this.constructor = child; };
+        Surrogate.prototype = parent.prototype;
+        child.prototype = new Surrogate;
+        
+        // Add prototype properties (instance properties) to the
+        // subclass, if supplied.
+        if (protoProps) _.extend(child.prototype, protoProps);
+        
+        // Set a convenience property in case the parent’s prototype
+        // is needed later.
+        child.__super__ = parent.prototype;
+
+        return child;        
     }
 
 
@@ -836,7 +851,7 @@ THE SOFTWARE.
         var newTree, newParentNode, nodeClone;
 
         if (this.tree().isBatch()) {
-            nodeClone = Node.clone(this.tree(), node, true);
+            nodeClone = node.constructor.clone(this.tree(), node, true);
             this.__children.push(nodeClone);
             __preFinalizeTree(this.tree());
             return this.tree();
@@ -846,7 +861,7 @@ THE SOFTWARE.
         newParentNode = newTree.findNode(this);
 
         newTree.__nextNodeId = this.tree().__nextNodeId;
-        nodeClone = Node.clone(newTree, node, true);
+        nodeClone = node.constructor.clone(newTree, node, true);
         newParentNode.__children.push(nodeClone);
 
         __preFinalizeTree(newTree);
