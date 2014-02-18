@@ -199,7 +199,7 @@
     <h1>Code coverage report for <span class="entity">src/_tree.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">96.93% <small>(347 / 358)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">96.67% <small>(348 / 360)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Branches: <span class="metric">94.74% <small>(108 / 114)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -208,7 +208,7 @@
         Functions: <span class="metric">100% <small>(73 / 73)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">96.88% <small>(342 / 353)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">96.62% <small>(343 / 355)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
@@ -1135,7 +1135,9 @@
 917
 918
 919
-920</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+920
+921
+922</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1256,11 +1258,6 @@
 <span class="cline-any cline-yes">174</span>
 <span class="cline-any cline-yes">174</span>
 <span class="cline-any cline-yes">174</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1411,11 +1408,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">689</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">689</span>
 <span class="cline-any cline-yes">689</span>
 <span class="cline-any cline-yes">689</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">689</span>
 <span class="cline-any cline-yes">689</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1438,6 +1438,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1483,6 +1484,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">511</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">511</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1505,6 +1507,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">511</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">511</span>
 <span class="cline-any cline-yes">508</span>
@@ -2180,18 +2184,13 @@ THE SOFTWARE.
 &nbsp;
     // # Public API
     
-    // `_tree.inflate` parses tree-like data into an immutable `Tree`
-    // object for you to work with. It does so without modifying your
-    // object whatsoever, and it can handle any tree data structure
-    // you define.
-    //
-    // You can specify the default behaviour of your tree via the
-    // `defaults` argument. Anything you don't specify will take the
-    // standard default options.
-    //
-    // `_tree.inflate` handles all forms of tree-like data by making
-    // the object parsing logic fully pluggable. You can define your
-    // own `inflateMethod`, or use one of the handful of built-ins.
+    // `_tree.inflate` parses arbitrary tree-like data into an
+    // immutable `Tree` object. It handles any kind of tree-like data
+    // since the `inflateMethod` argument determines how the data will
+    // be parsed. A Handful of inflate methods are included. You can
+    // specify the default behaviour of your tree via the `defaults`
+    // argument. Anything you don't specify will take the standard
+    // default options.
     _tree.inflate = function (obj, inflateMethod, defaults) {
         defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
@@ -2235,7 +2234,7 @@ THE SOFTWARE.
     _tree.inflate.byKey = function (Key) {
         Key = Key || 'children';
         return function (Obj) {
-            this.emit(Obj);
+            this.emitData(Obj);
             if (_.has(Obj, Key)) {
                 this.children(Obj[Key]);
             }
@@ -2261,7 +2260,7 @@ THE SOFTWARE.
     //             child3
     _tree.inflate.byAdjacencyList = function (Obj) {
         var kids, tmpObj, i;
-        this.emit(_.first(Obj));
+        this.emitData(_.first(Obj));
         if (Obj.length &gt; 1) {
             if (!_.isArray(Obj[1]) || Obj.length &gt; 2) {
                 throw 'invalid adjacency list';
@@ -2298,7 +2297,7 @@ THE SOFTWARE.
         if (_.isArray(_.first(Obj))) {
             this.children(_.map(_.first(Obj), function (n) {return [n];}));
         } else {
-            this.emit(_.first(Obj));
+            this.emitData(_.first(Obj));
         }
     };
 &nbsp;
@@ -2321,20 +2320,23 @@ THE SOFTWARE.
     };
 &nbsp;
 &nbsp;
-    // # Tree
-    
 &nbsp;
+    // # Tree
+    //
     // This is the `Tree` constructor. It is intended to be used
     // internally, and so it returns a mutable object that must be
-    // frozen before it's returned. For the sake of IE8, and all other
-    // environments that don't support Object.definePropert(y|ies),
-    // the nasty bit of try/catch here allows those environments to
-    // work without guaranteed immutability.
+    // finalized and frozen before it's returned. For the sake of IE8,
+    // and all other environments that don't support
+    // Object.definePropert(y|ies), the nasty bit of try/catch here
+    // allows `_tree` to function in those environments without the
+    // guarantee of immutability.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
-        this.defaults = defaults;
         var  __id, __nextNodeId, __root;
+&nbsp;
+        this.defaults = defaults;
         __id = _.uniqueId();
         __nextNodeId = nextNodeId || 0;
+&nbsp;
         try {
             Object.defineProperties(this, {
                 '__id': {
@@ -2359,6 +2361,7 @@ THE SOFTWARE.
         } catch (e) {
 <span class="cstat-no" title="statement not covered" >            this.__id = __id;</span>
 <span class="cstat-no" title="statement not covered" >            this.__nextNodeId = __nextNodeId;</span>
+<span class="cstat-no" title="statement not covered" >            this.__batch = 0;</span>
         }
         
         if (!!obj &amp;&amp; !!inflateMethod) {
@@ -2401,18 +2404,19 @@ THE SOFTWARE.
     // `Tree.inflate` provides the general logic behind object
     // inflation/parsing/deserialization.
     Tree.inflate = function(tree, obj, inflateMethod) {
-        var thisnode = new Node(tree), _this;
-        tree.__root = thisnode;
+        var thisnode, _this;
+&nbsp;
+        thisnode = new Node(tree);
 &nbsp;
         // When `inflateMethod` is called to navigate `obj`, `this` is
         // bound to the following object:
         //
-        //  * `this.emit(data)`: Sets the data for the current node.
+        //  * `this.emitData(data)`: Sets the data for the current node.
         //  * `this.children([child])`: Calling this immediately
         //    processes and inflates a set of child node objects.
         //
         _this = {
-            emit: function (Data) {
+            emitData: function (Data) {
                 thisnode.__data = Data;
             },
             children: function (Nodes) {
@@ -2424,6 +2428,8 @@ THE SOFTWARE.
                 });
             }
         };
+&nbsp;
+        tree.__root = thisnode;
 &nbsp;
         inflateMethod.call(_this, obj);
         return thisnode;
@@ -2978,7 +2984,7 @@ THE SOFTWARE.
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Feb 11 2014 22:29:33 GMT-0800 (PST)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Feb 18 2014 11:47:22 GMT-0800 (PST)</div>
 </div>
 
 <script src="../prettify.js"></script>

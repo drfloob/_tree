@@ -1,3 +1,17 @@
+# _tree
+
+`_tree` is a javascript library that lets you generate immutable tree
+data structures. It uses a functional programming style, in that it:
+
+* maintains zero internal state,
+* does not modify any of your data ([purely functional](wikiPF)),
+* lets you augment your tree's behaviors (via [Higher-order functions](wikiHOF)), and
+* does not trample on the global scope unless you need it to.
+
+`_tree` supports AMD (RequireJs), Node, and global script
+environments.
+
+
 [![Build Status](https://travis-ci.org/drfloob/_tree.png?branch=master)](https://travis-ci.org/drfloob/_tree)
 
 **Table of Contents**
@@ -21,17 +35,6 @@
 * [Annotated source code][annsrc]
 * [Live in-browser tests][tests]
 
-
-
-# _tree
-
-This library provides an immutable tree model (data structure)
-implementation and a pluggable tree behavior for hierarchical data. It
-maintains zero internal state, does not alter your data, and does not
-trample on the global scope (unless you tell it to).
-
-`_tree` supports AMD (RequireJs), Node, and global-script loading
-scenarios.
 
 
 ## Example
@@ -74,7 +77,7 @@ familyTree.walk(printLineage);
 ```
 
 More usage examples can be found in the
-[unit tests](https://github.com/drfloob/_tree/tree/master/test/spec/). The
+[test suite](https://github.com/drfloob/_tree/tree/master/test/spec/). The
 [annotated source code](http://tree.drfloob.com/docs/_tree.html) is
 also a great learning resource.
 
@@ -85,8 +88,9 @@ also a great learning resource.
 
 **Tests**
 
-Regular testing is performed with NodeJS locally, Chrome (stable), and
-via TravisCI. Around ~v0.2.0, all tests passed for:
+Regular testing is performed with NodeJS, locally and via TravisCI.
+
+Around ~v0.2.0, all tests passed for:
 
  * Chrome: >= 12
  * Firefox: >= 4
@@ -372,3 +376,5 @@ Please do.
 [annsrc]: http://tree.drfloob.com/docs/_tree.html
 [tests]: http://tree.drfloob.com/_SpecRunner.html
 [coverage]: http://tree.drfloob.com/coverage/
+[wikiHOF]: https://en.wikipedia.org/wiki/Higher-order_function
+[wikiPF]: https://en.wikipedia.org/wiki/Purely_functional

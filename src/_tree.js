@@ -124,18 +124,13 @@ THE SOFTWARE.
 
     // # Public API
     
-    // `_tree.inflate` parses tree-like data into an immutable `Tree`
-    // object for you to work with. It does so without modifying your
-    // object whatsoever, and it can handle any tree data structure
-    // you define.
-    //
-    // You can specify the default behaviour of your tree via the
-    // `defaults` argument. Anything you don't specify will take the
-    // standard default options.
-    //
-    // `_tree.inflate` handles all forms of tree-like data by making
-    // the object parsing logic fully pluggable. You can define your
-    // own `inflateMethod`, or use one of the handful of built-ins.
+    // `_tree.inflate` parses arbitrary tree-like data into an
+    // immutable `Tree` object. It handles any kind of tree-like data
+    // since the `inflateMethod` argument determines how the data will
+    // be parsed. A Handful of inflate methods are included. You can
+    // specify the default behaviour of your tree via the `defaults`
+    // argument. Anything you don't specify will take the standard
+    // default options.
     _tree.inflate = function (obj, inflateMethod, defaults) {
         defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
@@ -179,7 +174,7 @@ THE SOFTWARE.
     _tree.inflate.byKey = function (Key) {
         Key = Key || 'children';
         return function (Obj) {
-            this.emit(Obj);
+            this.emitData(Obj);
             if (_.has(Obj, Key)) {
                 this.children(Obj[Key]);
             }
@@ -205,7 +200,7 @@ THE SOFTWARE.
     //             child3
     _tree.inflate.byAdjacencyList = function (Obj) {
         var kids, tmpObj, i;
-        this.emit(_.first(Obj));
+        this.emitData(_.first(Obj));
         if (Obj.length > 1) {
             if (!_.isArray(Obj[1]) || Obj.length > 2) {
                 throw 'invalid adjacency list';
@@ -242,7 +237,7 @@ THE SOFTWARE.
         if (_.isArray(_.first(Obj))) {
             this.children(_.map(_.first(Obj), function (n) {return [n];}));
         } else {
-            this.emit(_.first(Obj));
+            this.emitData(_.first(Obj));
         }
     };
 
@@ -265,20 +260,23 @@ THE SOFTWARE.
     };
 
 
-    // # Tree
-    
 
+    // # Tree
+    //
     // This is the `Tree` constructor. It is intended to be used
     // internally, and so it returns a mutable object that must be
-    // frozen before it's returned. For the sake of IE8, and all other
-    // environments that don't support Object.definePropert(y|ies),
-    // the nasty bit of try/catch here allows those environments to
-    // work without guaranteed immutability.
+    // finalized and frozen before it's returned. For the sake of IE8,
+    // and all other environments that don't support
+    // Object.definePropert(y|ies), the nasty bit of try/catch here
+    // allows `_tree` to function in those environments without the
+    // guarantee of immutability.
     Tree = function (defaults, obj, inflateMethod, nextNodeId) {
-        this.defaults = defaults;
         var  __id, __nextNodeId, __root;
+
+        this.defaults = defaults;
         __id = _.uniqueId();
         __nextNodeId = nextNodeId || 0;
+
         try {
             Object.defineProperties(this, {
                 '__id': {
@@ -303,6 +301,7 @@ THE SOFTWARE.
         } catch (e) {
             this.__id = __id;
             this.__nextNodeId = __nextNodeId;
+            this.__batch = 0;
         }
         
         if (!!obj && !!inflateMethod) {
@@ -345,18 +344,19 @@ THE SOFTWARE.
     // `Tree.inflate` provides the general logic behind object
     // inflation/parsing/deserialization.
     Tree.inflate = function(tree, obj, inflateMethod) {
-        var thisnode = new Node(tree), _this;
-        tree.__root = thisnode;
+        var thisnode, _this;
+
+        thisnode = new Node(tree);
 
         // When `inflateMethod` is called to navigate `obj`, `this` is
         // bound to the following object:
         //
-        //  * `this.emit(data)`: Sets the data for the current node.
+        //  * `this.emitData(data)`: Sets the data for the current node.
         //  * `this.children([child])`: Calling this immediately
         //    processes and inflates a set of child node objects.
         //
         _this = {
-            emit: function (Data) {
+            emitData: function (Data) {
                 thisnode.__data = Data;
             },
             children: function (Nodes) {
@@ -368,6 +368,8 @@ THE SOFTWARE.
                 });
             }
         };
+
+        tree.__root = thisnode;
 
         inflateMethod.call(_this, obj);
         return thisnode;
