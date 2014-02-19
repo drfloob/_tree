@@ -1,5 +1,3 @@
-# _tree
-
 `_tree` is a javascript library that helps you generate immutable tree
 data structures. It uses a functional programming style, in that it:
 
@@ -16,7 +14,6 @@ environments.
 
 **Table of Contents**
 
-* [Intro](#_tree)
 * [Example](#example)
 * [Quality Metrics](#quality-metrics)
 * [API](#api)
