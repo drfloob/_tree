@@ -101,6 +101,17 @@ module.exports = function(grunt) {
             removeAll: {src: ['benchmark/**/removeAll*.js']}
         },
         copy: {
+            licenses: {
+                files: [
+                    {src: 'node_modules/backbone/LICENSE', dest: 'LICENSE.backbone'}
+                ]
+            },
+            docco: {
+                files: [
+                    {src: 'LICENSE', dest: 'docs/LICENSE'},
+                    {src: 'node_modules/backbone/LICENSE', dest: 'docs/LICENSE.backbone'}
+                ]
+            },
             vendor: {
                 files: [
                     {src: 'node_modules/grunt-contrib-jasmine/vendor/jasmine-1.3.1/jasmine.css', dest: 'test/vendor/jasmine.css'},
@@ -136,8 +147,8 @@ module.exports = function(grunt) {
     grunt.registerTask('phantom_test', ['copy:vendor', 'connect:test', 'jasmine:run']);
     grunt.registerTask('phantom_cover', ['copy:vendor', 'connect:test', 'jasmine:cover']);
     grunt.registerTask('test', ['jasmine_node']);
-    grunt.registerTask('docs', ['docco']);
-    grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'uglify', 'compare_size', 'docs']);
+    grunt.registerTask('docs', ['docco', 'copy:docco']);
+    grunt.registerTask('build', ['jshint', 'jsonlint', 'test', 'copy:licenses', 'uglify', 'compare_size', 'docs']);
     
     grunt.registerTask('default', ['build', 'docs', 'phantom_cover']);
 

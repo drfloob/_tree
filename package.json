@@ -1,6 +1,6 @@
 {
   "name": "_tree",
-    "main": "./dist/_tree.min.js",
+  "main": "./dist/_tree.min.js",
   "version": "0.5.2",
   "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
   "author": "A.J. Heller",
@@ -39,7 +39,8 @@
     "grunt-template-jasmine-istanbul": "~0.2.5",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-markdown": "~0.4.0",
-    "grunt-jasmine-node": "~0.1.0"
+    "grunt-jasmine-node": "~0.1.0",
+    "backbone": "~1.1.1"
   },
   "scripts": {
     "test": "grunt jasmine_node --verbose"
