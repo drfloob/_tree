@@ -26,7 +26,6 @@ environments.
     * [Supported events](#supported-events)
     * [Batch mode](#batch-mode)
 * [Building](#building)
-* [Development Stuff](#development-stuff)
 * [Contributing](#contributing)
 
 **Additional Links**
