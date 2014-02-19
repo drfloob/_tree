@@ -71,8 +71,8 @@
                     return c[n];
                 },
                 serialize: function() {
-                    var ret = {listName: this.name(), 
-                               todos: _.map(this.getTodos(), 
+                    var ret = {listName: this.name(),
+                               todos: _.map(this.getTodos(),
                                             function(t) {
                                                 return t.serialize();
                                             })
@@ -134,7 +134,7 @@
             
             expect(todoList.serialize())
                 .toEqual({
-                    listName: 'my list', 
+                    listName: 'my list',
                     todos: [
                         {name: 'do yoga', completed: true}
                     ]
