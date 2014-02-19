@@ -46,6 +46,20 @@
             expect(_.bind(_tree.fromNode, [1, [2]])).toThrow();
         });
 
+
+        it('will take the treeClass from defaults, not from the node\'s tree', function () {
+            var tree, root, newTree, treeCls;
+            treeCls = _tree.Tree.extend({one: 1});
+            tree = _tree.create({treeClass: treeCls});
+            expect(tree.one).toBe(1);
+
+            root = tree.root();
+            newTree = _tree.fromNode(root);
+            expect(newTree.one).toBeUndefined();
+
+            newTree = _tree.fromNode(root, {treeClass: treeCls});
+            expect(newTree.one).toBe(1);
+        });
     });
 
 }));

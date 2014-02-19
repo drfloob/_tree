@@ -112,6 +112,213 @@
             });
 
         });
+
+        describe('beforeFreeze', function () {
+            it('is called on tree modification', function () {
+                var spy, tree;
+                spy = jasmine.createSpy('spy');
+                tree = _tree.create({callbacks: { beforeFreeze: [spy] }});
+                expect(spy.calls.length).toBe(1);
+
+                tree = tree.root().data('test');
+                expect(spy.calls.length).toBe(2);
+
+                tree = tree.root().parseAndAddChild({n: 2});
+                expect(spy.calls.length).toBe(3);
+
+                tree = tree.root().children()[0].data('test');
+                expect(spy.calls.length).toBe(4);
+            });
+
+            it('allows modification of the tree before finalizing', function() {
+                var tree, cb;
+                cb = function(tree) {
+                    tree.root().testKey = 'testValue';
+                };
+                tree = _tree.create({callbacks: { beforeFreeze: [cb] }});
+                expect(tree.root().testKey).toBe('testValue');
+            });
+
+            describe('.data', function () {
+                it('is called on data alteration', function () {
+                    var spy, tree;
+                    spy = jasmine.createSpy('spy');
+                    tree = _tree.create({callbacks: { 'beforeFreeze.data': [spy] }});
+                    expect(spy.calls.length).toBe(0);
+
+                    tree = tree.root().data('test');
+                    expect(spy.calls.length).toBe(1);
+                    
+                    tree = tree.root().parseAndAddChild({n: 2});
+                    expect(spy.calls.length).toBe(1); // unchanged
+
+                    tree = tree.root().children()[0].data('test');
+                    expect(spy.calls.length).toBe(2);
+                });
+
+                it('is called with the modified node', function () {
+                    var tree, cb, oldNode;
+                    cb = function(tree, node) {
+                        expect(node.equals(oldNode)).toBe(true);
+                        expect(node === oldNode).toBe(false);
+                    };
+                    tree = _tree.create({callbacks: { 'beforeFreeze.data': [cb] }});
+                    oldNode = tree.root();
+
+                    tree.root().data('go');
+                    
+                });
+
+                it('can modify the tree', function () {
+                    var tree, cb;
+                    cb = function(tree) {
+                        tree.root().testKey = 'testValue';
+                    };
+                    tree = _tree.inflate(['root', ['child']],
+                                         _tree.inflate.byAdjacencyList,
+                                         { callbacks: { 'beforeFreeze.data': [cb] }}
+                                        );
+                    tree = tree.root().children()[0].data('go');
+
+                    expect(tree.root().testKey).toBe('testValue');
+                });
+            }); // beforeFreeze.data
+
+
+            describe('.parseAndAddChild', function () {
+                it('is called on new child parse', function () {
+                    var spy, tree;
+                    spy = jasmine.createSpy('spy');
+                    tree = _tree.create({callbacks: { 'beforeFreeze.parseAndAddChild': [spy] }});
+                    expect(spy.calls.length).toBe(0);
+
+                    tree = tree.root().data('test');
+                    expect(spy.calls.length).toBe(0);  // unchanged
+                    
+                    tree = tree.root().parseAndAddChild({n: 2});
+                    expect(spy.calls.length).toBe(1);
+
+                    tree = tree.root().children()[0].data('test');
+                    expect(spy.calls.length).toBe(1);  // unchanged
+                });
+
+                it('is called with the new child node', function () {
+                    var tree, cb, data = {n: 2};
+                    cb = function(tree, node) {
+                        expect(node.data()).toBe(data);
+                    };
+                    tree = _tree.create({callbacks: { 'beforeFreeze.parseAndAddChild': [cb] }});
+                    tree.root().parseAndAddChild(data);
+                    
+                });
+
+                it('can modify the tree', function () {
+                    var tree, cb;
+                    cb = function(tree) {
+                        tree.root().testKey = 'testValue';
+                    };
+                    tree = _tree.create({ callbacks: { 'beforeFreeze.parseAndAddChild': [cb] }});
+                    tree = tree.root().parseAndAddChild({n: 2});
+
+                    expect(tree.root().testKey).toBe('testValue');
+                });
+            }); // beforeFreeze.parseAndAddChild
+
+
+
+            describe('.addChildNode', function () {
+                it('is only called on child node additions', function () {
+                    var spy, tree, tree2;
+                    spy = jasmine.createSpy('spy');
+                    tree = _tree.create({callbacks: { 'beforeFreeze.addChildNode': [spy] }});
+                    tree2 = _tree.inflate(['bort'], _tree.inflate.byAdjacencyList);
+                    expect(spy.calls.length).toBe(0);
+
+                    tree = tree.root().data('test');
+                    expect(spy.calls.length).toBe(0);  // unchanged
+                    
+                    tree = tree.root().addChildNode(tree2.root());
+                    expect(spy.calls.length).toBe(1);
+
+                    tree = tree.root().children()[0].data('test');
+                    expect(spy.calls.length).toBe(1);  // unchanged
+                });
+
+                it('is called with the new child node', function () {
+                    var tree, tree2, cb;
+                    cb = function(tree, node) {
+                        // the data object is the same (as in same object in
+                        // memory)
+                        expect(node.data()).toBe(tree2.root().data());
+
+                        // but note that since the tree is different,
+                        // the nodes are not considered to be clones.
+                        expect(node.equals(tree2.root())).toBe(false);
+                    };
+                    tree = _tree.create({callbacks: { 'beforeFreeze.addChildNode': [cb] }});
+                    tree2 = _tree.inflate(['bort'], _tree.inflate.byAdjacencyList);
+                    tree.root().addChildNode(tree2.root());
+                    
+                });
+
+                it('can modify the tree', function () {
+                    var tree, tree2, cb;
+                    cb = function(tree) {
+                        tree.root().testKey = 'testValue';
+                    };
+                    tree = _tree.create({ callbacks: { 'beforeFreeze.addChildNode': [cb] }});
+                    tree2 = _tree.inflate(['bort'], _tree.inflate.byAdjacencyList);
+                    tree = tree.root().addChildNode(tree2.root());
+
+                    expect(tree.root().testKey).toBe('testValue');
+                });
+            }); // beforeFreeze.addChildNode
+
+
+
+
+            describe('.remove', function () {
+                it('is only called when removing a node', function () {
+                    var spy, tree;
+                    spy = jasmine.createSpy('spy');
+                    tree = _tree.inflate(['bort', ['foo']], _tree.inflate.byAdjacencyList, {callbacks: { 'beforeFreeze.remove': [spy] }});
+                    expect(spy.calls.length).toBe(0);
+
+                    tree = tree.root().data('test');
+                    expect(spy.calls.length).toBe(0);  // unchanged
+                    
+                    tree = tree.root().children()[0].remove();
+                    expect(spy.calls.length).toBe(1);
+
+                    tree = tree.root().parseAndAddChild([2]);
+                    expect(spy.calls.length).toBe(1);  // unchanged
+                });
+
+                it('is called with the *parent* of the removed node', function () {
+                    var tree, cb;
+                    cb = function(tree, node) {
+                        expect(node.equals(tree.root())).toBe(true);
+                    };
+                    tree = _tree.inflate(['bort', ['foo']], _tree.inflate.byAdjacencyList, {callbacks: { 'beforeFreeze.remove': [cb] }});
+                    tree.root().children()[0].remove();
+                    
+                });
+
+                it('can modify the tree', function () {
+                    var tree, cb;
+                    cb = function(tree) {
+                        tree.root().testKey = 'testValue';
+                    };
+                    tree = _tree.inflate(['bort', ['foo']], _tree.inflate.byAdjacencyList, {callbacks: { 'beforeFreeze.remove': [cb] }});
+                    tree = tree.root().children()[0].remove();
+
+                    expect(tree.root().testKey).toBe('testValue');
+                });
+            }); // beforeFreeze.remove
+
+
+        });// beforeFreeze
+
     });
 
 

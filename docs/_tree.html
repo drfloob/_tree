@@ -30,27 +30,7 @@
               
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.  
-*/</span>
-
-<span class="hljs-comment">/* jshint -W071 */</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* jshint -W071 */</span>
 <span class="hljs-comment">/* global define */</span></pre></div></div>
             
         </li>
@@ -125,7 +105,17 @@ like Node.</p>
 }(<span class="hljs-keyword">this</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(_)</span> {</span>
 <span class="hljs-pi">    'use strict'</span>;
 
-    <span class="hljs-keyword">var</span> _tree = {}, Tree, Node, __defaults;</pre></div></div>
+    <span class="hljs-keyword">var</span> _tree = {}, Tree, Node, __defaults, extend;
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__callback</span><span class="hljs-params">(tree, event)</span> {</span>
+        <span class="hljs-keyword">var</span> args = <span class="hljs-built_in">Array</span>.prototype.slice.call(<span class="hljs-built_in">arguments</span>, <span class="hljs-number">2</span>);
+        _.each(tree.defaults.callbacks[event], <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(cb)</span> {</span>
+            _.partial(cb, tree).apply(<span class="hljs-literal">null</span>, args);
+        });
+    }
+
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__preFinalizeTree</span><span class="hljs-params">(tree)</span> {</span></pre></div></div>
             
         </li>
         
@@ -136,14 +126,27 @@ like Node.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>A rfc4122-compatible GUID generator, with thanks to 
-<a href="http://stackoverflow.com/a/2117523">broofa</a></p>
+              <p>engage mixins before calling the tree pre-finalized</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">uuid</span> <span class="hljs-params">()</span> {</span>
-        <span class="hljs-keyword">return</span> <span class="hljs-string">'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'</span>.replace(<span class="hljs-regexp">/[xy]/g</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
-            <span class="hljs-comment">/* jshint bitwise:false */</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>        _.each(tree.defaults.mixins, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mix)</span> {</span>
+            <span class="hljs-keyword">if</span> (mix.tree) {
+                _.each(mix.tree, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
+                    tree[key] = f;
+                });
+            }
+            <span class="hljs-keyword">if</span> (mix.node) {
+                _.each(mix.node, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
+                    tree.walk(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(visitNode)</span> {</span>
+                        visitNode[key] = f;
+                    });
+                });
+            }
+        });
+
+        __setupAncestry(tree);
+    }</pre></div></div>
             
         </li>
         
@@ -154,14 +157,22 @@ like Node.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Bitwise logic is intentional here. Chill out, <code>jshint</code></p>
+              <p>Since tree and nodes are not set until this point, a
+meaningful ancestry needs to be setup here at this last
+step.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>            <span class="hljs-keyword">var</span> r = <span class="hljs-built_in">Math</span>.random()*<span class="hljs-number">16</span>|<span class="hljs-number">0</span>, v = c === <span class="hljs-string">'x'</span> ? r : (r&amp;<span class="hljs-number">0x3</span>|<span class="hljs-number">0x8</span>);
-            <span class="hljs-comment">/* jshint bitwise:true */</span>
-            <span class="hljs-keyword">return</span> v.toString(<span class="hljs-number">16</span>);
-        });
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__setupAncestry</span><span class="hljs-params">(tree, node, parent)</span> {</span>
+        <span class="hljs-keyword">if</span> (!node) {
+            node = tree.root();
+        }
+        node.__tree = tree;
+        <span class="hljs-keyword">if</span> (parent) {
+            node.__parent = parent;
+        }
+
+        _.each(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>__setupAncestry(tree, c, node); });
     }</pre></div></div>
             
         </li>
@@ -181,19 +192,7 @@ tree.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__finalizeMutableTreeClone</span><span class="hljs-params">(tree)</span> {</span>
-
-        <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__finalizeMutableChildNodes</span><span class="hljs-params">(node, parent)</span> {</span>
-            node.__tree = tree;
-            <span class="hljs-keyword">if</span> (parent) {
-                node.__parent = parent;
-            }
-            <span class="hljs-keyword">try</span> {
-                <span class="hljs-built_in">Object</span>.freeze(node);
-                <span class="hljs-built_in">Object</span>.freeze(node.__children);
-            } <span class="hljs-keyword">catch</span> (e) {}
-            _.each(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(c)</span> {</span>__finalizeMutableChildNodes(c, node); });
-        }</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__finalizeMutableTreeClone</span><span class="hljs-params">(tree)</span> {</span></pre></div></div>
             
         </li>
         
@@ -204,24 +203,12 @@ tree.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>engage mixins before finalization</p>
+              <p>Environments that don’t support <code>Object.freeze</code> will still
+work, but without guaranteed tree immutability.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        _.each(tree.defaults.mixins, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(mix)</span> {</span>
-            <span class="hljs-keyword">if</span> (mix.tree) {
-                _.each(mix.tree, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
-                    tree[key] = f;
-                });
-            }
-            <span class="hljs-keyword">if</span> (mix.node) {
-                _.each(mix.node, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(f, key)</span> {</span>
-                    tree.walk(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(visitNode)</span> {</span>
-                        visitNode[key] = f;
-                    });
-                });
-            }
-        });</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">try</span> { <span class="hljs-built_in">Object</span>.freeze(tree); } <span class="hljs-keyword">catch</span> (e) {}</pre></div></div>
             
         </li>
         
@@ -232,13 +219,16 @@ tree.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Environments that don’t support <code>Object.freeze</code> will still
-work, but without guaranteed tree immutability.</p>
+              <p>finalizeMutableChildNodes</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">try</span> { <span class="hljs-built_in">Object</span>.freeze(tree); } <span class="hljs-keyword">catch</span> (e) {}
-        __finalizeMutableChildNodes(tree.root());</pre></div></div>
+            <div class="content"><div class='highlight'><pre>        tree.walk(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(node)</span> {</span>
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-built_in">Object</span>.freeze(node);
+                <span class="hljs-built_in">Object</span>.freeze(node.__children);
+            } <span class="hljs-keyword">catch</span> (e) {}
+        });</pre></div></div>
             
         </li>
         
@@ -253,7 +243,7 @@ work, but without guaranteed tree immutability.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>        _.each(tree.defaults.callbacks.afterUpdate, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(cb)</span> {</span> cb(tree); });
+            <div class="content"><div class='highlight'><pre>        __callback(tree, <span class="hljs-string">'afterUpdate'</span>);
     }
 
 
@@ -287,16 +277,13 @@ work, but without guaranteed tree immutability.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p><code>_tree.inflate</code> parses tree-like data into an immutable <code>Tree</code>
-object for you to work with. It does so without modifying your
-object whatsoever, and it can handle any tree data structure
-you define.</p>
-<p>You can specify the default behaviour of your tree via the
-<code>defaults</code> argument. Anything you don’t specify will take the
-standard default options.</p>
-<p><code>_tree.inflate</code> handles all forms of tree-like data by making
-the object parsing logic fully pluggable. You can define your
-own <code>inflateMethod</code>, or use one of the handful of built-ins.</p>
+              <p><code>_tree.inflate</code> parses arbitrary tree-like data into an
+immutable <code>Tree</code> object. It handles any kind of tree-like data
+since the <code>inflateMethod</code> argument determines how the data will
+be parsed. A Handful of inflate methods are included. You can
+specify the default behaviour of your tree via the <code>defaults</code>
+argument. Anything you don’t specify will take the standard
+default options.</p>
 
             </div>
             
@@ -304,7 +291,9 @@ own <code>inflateMethod</code>, or use one of the handful of built-ins.</p>
         defaults = __cloneDefaults(defaults);
         inflateMethod = defaults.inflate = inflateMethod || defaults.inflate;
 
-        <span class="hljs-keyword">var</span> tree = <span class="hljs-keyword">new</span> Tree(defaults, obj, inflateMethod);
+        <span class="hljs-keyword">var</span> tree = <span class="hljs-keyword">new</span> defaults.treeClass(defaults, obj, inflateMethod);
+        __preFinalizeTree(tree);
+        __callback(tree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(tree);
         <span class="hljs-keyword">return</span> tree;
     };</pre></div></div>
@@ -359,7 +348,7 @@ parent object (usually ‘children’)</p>
             <div class="content"><div class='highlight'><pre>    _tree.inflate.byKey = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Key)</span> {</span>
         Key = Key || <span class="hljs-string">'children'</span>;
         <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Obj)</span> {</span>
-            <span class="hljs-keyword">this</span>.emit(Obj);
+            <span class="hljs-keyword">this</span>.setNode(<span class="hljs-keyword">new</span> _tree.Node(<span class="hljs-keyword">this</span>.tree, Obj));
             <span class="hljs-keyword">if</span> (_.has(Obj, Key)) {
                 <span class="hljs-keyword">this</span>.children(Obj[Key]);
             }
@@ -390,7 +379,7 @@ the children of the previous node. An example to clarify:</p>
             
             <div class="content"><div class='highlight'><pre>    _tree.inflate.byAdjacencyList = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Obj)</span> {</span>
         <span class="hljs-keyword">var</span> kids, tmpObj, i;
-        <span class="hljs-keyword">this</span>.emit(_.first(Obj));
+        <span class="hljs-keyword">this</span>.setNode(<span class="hljs-keyword">new</span> _tree.Node(<span class="hljs-keyword">this</span>.tree, _.first(Obj)));
         <span class="hljs-keyword">if</span> (Obj.length &gt; <span class="hljs-number">1</span>) {
             <span class="hljs-keyword">if</span> (!_.isArray(Obj[<span class="hljs-number">1</span>]) || Obj.length &gt; <span class="hljs-number">2</span>) {
                 <span class="hljs-keyword">throw</span> <span class="hljs-string">'invalid adjacency list'</span>;
@@ -432,9 +421,10 @@ inflation method to parse arrays like this:</p>
             <span class="hljs-keyword">throw</span> <span class="hljs-string">'invalid leaves list'</span>;
         }
         <span class="hljs-keyword">if</span> (_.isArray(_.first(Obj))) {
+            <span class="hljs-keyword">this</span>.setNode(<span class="hljs-keyword">new</span> _tree.Node(<span class="hljs-keyword">this</span>.tree));
             <span class="hljs-keyword">this</span>.children(_.map(_.first(Obj), <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(n)</span> {</span><span class="hljs-keyword">return</span> [n];}));
         } <span class="hljs-keyword">else</span> {
-            <span class="hljs-keyword">this</span>.emit(_.first(Obj));
+            <span class="hljs-keyword">this</span>.setNode(<span class="hljs-keyword">new</span> _tree.Node(<span class="hljs-keyword">this</span>.tree, _.first(Obj)));
         }
     };</pre></div></div>
             
@@ -454,12 +444,12 @@ of the node’s original tree.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    _tree.fromNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(node, defaults)</span> {</span>
-        <span class="hljs-keyword">if</span> (! (node <span class="hljs-keyword">instanceof</span> Node)) {
-            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'invalid node: '</span> + <span class="hljs-built_in">JSON</span>.stringify(node));
-        }
+        <span class="hljs-keyword">var</span> tree;
         defaults = __cloneDefaults(defaults);
-        <span class="hljs-keyword">var</span> tree = <span class="hljs-keyword">new</span> Tree(defaults);
-        tree.__root = Node.clone(tree, node);
+        tree = <span class="hljs-keyword">new</span> defaults.treeClass(defaults);
+        tree.__root = node.constructor.clone(tree, node);
+        __preFinalizeTree(tree);
+        __callback(tree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(tree);
         <span class="hljs-keyword">return</span> tree;
     };</pre></div></div>
@@ -474,32 +464,23 @@ of the node’s original tree.</p>
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <h1 id="tree">Tree</h1>
-
-            </div>
-            
-        </li>
-        
-        
-        <li id="section-20">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-20">&#182;</a>
-              </div>
-              <p>This is the <code>Tree</code> constructor. It is intended to be used
+<p>This is the <code>Tree</code> constructor. It is intended to be used
 internally, and so it returns a mutable object that must be
-frozen before it’s returned. For the sake of IE8, and all other
-environments that don’t support Object.definePropert(y|ies),
-the nasty bit of try/catch here allows those environments to
-work without guaranteed immutability.</p>
+finalized and frozen before it’s returned. For the sake of IE8,
+and all other environments that don’t support
+Object.definePropert(y|ies), the nasty bit of try/catch here
+allows <code>_tree</code> to function in those environments without the
+guarantee of immutability.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    Tree = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(defaults, obj, inflateMethod, nextNodeId)</span> {</span>
-        <span class="hljs-keyword">this</span>.defaults = defaults;
         <span class="hljs-keyword">var</span>  __id, __nextNodeId, __root;
-        __id = uuid();
+
+        <span class="hljs-keyword">this</span>.defaults = defaults;
+        __id = _.uniqueId();
         __nextNodeId = nextNodeId || <span class="hljs-number">0</span>;
+
         <span class="hljs-keyword">try</span> {
             <span class="hljs-built_in">Object</span>.defineProperties(<span class="hljs-keyword">this</span>, {
                 <span class="hljs-string">'__id'</span>: {
@@ -513,11 +494,18 @@ work without guaranteed immutability.</p>
                     writable: <span class="hljs-literal">true</span>,
                     enumerable: <span class="hljs-literal">false</span>,
                     configurable: <span class="hljs-literal">false</span>
+                },
+                <span class="hljs-string">'__batch'</span>: {
+                    value: <span class="hljs-number">0</span>,
+                    writable: <span class="hljs-literal">true</span>,
+                    enumerable: <span class="hljs-literal">false</span>,
+                    configurable: <span class="hljs-literal">false</span>
                 }
             });
         } <span class="hljs-keyword">catch</span> (e) {
             <span class="hljs-keyword">this</span>.__id = __id;
             <span class="hljs-keyword">this</span>.__nextNodeId = __nextNodeId;
+            <span class="hljs-keyword">this</span>.__batch = <span class="hljs-number">0</span>;
         }
         
         <span class="hljs-keyword">if</span> (!!obj &amp;&amp; !!inflateMethod) {
@@ -538,7 +526,21 @@ work without guaranteed immutability.</p>
         } <span class="hljs-keyword">catch</span> (e) {
             <span class="hljs-keyword">this</span>.__root = __root;
         }
-    };</pre></div></div>
+    };
+    _tree.Tree = Tree;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h2 id="internal-static-tree-methods">Internal Static Tree Methods</h2>
+
+            </div>
             
         </li>
         
@@ -549,9 +551,20 @@ work without guaranteed immutability.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
-              <h2 id="internal-static-tree-methods">Internal Static Tree Methods</h2>
+              <p>To facilitate immutability, <code>Tree.clone</code> provides a static copy
+constructor that takes a(n) (im)mutable tree and returns a
+mutable clone. This method provides the base for all Tree
+modifications.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>    Tree.clone = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tree)</span> {</span>
+        <span class="hljs-keyword">var</span> newTree = <span class="hljs-keyword">new</span> tree.constructor(tree.defaults);
+        newTree.__root = tree.root().constructor.clone(newTree, tree.root());
+        newTree.__nextNodeId = tree.__nextNodeId;
+        newTree.__id = tree.__id;
+        <span class="hljs-keyword">return</span> newTree;
+    };</pre></div></div>
             
         </li>
         
@@ -562,20 +575,13 @@ work without guaranteed immutability.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>To facilitate immutability, <code>Tree.clone</code> provides a static copy
-constructor that takes a(n) (im)mutable tree and returns a
-mutable clone. This method provides the base for all Tree
-modifications.</p>
+              <p><code>Tree.inflate</code> provides the general logic behind object
+inflation/parsing/deserialization.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.clone = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tree)</span> {</span>
-        <span class="hljs-keyword">var</span> newTree = <span class="hljs-keyword">new</span> Tree(tree.defaults);
-        newTree.__root = Node.clone(newTree, tree.root());
-        newTree.__nextNodeId = tree.__nextNodeId;
-        newTree.__id = tree.__id;
-        <span class="hljs-keyword">return</span> newTree;
-    };</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    Tree.inflate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tree, obj, inflateMethod)</span> {</span>
+        <span class="hljs-keyword">var</span> thisnode, _this;</pre></div></div>
             
         </li>
         
@@ -586,14 +592,9 @@ modifications.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
-              <p><code>Tree.inflate</code> provides the general logic behind object
-inflation/parsing/deserialization.</p>
+              <p>thisnode = new Node(tree)</p>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>    Tree.inflate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(tree, obj, inflateMethod)</span> {</span>
-        <span class="hljs-keyword">var</span> thisnode = <span class="hljs-keyword">new</span> Node(tree), _this;
-        tree.__root = thisnode;</pre></div></div>
             
         </li>
         
@@ -607,7 +608,8 @@ inflation/parsing/deserialization.</p>
               <p>When <code>inflateMethod</code> is called to navigate <code>obj</code>, <code>this</code> is
 bound to the following object:</p>
 <ul>
-<li><code>this.emit(data)</code>: Sets the data for the current node.</li>
+<li><code>this.setNode(Node)</code>: Sets the current node. Must be
+done before <code>this.children</code> is called.</li>
 <li><code>this.children([child])</code>: Calling this immediately
 processes and inflates a set of child node objects.</li>
 </ul>
@@ -615,18 +617,21 @@ processes and inflates a set of child node objects.</li>
             </div>
             
             <div class="content"><div class='highlight'><pre>        _this = {
-            emit: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Data)</span> {</span>
-                thisnode.__data = Data;
+            tree: tree,
+            setNode: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(node)</span> {</span>
+                thisnode = node;
             },
             children: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(Nodes)</span> {</span>
                 _.each(Nodes, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(kidObj)</span> {</span>
-                    <span class="hljs-keyword">var</span> kidTree = <span class="hljs-keyword">new</span> Tree(tree.defaults, kidObj, inflateMethod, tree.__nextNodeId);
+                    <span class="hljs-keyword">var</span> kidTree = <span class="hljs-keyword">new</span> tree.constructor(tree.defaults, kidObj, inflateMethod, tree.__nextNodeId);
                     thisnode.__children.push(kidTree.root());
                     kidTree.root().__parent = thisnode;
                     tree.__nextNodeId = kidTree.__nextNodeId;
                 });
             }
         };
+
+        tree.__root = thisnode;
 
         inflateMethod.call(_this, obj);
         <span class="hljs-keyword">return</span> thisnode;
@@ -678,7 +683,7 @@ to be invariant across clones.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fromNode, walkMethod)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(fromNode, walkMethod, startNode)</span> {</span>
         <span class="hljs-keyword">if</span> (! (fromNode <span class="hljs-keyword">instanceof</span> Node)) {
             <span class="hljs-keyword">throw</span> <span class="hljs-string">'not a node'</span>;
         }
@@ -692,7 +697,7 @@ to be invariant across clones.</p>
             <span class="hljs-keyword">if</span> (!found &amp;&amp; fromNode.equals(visitNode)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         <span class="hljs-keyword">return</span> found;
     };</pre></div></div>
             
@@ -710,7 +715,7 @@ requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNodeByData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data, walkMethod)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Tree.prototype.findNodeByData = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(data, walkMethod, startNode)</span> {</span>
         <span class="hljs-keyword">var</span> isMatch, keys, found = <span class="hljs-literal">false</span>;
         <span class="hljs-keyword">if</span> (_.isUndefined(data)) {
             <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
@@ -733,7 +738,7 @@ requiring object equality, via <code>_.isEqual(node.data(), data)</code></p>
             <span class="hljs-keyword">if</span> (!found &amp;&amp; isMatch(visitNode.__data)) {
                 found = visitNode;
             }
-        }, walkMethod);
+        }, walkMethod, startNode);
         <span class="hljs-keyword">return</span> found;
     };</pre></div></div>
             
@@ -998,9 +1003,11 @@ exists in the <code>Tree</code>.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Tree.prototype.moveNode = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(movingNode, toParent)</span> {</span>
-        <span class="hljs-keyword">return</span> movingNode.remove()
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.batch()
+            .findNode(movingNode).remove()
             .findNode(toParent)
-            .addChildNode(movingNode);
+            .addChildNode(movingNode)
+            .end();
     };</pre></div></div>
             
         </li>
@@ -1025,6 +1032,8 @@ other tree modification</p>
         newTree = Tree.clone(<span class="hljs-keyword">this</span>);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = newTree.defaults.callbacks[event].concat(cb);
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
     };</pre></div></div>
@@ -1050,6 +1059,8 @@ tree.</p>
         newTree = Tree.clone(<span class="hljs-keyword">this</span>);
         cb = _.isArray(callback) ? callback : [callback];
         newTree.defaults.callbacks[event] = _.partial(_.without, newTree.defaults.callbacks[event]).apply(_, cb);
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
     };</pre></div></div>
@@ -1077,8 +1088,37 @@ practice.</p>
         <span class="hljs-keyword">if</span> (!_.contains(newTree.defaults.mixins, mixin)) {
             newTree.defaults.mixins.push(mixin);
         }
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
+    };
+
+
+
+
+    Tree.prototype.batch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">var</span> batchTree;
+        batchTree = Tree.clone(<span class="hljs-keyword">this</span>);
+        batchTree.__batch++;
+        __preFinalizeTree(batchTree);
+        <span class="hljs-keyword">return</span> batchTree;
+    };
+
+    Tree.prototype.isBatch = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.__batch &gt; <span class="hljs-number">0</span>;
+    };
+
+    Tree.prototype.end = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isBatch()) {
+            <span class="hljs-keyword">throw</span> <span class="hljs-string">'Called `tree.end` when not in batch mode.'</span>;
+        }
+
+        <span class="hljs-keyword">this</span>.__batch--;
+        <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.isBatch()) {
+            __finalizeMutableTreeClone(<span class="hljs-keyword">this</span>);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
     };</pre></div></div>
             
         </li>
@@ -1109,7 +1149,7 @@ the external world.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    Node = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tree)</span> {</span>
+            <div class="content"><div class='highlight'><pre>    Node = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(tree, data)</span> {</span>
         <span class="hljs-keyword">try</span> {
             <span class="hljs-built_in">Object</span>.defineProperties(<span class="hljs-keyword">this</span>, {
                 <span class="hljs-string">'__tree'</span>: {
@@ -1119,6 +1159,7 @@ the external world.</p>
                     configurable: <span class="hljs-literal">false</span>
                 },
                 <span class="hljs-string">'__data'</span>: {
+                    value: data,
                     writable: <span class="hljs-literal">true</span>,
                     enumerable: <span class="hljs-literal">false</span>,
                     configurable: <span class="hljs-literal">false</span>
@@ -1143,7 +1184,8 @@ the external world.</p>
             <span class="hljs-keyword">this</span>.__id = tree.__nextNodeId;
         }
         tree.__nextNodeId = tree.__nextNodeId + <span class="hljs-number">1</span>;
-    };</pre></div></div>
+    };
+    _tree.Node = Node;</pre></div></div>
             
         </li>
         
@@ -1161,10 +1203,10 @@ well.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>    Node.clone = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(newTree, node, differentId)</span> {</span>
-        <span class="hljs-keyword">var</span> newNode = <span class="hljs-keyword">new</span> Node(newTree);
+        <span class="hljs-keyword">var</span> newNode = <span class="hljs-keyword">new</span> node.constructor(newTree);
         newNode.__data = node.__data;
 
-        newNode.__children = _.map(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span> <span class="hljs-keyword">return</span> Node.clone(newTree, c, differentId); });
+        newNode.__children = _.map(node.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span> <span class="hljs-keyword">return</span> node.constructor.clone(newTree, c, differentId); });
         _.each(newNode.__children, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>c.__parent = newNode;});
 
         <span class="hljs-keyword">if</span> (!differentId) {
@@ -1184,6 +1226,120 @@ well.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-47">&#182;</a>
               </div>
+              <p>effectively subclass any subclass of Node. Modified from
+<a href="http://backbonejs.org/docs/backbone.html#section-206">Backbone.js</a>,
+under the <a href="LICENSE.backbone">MIT License</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    extend = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(protoProps, staticProps)</span> {</span>
+        <span class="hljs-keyword">var</span> parent, child, Surrogate;
+        parent = <span class="hljs-keyword">this</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-48">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-48">&#182;</a>
+              </div>
+              <p>The constructor function for the new subclass is either
+defined by you (the “constructor” property in your extend
+definition), or defaulted by us to simply call the parent’s
+constructor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (protoProps &amp;&amp; _.has(protoProps, <span class="hljs-string">'constructor'</span>)) {
+            child = protoProps.constructor;
+        } <span class="hljs-keyword">else</span> {
+            child = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span> <span class="hljs-keyword">return</span> parent.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>); };
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-49">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-49">&#182;</a>
+              </div>
+              <p>Add static properties to the constructor function, if
+supplied.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        _.extend(child, parent, staticProps);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-50">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-50">&#182;</a>
+              </div>
+              <p>Set the prototype chain to inherit from parent, without
+calling parent‘s constructor function.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        Surrogate = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span> <span class="hljs-keyword">this</span>.constructor = child; };
+        Surrogate.prototype = parent.prototype;
+        child.prototype = <span class="hljs-keyword">new</span> Surrogate();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-51">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-51">&#182;</a>
+              </div>
+              <p>Add prototype properties (instance properties) to the
+subclass, if supplied.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (protoProps) {
+            _.extend(child.prototype, protoProps);
+        }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-52">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-52">&#182;</a>
+              </div>
+              <p>Set a convenience property in case the parent’s prototype
+is needed later.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        child.__super__ = parent.prototype;
+
+        <span class="hljs-keyword">return</span> child;
+    };
+
+    Tree.extend = Node.extend = extend;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-53">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-53">&#182;</a>
+              </div>
               <p>The <code>Node.data</code> method is both a getter and setter, depending
 on how it’s used.</p>
 <p>If <code>Obj</code> isn’t submitted, it’s used as a getter.</p>
@@ -1202,9 +1358,18 @@ after being made immutable.</p>
 
         <span class="hljs-keyword">var</span> newTree, newNode;
 
-        newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            <span class="hljs-keyword">this</span>.__data = Obj;
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
+
+        newTree = Tree.clone(<span class="hljs-keyword">this</span>.tree());
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
         newNode.__data = Obj;
+
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.data'</span>, newNode);
         __finalizeMutableTreeClone(newTree);
         <span class="hljs-keyword">return</span> newTree;
     };</pre></div></div>
@@ -1212,11 +1377,11 @@ after being made immutable.</p>
         </li>
         
         
-        <li id="section-48">
+        <li id="section-54">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-48">&#182;</a>
+                <a class="pilcrow" href="#section-54">&#182;</a>
               </div>
               <p>A simple getter for node children.</p>
 
@@ -1229,11 +1394,11 @@ after being made immutable.</p>
         </li>
         
         
-        <li id="section-49">
+        <li id="section-55">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-49">&#182;</a>
+                <a class="pilcrow" href="#section-55">&#182;</a>
               </div>
               <p>A simple getter for the node’s parent. Returns <code>undefined</code> if
 no parent is set.</p>
@@ -1247,11 +1412,11 @@ no parent is set.</p>
         </li>
         
         
-        <li id="section-50">
+        <li id="section-56">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-50">&#182;</a>
+                <a class="pilcrow" href="#section-56">&#182;</a>
               </div>
               <p>A simple getter for the node’s tree. <code>_tree</code> is intended for
 internal use. Presumably, client code will know which tree a
@@ -1266,11 +1431,11 @@ node is in, but it may be useful to client code.</p>
         </li>
         
         
-        <li id="section-51">
+        <li id="section-57">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-51">&#182;</a>
+                <a class="pilcrow" href="#section-57">&#182;</a>
               </div>
               <p>A simple getter for the node’s id. <code>__id</code> is intended for
 internal use, but may also be valuable to client code.</p>
@@ -1284,11 +1449,11 @@ internal use, but may also be valuable to client code.</p>
         </li>
         
         
-        <li id="section-52">
+        <li id="section-58">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-52">&#182;</a>
+                <a class="pilcrow" href="#section-58">&#182;</a>
               </div>
               <p>To add a child node, an object representing the node data is
 parsed as if it were a new tree and then appended to the end of
@@ -1300,15 +1465,24 @@ returned, <em>not</em> a <code>Node</code>.</p>
             <div class="content"><div class='highlight'><pre>    Node.prototype.parseAndAddChild = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(childObj, inflateMethod)</span> {</span>
         inflateMethod = inflateMethod || <span class="hljs-keyword">this</span>.__tree.defaults.inflate;
         <span class="hljs-keyword">var</span> childTree, newTree, newNode, tree;
-        tree = <span class="hljs-keyword">this</span>.__tree;
-        childTree = <span class="hljs-keyword">new</span> Tree(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+        tree = <span class="hljs-keyword">this</span>.tree();
+        childTree = <span class="hljs-keyword">new</span> tree.constructor(tree.defaults, childObj, inflateMethod, tree.__nextNodeId);
+
+        <span class="hljs-keyword">if</span> (tree.isBatch()) {
+            <span class="hljs-keyword">this</span>.__children.push(childTree.root());
+            tree.__nextNodeId = childTree.__nextNodeId;
+            __preFinalizeTree(tree);
+            <span class="hljs-keyword">return</span> tree;
+        }
 
         newTree = Tree.clone(tree);
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
         newNode.__children.push(childTree.root());
-        childTree.root().__parent = newNode;
         newTree.__nextNodeId = childTree.__nextNodeId;
 
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.parseAndAddChild'</span>, childTree.root());
         __finalizeMutableTreeClone(newTree);
 
         <span class="hljs-keyword">return</span> newTree;
@@ -1319,14 +1493,23 @@ returned, <em>not</em> a <code>Node</code>.</p>
     Node.prototype.addChildNode = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(node)</span> {</span>
         <span class="hljs-keyword">var</span> newTree, newParentNode, nodeClone;
 
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            nodeClone = node.constructor.clone(<span class="hljs-keyword">this</span>.tree(), node, <span class="hljs-literal">true</span>);
+            <span class="hljs-keyword">this</span>.__children.push(nodeClone);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
+
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.tree());
         newParentNode = newTree.findNode(<span class="hljs-keyword">this</span>);
 
         newTree.__nextNodeId = <span class="hljs-keyword">this</span>.tree().__nextNodeId;
-        nodeClone = Node.clone(newTree, node, <span class="hljs-literal">true</span>);
+        nodeClone = node.constructor.clone(newTree, node, <span class="hljs-literal">true</span>);
         newParentNode.__children.push(nodeClone);
-        nodeClone.__parent = newParentNode;
 
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.addChildNode'</span>, nodeClone);
         __finalizeMutableTreeClone(newTree);
 
         <span class="hljs-keyword">return</span> newTree;
@@ -1335,11 +1518,11 @@ returned, <em>not</em> a <code>Node</code>.</p>
         </li>
         
         
-        <li id="section-53">
+        <li id="section-59">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-53">&#182;</a>
+                <a class="pilcrow" href="#section-59">&#182;</a>
               </div>
               <p><code>Node.equals</code> works across clone lines, determining if both
 nodes <em>represent</em> the same node regardless of whether they’re
@@ -1352,18 +1535,30 @@ the same object in memory.</p>
             <span class="hljs-keyword">this</span>.__id === otherNode.__id;
     };
 
+
     Node.prototype.remove = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> === <span class="hljs-keyword">this</span>.__tree.__root) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span> === <span class="hljs-keyword">this</span>.tree().root()) {
             <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'cannot delete the root node'</span>);
         }
 
         <span class="hljs-keyword">var</span> newTree, newNode, parNode;
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            parNode = <span class="hljs-keyword">this</span>.parent();
+            parNode.__children = _.without(parNode.__children, <span class="hljs-keyword">this</span>);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> parNode.tree();
+        }
+
 
         newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
         newNode = newTree.findNode(<span class="hljs-keyword">this</span>);
         parNode = newTree.findNode(<span class="hljs-keyword">this</span>.__parent);
 
         parNode.__children = _.without(parNode.__children, newNode);
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.remove'</span>, parNode);
         __finalizeMutableTreeClone(newTree);
 
         <span class="hljs-keyword">return</span> newTree;
@@ -1372,32 +1567,100 @@ the same object in memory.</p>
         </li>
         
         
-        <li id="section-54">
+        <li id="section-60">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-54">&#182;</a>
+                <a class="pilcrow" href="#section-60">&#182;</a>
+              </div>
+              <p>removes all immediate children of this node specified in
+<code>kidsToRemove</code>. </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    Node.prototype.removeAll = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(kidsToRemove)</span> {</span>
+        <span class="hljs-keyword">var</span> tree, self, newTree, newNode, newKids;
+
+        tree = <span class="hljs-keyword">this</span>.tree();
+        self = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.tree().isBatch()) {
+            newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+                <span class="hljs-keyword">return</span> _.find(self.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
+                    <span class="hljs-keyword">return</span> c.equals(k);
+                });
+            });
+            <span class="hljs-keyword">this</span>.__children = _.difference(<span class="hljs-keyword">this</span>.__children, newKids);
+            __preFinalizeTree(<span class="hljs-keyword">this</span>.tree());
+            <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.tree();
+        }
+
+        newTree = Tree.clone(<span class="hljs-keyword">this</span>.__tree);
+        newNode = newTree.findNode(<span class="hljs-keyword">this</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-61">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-61">&#182;</a>
+              </div>
+              <p>it would be great if we could do away with the findNode</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        newKids = _.map(kidsToRemove, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k)</span> {</span>
+            <span class="hljs-keyword">return</span> _.find(newNode.children(), <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(c)</span> {</span>
+                <span class="hljs-keyword">return</span> c.equals(k);
+            });
+        });
+
+        newNode.__children = _.difference(newNode.__children, newKids);
+        __preFinalizeTree(newTree);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze'</span>);
+        __callback(newTree, <span class="hljs-string">'beforeFreeze.removeAll'</span>, newNode);
+        __finalizeMutableTreeClone(newTree);
+
+        <span class="hljs-keyword">return</span> newTree;
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-62">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-62">&#182;</a>
               </div>
               <p>Finally, we setup some library-wide defaults.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>    __defaults =  {
+        <span class="hljs-string">'treeClass'</span>: _tree.Tree,
         <span class="hljs-string">'inflate'</span>: _tree.inflate.byKey(),
         <span class="hljs-string">'walk'</span>: Tree.prototype.walk.dfpre,
         <span class="hljs-string">'deleteRecursive'</span>: <span class="hljs-literal">true</span>,
-        <span class="hljs-string">'callbacks'</span>: {<span class="hljs-string">'afterUpdate'</span>: []},
+        <span class="hljs-string">'callbacks'</span>: {<span class="hljs-string">'afterUpdate'</span>: [],
+                      <span class="hljs-string">'beforeFreeze'</span>: [],
+                      <span class="hljs-string">'beforeFreeze.data'</span>: [],
+                      <span class="hljs-string">'beforeFreeze.parseAndAddChild'</span>: [],
+                      <span class="hljs-string">'beforeFreeze.addChildNode'</span>: [],
+                      <span class="hljs-string">'beforeFreeze.remove'</span>: []
+                     },
         <span class="hljs-string">'mixins'</span>: []
     };</pre></div></div>
             
         </li>
         
         
-        <li id="section-55">
+        <li id="section-63">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-55">&#182;</a>
+                <a class="pilcrow" href="#section-63">&#182;</a>
               </div>
               <p>And we’re done.</p>
 
