@@ -55,8 +55,6 @@ patronage = {'name': 'Jake', 'children': [
 
 
 // To begin, let's define some domain models to make the API cleaner.
-
-
 //--------------------------------------------------------------------------------
 // Domain Models
 
