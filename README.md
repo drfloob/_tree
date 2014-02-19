@@ -4,8 +4,8 @@
 data structures. It uses a functional programming style, in that it:
 
 * maintains zero internal state,
-* does not modify any of your data ([purely functional](wikiPF)),
-* lets you augment your tree's behaviors (via [Higher-order functions](wikiHOF)), and
+* does not modify any of your data ([purely functional][wikiPF]),
+* lets you augment your tree's behaviors (via [Higher-order functions][wikiHOF]), and
 * does not trample on the global scope unless you need it to.
 
 `_tree` supports AMD (RequireJs), Node, and global script
