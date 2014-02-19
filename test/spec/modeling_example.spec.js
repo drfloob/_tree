@@ -16,7 +16,7 @@
     describe('_tree as your data model', function() {
 
         it('is rather powerful', function() {
-            var Todo, mixins, inflateFn, TodoList, data;
+            var Todo, TodoList, mixins, inflateFn, TodoList, data;
 
             // This example is a stripped-down version of the data
             // model required for a [TodoMVC](http://todomvc.com/)
@@ -39,15 +39,16 @@
                 }
             });
 
+
             // The tree object itself models the TodoList, with custom
-            // 'list' methods mixed in.
+            // 'list' methods built into this subclass.
             //
             // If you wanted to, you could implement the TodoList
-            // methods on the root node with a TodoListCls (similar to
-            // Todo above). Using mixins, however, allows you to write
-            // `TodoList.completeAll()` instead of
+            // methods on the root node with a TodoList extension of
+            // Node (as above). Using a tree subclass, however, allows
+            // you to write `TodoList.completeAll()` instead of
             // `TodoList.root().completeAll()`.
-            mixins = {tree: {
+            TodoList = _tree.Tree.extend({
                 completeAll: function() {
                     var t = this.batch();
                     _.each(t.root().children(), function(k) {
@@ -64,7 +65,7 @@
                         return c;
                     return c[n];
                 }
-            }};
+            });
 
             // The inflate method walks the data we intend to inflate,
             // providing construction logic for our custom Node
@@ -93,7 +94,7 @@
             };
 
             // and this is where it all comes together.
-            TodoList = _tree.inflate(data, inflateFn, {mixins: mixins});
+            TodoList = _tree.inflate(data, inflateFn, {treeClass: TodoList, mixins: mixins});
 
             
             expect(TodoList.name()).toBe('my list');
