@@ -15,13 +15,13 @@ environments.
 **Table of Contents**
 
 * [Example](#example)
-* [Quality Metrics](#quality-metrics)
 * [API](#api)
     * [The `_tree` library](#the-_tree-library)
     * [Tree objects](#tree-objects)
     * [Node objects](#node-objects)
     * [Supported events](#supported-events)
     * [Batch mode](#batch-mode)
+* [Quality Metrics](#quality-metrics)
 * [Building](#building)
 * [Contributing](#contributing)
 
@@ -76,6 +76,124 @@ More usage examples can be found in the
 [test suite](https://github.com/drfloob/_tree/tree/master/test/spec/). The
 [annotated source code](http://tree.drfloob.com/docs/_tree.html) is
 also a great learning resource.
+
+
+
+
+## API
+
+The `_tree` library creates `Tree` objects, comprised of `Node`
+objects. Callbacks can be registered for supported `Events`.
+
+### The `_tree` library's static methods
+
+ * `_tree.create([defaults])`: creates an empty `Tree`
+ * `_tree.inflate(object [, method [, defaults]])`: parses your data into a
+   `Tree`
+ * `_tree.fromNode(node [, defaults])`: creates a new tree using a `Node`
+   from another tree.
+ * `_tree.Node.extend(protoProps [, staticProps])`: creates a subclass
+   of `Node` that can be used in place of `Node` classes. See the
+   [TodoMVC Example][spec_TodoMVC]. Subclasses will also have
+   `Subclass.extend`, allowing deep inheritance hierarchies.
+ * `_tree.Tree.extend(protoProps [, staticProps])`: creates a subclass
+   of `Tree` that can be used in place of the main `Tree` class. See
+   the [TodoMVC Example][exampleTodoMVC].
+ * `_tree.Tree.clone(tree)`: static method, returns a clone of the
+   `tree`.
+
+### Tree objects
+
+ * `root()`: returns the root `Node`
+ * `walk(callback [, walkMethod, [, startNode]])`: traverses the
+   `Tree`, executing a callback for each node in the order you specify
+ * `equals(otherTree)`: determines if two `Tree`s are related clones.
+ * `findNode`: finds the equivalent `Node` in a tree (works across
+   clones)
+ * `findNodeByData(matchData)`: finds the first `Node` containing
+   matching data, even if supplied with a partial match.
+ * `containsNode(node)`: returns `boolean` whether the `Node` exists in the
+   `Tree`
+ * `containsData(data)`: returns `boolean` whether the data exists in
+   any `Node` in the `Tree`. Works for partial matches.
+ * `moveNode(movingNode, toParentNode)`: move a `Node` and its
+   descendants from one point in the tree to another.
+ * `on(event, callback)` or `on(event, [callbacks])`: register
+   callbacks for the named event.
+ * `off(event, callback)` or `off('afterUpdate', [callbacks])`:
+   unregisters callbacks.
+ * `mixin({tree: [], node: []}`: mixes an object into your tree and
+   all of your nodes, respectively. Mixins are rebound to the new tree
+   on all tree modifications. Note that all nodes will share the same
+   mixin object.
+ * `batch()`: begins batch mode operation, where all modifications
+   return the same *mutable* tree. Callbacks are suspended during all
+   batch mode updates.
+ * `end()`: ends batch mode, finalizing, freezing, and returning the
+   tree, then issuing a single `afterUpdate` event for callbacks.
+ * `isBatch()`: returns true if in batch mode.
+
+### Node objects
+ 
+ * `data([data])`: gets or sets the data on a node. Setting data
+   generates a new `Tree`.
+ * `children()`: returns the child `Node`s of a node
+ * `parent()`: returns the `Node`'s parent
+ * `tree()`: returns the `Node`'s tree
+ * `id()`: returns the tree-unique internal id of the `Node`
+ * `parseAndAddChild(obj [, inflateMethod])`: parses an object (much
+   like inflate) and adds it as a child of the `Node`. Returns a new
+   `Tree`.
+ * `addChildNode(node)`: adds a `Node` as a child. Errors are thrown
+   if the `Node` already exists in the tree. Returns a new `Tree`.
+ * `equals(otherNode)`: returns `boolean` that representse the
+   clone-agnostic equality of nodes.
+ * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
+ * `removeAll([childNodes])`: removes all matching `childNodes` from
+   the this node, returning a new `Tree`. `childNodes` may be from a
+   tree clone.
+
+
+### Supported events 
+
+ * **'afterUpdate'**: called after finalizing the new tree on any tree
+   modification. `function callback(newTree) { ... }`
+ * **'beforeFreeze'**: called before freezing the new tree on any tree
+   modification. The tree can be modified. `function callback(newTree) { ... }`
+ * **'beforeFreeze.data'**: called before freezing a new tree, only for
+   the `node.data` operation. `function callback(newTree,
+   modifiedNode) { ... }`
+ * **'beforeFreeze.parseAndAddChild'**: called before freezing a new tree,
+   only for the `node.parseAndAddChild` operation. `function
+   callback(newTree, newChildNode) { ... }`
+ * **'beforeFreeze.addChildNode'**: called before freezing a new tree,
+   only for the `node.addChildNode` operation. `function
+   callback(newTree, newChildNode) { ... }`
+ * **'beforeFreeze.remove'**: called before freezing a new tree, only for
+   the `node.remove` operation. `function callback(newTree,
+   parentOfRemovedNode) { ... }`
+ * **'beforeFreeze.removeAll'**: called before freezing a new tree,
+   only for the `node.removeAll` operation. `function
+   callback(newTree, thisNode) { ... }`
+
+
+### Batch Mode
+
+`_tree` provides a batch mode of operation that lets you bundle
+together multiple modifications into one atomic action. Callbacks are
+disabled while batching, and the tree is not finalized until `.end()`
+is called.
+
+[See the tests for some examples][spec_batch]
+
+You *could* manually edit the tree object in batch mode, but your
+changes may be lost, and you could ruin the integrity of the tree if
+you're unsure of what you're doing. To persist interesting tree
+modifications, see mixins and subclasses.
+
+
+
+
 
 
 ## Quality Metrics
@@ -198,123 +316,6 @@ misreported.
 
 Coverage is analyzed by running `grunt phantom_cover`. You can view the
 coverage report locally at `coverage/index.html`.
-
-
-
-
-## API
-
-The `_tree` library creates `Tree` objects, comprised of `Node`
-objects. Callbacks can be registered for supported `Events`.
-
-### The `_tree` library's static methods
-
- * `_tree.create([defaults])`: creates an empty `Tree`
- * `_tree.inflate(object [, method [, defaults]])`: parses your data into a
-   `Tree`
- * `_tree.fromNode(node [, defaults])`: creates a new tree using a `Node`
-   from another tree.
- * `_tree.Node.extend(protoProps [, staticProps])`: creates a subclass
-   of `Node` that can be used in place of `Node` classes. See the
-   [TodoMVC Example][spec_TodoMVC]. Subclasses will also have
-   `Subclass.extend`, allowing deep inheritance hierarchies.
- * `_tree.Tree.extend(protoProps [, staticProps])`: creates a subclass
-   of `Tree` that can be used in place of the main `Tree` class. See
-   the [TodoMVC Example][exampleTodoMVC].
- * `_tree.Tree.clone(tree)`: static method, returns a clone of the
-   `tree`.
-
-### Tree objects
-
- * `root()`: returns the root `Node`
- * `walk(callback [, walkMethod, [, startNode]])`: traverses the
-   `Tree`, executing a callback for each node in the order you specify
- * `equals(otherTree)`: determines if two `Tree`s are related clones.
- * `findNode`: finds the equivalent `Node` in a tree (works across
-   clones)
- * `findNodeByData(matchData)`: finds the first `Node` containing
-   matching data, even if supplied with a partial match.
- * `containsNode(node)`: returns `boolean` whether the `Node` exists in the
-   `Tree`
- * `containsData(data)`: returns `boolean` whether the data exists in
-   any `Node` in the `Tree`. Works for partial matches.
- * `moveNode(movingNode, toParentNode)`: move a `Node` and its
-   descendants from one point in the tree to another.
- * `on(event, callback)` or `on(event, [callbacks])`: register
-   callbacks for the named event.
- * `off(event, callback)` or `off('afterUpdate', [callbacks])`:
-   unregisters callbacks.
- * `mixin({tree: [], node: []}`: mixes an object into your tree and
-   all of your nodes, respectively. Mixins are rebound to the new tree
-   on all tree modifications. Note that all nodes will share the same
-   mixin object.
- * `batch()`: begins batch mode operation, where all modifications
-   return the same *mutable* tree. Callbacks are suspended during all
-   batch mode updates.
- * `end()`: ends batch mode, finalizing, freezing, and returning the
-   tree, then issuing a single `afterUpdate` event for callbacks.
- * `isBatch()`: returns true if in batch mode.
-
-### Node objects
- 
- * `data([data])`: gets or sets the data on a node. Setting data
-   generates a new `Tree`.
- * `children()`: returns the child `Node`s of a node
- * `parent()`: returns the `Node`'s parent
- * `tree()`: returns the `Node`'s tree
- * `id()`: returns the tree-unique internal id of the `Node`
- * `parseAndAddChild(obj [, inflateMethod])`: parses an object (much
-   like inflate) and adds it as a child of the `Node`. Returns a new
-   `Tree`.
- * `addChildNode(node)`: adds a `Node` as a child. Errors are thrown
-   if the `Node` already exists in the tree. Returns a new `Tree`.
- * `equals(otherNode)`: returns `boolean` that representse the
-   clone-agnostic equality of nodes.
- * `remove()`: removes a `Node` from the tree, returning a new `Tree`.
- * `removeAll([childNodes])`: removes all matching `childNodes` from
-   the this node, returning a new `Tree`. `childNodes` may be from a
-   tree clone.
-
-
-### Supported events 
-
- * **'afterUpdate'**: called after finalizing the new tree on any tree
-   modification. `function callback(newTree) { ... }`
- * **'beforeFreeze'**: called before freezing the new tree on any tree
-   modification. The tree can be modified. `function callback(newTree) { ... }`
- * **'beforeFreeze.data'**: called before freezing a new tree, only for
-   the `node.data` operation. `function callback(newTree,
-   modifiedNode) { ... }`
- * **'beforeFreeze.parseAndAddChild'**: called before freezing a new tree,
-   only for the `node.parseAndAddChild` operation. `function
-   callback(newTree, newChildNode) { ... }`
- * **'beforeFreeze.addChildNode'**: called before freezing a new tree,
-   only for the `node.addChildNode` operation. `function
-   callback(newTree, newChildNode) { ... }`
- * **'beforeFreeze.remove'**: called before freezing a new tree, only for
-   the `node.remove` operation. `function callback(newTree,
-   parentOfRemovedNode) { ... }`
- * **'beforeFreeze.removeAll'**: called before freezing a new tree,
-   only for the `node.removeAll` operation. `function
-   callback(newTree, thisNode) { ... }`
-
-
-### Batch Mode
-
-`_tree` provides a batch mode of operation that lets you bundle
-together multiple modifications into one atomic action. Callbacks are
-disabled while batching, and the tree is not finalized until `.end()`
-is called.
-
-[See the tests for some examples][spec_batch]
-
-You *could* manually edit the tree object in batch mode, but your
-changes may be lost, and you could ruin the integrity of the tree if
-you're unsure of what you're doing. To persist interesting tree
-modifications, see mixins and subclasses.
-
-
-
 ## Building
 
 Requirements: `Node` and `grunt`
