@@ -23,7 +23,6 @@ environments.
     * [Batch mode](#batch-mode)
 * [Quality Metrics](#quality-metrics)
 * [Building](#building)
-* [Contributing](#contributing)
 
 **Additional Links**
 
@@ -382,12 +381,6 @@ cd _tree
 npm install
 grunt --force
 ```
-
-
-
-## Contributing
-
-Please do.
 
 
 
