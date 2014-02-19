@@ -3,7 +3,6 @@
   <head>
     <style>
      body, body > * {
-       text-align: center;
        font-family: courier, monospace;
        width: 40em;
        margin: 1em auto;
@@ -12,17 +11,14 @@
        color: #999;
        width: 30em;
        margin: 0 auto;
+       text-align: center;
+     }
+     p, li {
+       text-align: left;
      }
      #links {
-       width: 20em;
-       text-align: left;
-       margin: 2em auto;
-     }
-     p {
-       text-align: left;
-     }
-     li {
-       text-align: left;
+       font-weight: bold;
+       width: 60%;
      }
     </style>
   </head>
@@ -39,28 +35,31 @@
  \/______/                        
     </pre>
 
-    <p><code>_tree</code> is a javascript library that helps you
-      generate immutable tree data structures. It uses a functional
-      programming style, in that it:</p>
+    <hr />
+
+    <code>_tree</code> is a javascript library that helps you generate immutable tree
+    data structures. It uses a functional programming style, in that it:
+
     <ul>
-      <li>maintains zero internal state, does not modify any of your</li>
-      <li>data ([purely functional][wikiPF]), lets you augment your</li>
-      <li>tree's behaviors (via [Higher-order functions][wikiHOF]), and</li>
+      <li>maintains zero internal state,</li>
+      <li>does not modify any of your data (<a href="https://en.wikipedia.org/wiki/Purely_functional">purely functional</a>),</li>
+      <li>lets you augment your tree's behaviors (via <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher-order functions</a>), and</li>
       <li>does not trample on the global scope unless you need it to.</li>
     </ul>
 
-    <p><code>_tree</code> supports AMD (RequireJs), Node, and
-global-script loading scenarios.</p>
-    
+    <code>_tree</code> supports AMD (RequireJs), Node, and global script
+    environments.
+
+    <hr />
 
     <ul id="links">
       <li><a href="docs/_tree.html">Read the annotated source</a></li>
       <li><a href="_SpecRunner.html">Run the tests</a></li>
       <li><a href="coverage/">See test coverage results</a></li>
-      <!-- <li><a href="benchmark/">Run benchmarks</a></li> -->
-    </ul>
+    </li>
 
     <!-- 'fork me on github' ribbon -->
     <a href="https://github.com/drfloob/_tree"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png" alt="Fork me on GitHub"></a>
   </body>
+
 </html>
