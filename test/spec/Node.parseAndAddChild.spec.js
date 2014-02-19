@@ -1,4 +1,4 @@
-/*global define, describe, beforeEach, it, expect */
+/*global define, describe, it, expect, jasmine */
 
 (function (root, factory) {
     'use strict';
@@ -20,7 +20,7 @@
             var tree, newTree, inflateFn, Base, Branch, Leaf;
 
             Base = _tree.Node.extend({
-                c: function(n) { 
+                c: function(n) {
                     if (_.isUndefined(n)) {
                         return this.children();
                     } else {
@@ -66,7 +66,7 @@
             var tree, newTree, inflateFactory, Base, Branch, Leaf;
 
             Base = _tree.Node.extend({
-                c: function(n) { 
+                c: function(n) {
                     if (_.isUndefined(n)) {
                         return this.children();
                     } else {
