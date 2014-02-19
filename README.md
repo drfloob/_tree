@@ -36,16 +36,14 @@ environments.
 ## Example
 
 ```javascript
-'use strict';
-var patronage, Person, FamilyTree, inflateFn, familyTree, chuckFamilyTree;
-
 //--------------------------------------------------------------------------------
 // Description
 //
-// This example shows how to work with a family tree. It
-// illustrates `_tree`'s domain modeling features, custom
-// parse logic, and immutable behavior.
+// This example shows how to work with a family tree. It illustrates
+// `_tree`'s domain modeling features, custom parse logic, and
+// immutable behavior.
 
+var patronage, Person, FamilyTree, inflateFn, familyTree, chuckFamilyTree;
 
 // Here is the family tree data that we want to work with.
 patronage = {'name': 'Jake', 'children': [
@@ -56,15 +54,14 @@ patronage = {'name': 'Jake', 'children': [
 ]};
 
 
-// To begin with, we define some domain models to make the
-// API cleaner.
+// To begin, let's define some domain models to make the API cleaner.
+
 
 //--------------------------------------------------------------------------------
 // Domain Models
 
-// The Person model gives each node easy ways to add
-// children, get and set the person's name, and to print
-// their own lineage.
+// The Person model gives each node easy ways to add children, get and
+// set the person's name, and to print their own lineage.
 Person = _tree.Node.extend({
     haveAKid: function(name) {
         return this.parseAndAddChild({name: name});
@@ -85,9 +82,8 @@ Person = _tree.Node.extend({
     }
 });
 
-// The FamilyTree model enhances the tree itself with
-// methods to find people, and to print everyone's lineage
-// in one shot.
+// The FamilyTree model enhances the tree itself with methods to find
+// people, and to print everyone's lineage in one shot.
 FamilyTree = _tree.Tree.extend({
     getPerson: function(name) {
         return this.findNodeByData({name: name});
@@ -98,15 +94,12 @@ FamilyTree = _tree.Tree.extend({
 });
 
 
-
 //--------------------------------------------------------------------------------
 // Setting up the tree
 
-
-// This recursive method parses the stored data into
-// Person nodes. It's a bit esoteric. Just know that it's
-// flexible enough to parse most any hierarchical data you
-// have lying around.
+// This recursive method parses the stored data into Person
+// nodes. It's a bit esoteric. Just know that it's flexible enough to
+// parse most any hierarchical data you have lying around.
 inflateFn = function(obj) {
     this.setNode(new Person(this.tree, obj));
     if (obj.children){
@@ -118,14 +111,10 @@ inflateFn = function(obj) {
 familyTree = _tree.inflate(patronage, inflateFn, {treeClass: FamilyTree});
 
 
-
-
 //--------------------------------------------------------------------------------
 // Working with the Tree
 
-
-// We forgot someone. Let's add a child and save the new
-// tree.
+// We forgot someone. Let's add a child and save the new tree.
 familyTree = familyTree.root().haveAKid('Kim Kil Wam');
 
 // print everyone's lineage
