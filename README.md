@@ -332,45 +332,6 @@ grunt --force
 
 
 
-## Development Stuff
-
-> "Computing's core challenge is how not to make a mess of it. ... All
-> unmastered complexity is of our own making; there is no one else to
-> blame and so we had better learn how not to introduce the complexity
-> in the first place."
-> 
-> -- <cite>[Edsger W. Dijkstra][EWD1243]</cite>
-
-`_tree` does not maintain any internal state, which has a number of
-benefits:
-
- * all state can be managed directly by your application
- * all functions are [referentially transparent][REFTRAN]
- * all operations are idempotent
- * tests can be implemented easily
- * the library should perform identically in parallel environments
-
-It is also unobtrusive, in that `_tree` does not alter your input
-objects in any way, or trample on the global scope by default.
-
-### Core development principles:
-
- * Referential transparency
- * Immutable data structures
- * Zero internal state
- * Zero side effects in the public API
-
-### Secondary design goals:
-
- * All logical operations have pluggable behaviors
- * All operations have sane defaults
- * Performance isn't impractically bad
- * AMD, Node, and global-script compatible
-
-
-
-
-
 ## Contributing
 
 Please do.
