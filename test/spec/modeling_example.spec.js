@@ -6,6 +6,7 @@
     if (typeof define === 'function' && define.amd) {
         define(['_tree', 'underscore'], factory);
     } else if (typeof exports === 'object') {
+        /* global module, require */
         module.exports = factory(require('../../src/_tree'), require('underscore'));
     } else {
         factory(root._tree, root._);
@@ -15,8 +16,8 @@
 
     describe('_tree as your data model', function() {
 
-        it('is rather powerful', function() {
-            var Todo, TodoList, mixins, inflateFn, TodoList, data;
+        it('is pretty powerful', function() {
+            var Todo, TodoList, inflateFn, data, todoList;
 
             // This example is a stripped-down version of the data
             // model required for a [TodoMVC](http://todomvc.com/)
@@ -36,6 +37,9 @@
                 },
                 name: function() {
                     return this.data().name;
+                },
+                serialize: function() {
+                    return JSON.parse(JSON.stringify(this.data()));
                 }
             });
 
@@ -61,9 +65,19 @@
                 },
                 getTodos: function(n) {
                     var c = this.root().children();
-                    if(_.isUndefined(n))
+                    if(_.isUndefined(n)) {
                         return c;
+                    }
                     return c[n];
+                },
+                serialize: function() {
+                    var ret = {listName: this.name(), 
+                               todos: _.map(this.getTodos(), 
+                                            function(t) {
+                                                return t.serialize();
+                                            })
+                              };
+                    return JSON.parse(JSON.stringify(ret));
                 }
             });
 
@@ -78,14 +92,14 @@
                     this.setNode(new Todo(this.tree, obj));
                 }
                 if (_.has(obj, 'todos')) {
-                    this.children(obj['todos']);
+                    this.children(obj.todos);
                 }
             };
             
             // here's the serialized data we plan to inflate into a
             // TodoList-flavored tree.
             data = {
-                listName: 'my list', 
+                listName: 'my list',
                 todos: [
                     {name: 'finish _tree', completed: false},
                     {name: 'put away dishes', completed: false},
@@ -94,24 +108,37 @@
             };
 
             // and this is where it all comes together.
-            TodoList = _tree.inflate(data, inflateFn, {treeClass: TodoList, mixins: mixins});
+            todoList = _tree.inflate(data, inflateFn, {treeClass: TodoList});
 
             
-            expect(TodoList.name()).toBe('my list');
-            expect(TodoList.getTodos(0).name()).toBe('finish _tree');
-            expect(TodoList.getTodos(0).isCompleted()).toBe(false);
+            expect(todoList.name()).toBe('my list');
+            expect(todoList.getTodos(0).name()).toBe('finish _tree');
+            expect(todoList.getTodos(0).isCompleted()).toBe(false);
 
-            expect(TodoList.completeAll).toBeDefined();
-            expect(TodoList.completeAll).toEqual(jasmine.any(Function));
-            expect(TodoList.getTodos().length).toBe(3);
+            expect(todoList.completeAll).toBeDefined();
+            expect(todoList.completeAll).toEqual(jasmine.any(Function));
+            expect(todoList.getTodos().length).toBe(3);
 
-            TodoList = TodoList.completeAll();
+            todoList = todoList.completeAll();
 
             // ensure all todos have been completed
-            _.each(TodoList.getTodos(), function(k) {
+            _.each(todoList.getTodos(), function(k) {
                 expect(k.isCompleted()).toBe(true);
             });
+
+            // serialize test
+            todoList = todoList.batch()
+                .getTodos(0).remove()
+                .getTodos(0).remove()
+                .end();
             
+            expect(todoList.serialize())
+                .toEqual({
+                    listName: 'my list', 
+                    todos: [
+                        {name: 'do yoga', completed: true}
+                    ]
+                });
         });
 
     });

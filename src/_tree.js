@@ -714,7 +714,7 @@ THE SOFTWARE.
     // [Backbone.js](http://backbonejs.org/docs/backbone.html#section-206),
     // under the [MIT License](https://github.com/drfloob/_tree/blob/master/LICENSE-MIT)
     extend = function(protoProps, staticProps) {
-        var parent, child;
+        var parent, child, Surrogate;
         parent = this;
 
         // The constructor function for the new subclass is either
@@ -733,20 +733,23 @@ THE SOFTWARE.
         
         // Set the prototype chain to inherit from parent, without
         // calling parent‘s constructor function.
-        var Surrogate = function(){ this.constructor = child; };
+        Surrogate = function(){ this.constructor = child; };
         Surrogate.prototype = parent.prototype;
-        child.prototype = new Surrogate;
+        child.prototype = new Surrogate();
         
         // Add prototype properties (instance properties) to the
         // subclass, if supplied.
-        if (protoProps) _.extend(child.prototype, protoProps);
+        if (protoProps) {
+            _.extend(child.prototype, protoProps);
+        }
         
         // Set a convenience property in case the parent’s prototype
         // is needed later.
         child.__super__ = parent.prototype;
 
-        return child;        
-    }
+        return child;
+    };
+
     Tree.extend = Node.extend = extend;
 
 

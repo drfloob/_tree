@@ -4,13 +4,14 @@
     'use strict';
 
     if (typeof define === 'function' && define.amd) {
-        define(['_tree', 'underscore'], factory);
+        define(['_tree'], factory);
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('../../src/_tree'), require('underscore'));
+        /* global module, require */
+        module.exports = factory(require('../../src/_tree'));
     } else {
-        factory(root._tree, root._);
+        factory(root._tree);
     }
-}(this, function (_tree, _) {
+}(this, function (_tree) {
     'use strict';
 
     describe('_tree.Tree.prototype.clone', function () {

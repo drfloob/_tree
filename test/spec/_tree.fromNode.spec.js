@@ -48,7 +48,7 @@
 
 
         it('will take the treeClass from defaults, not from the node\'s tree', function () {
-            var tree, rn, newTree, treeCls;
+            var tree, root, newTree, treeCls;
             treeCls = _tree.Tree.extend({one: 1});
             tree = _tree.create({treeClass: treeCls});
             expect(tree.one).toBe(1);

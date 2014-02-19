@@ -1,6 +1,6 @@
 # _tree
 
-`_tree` is a javascript library that lets you generate immutable tree
+`_tree` is a javascript library that helps you generate immutable tree
 data structures. It uses a functional programming style, in that it:
 
 * maintains zero internal state,
@@ -211,13 +211,22 @@ coverage report locally at `coverage/index.html`.
 The `_tree` library creates `Tree` objects, comprised of `Node`
 objects. Callbacks can be registered for supported `Events`.
 
-### The `_tree` library
+### The `_tree` library's static methods
 
- * `create([defaults])`: creates an empty `Tree`
- * `inflate(object [, method [, defaults]])`: parses your data into a
+ * `_tree.create([defaults])`: creates an empty `Tree`
+ * `_tree.inflate(object [, method [, defaults]])`: parses your data into a
    `Tree`
- * `fromNode(node [, defaults])`: creates a new tree using a `Node`
+ * `_tree.fromNode(node [, defaults])`: creates a new tree using a `Node`
    from another tree.
+ * `_tree.Node.extend(protoProps [, staticProps])`: creates a subclass
+   of `Node` that can be used in place of `Node` classes. See the
+   [TodoMVC Example][spec_TodoMVC]. Subclasses will also have
+   `Subclass.extend`, allowing deep inheritance hierarchies.
+ * `_tree.Tree.extend(protoProps [, staticProps])`: creates a subclass
+   of `Tree` that can be used in place of the main `Tree` class. See
+   the [TodoMVC Example][exampleTodoMVC].
+ * `_tree.Tree.clone(tree)`: static method, returns a clone of the
+   `tree`.
 
 ### Tree objects
 
@@ -301,12 +310,12 @@ together multiple modifications into one atomic action. Callbacks are
 disabled while batching, and the tree is not finalized until `.end()`
 is called.
 
-[See the tests for some examples](https://github.com/drfloob/_tree/blob/master/test/spec/_tree.batch.spec.js)
+[See the tests for some examples][spec_batch]
 
 You *could* manually edit the tree object in batch mode, but your
 changes may be lost, and you could ruin the integrity of the tree if
 you're unsure of what you're doing. To persist interesting tree
-modifications, see mixins.
+modifications, see mixins and subclasses.
 
 
 
@@ -378,3 +387,5 @@ Please do.
 [coverage]: http://tree.drfloob.com/coverage/
 [wikiHOF]: https://en.wikipedia.org/wiki/Higher-order_function
 [wikiPF]: https://en.wikipedia.org/wiki/Purely_functional
+[spec_TodoMVC]: https://github.com/drfloob/_tree/blob/master/test/spec/modeling_example.spec.js
+[spec_batch]: https://github.com/drfloob/_tree/blob/master/test/spec/_tree.batch.spec.js

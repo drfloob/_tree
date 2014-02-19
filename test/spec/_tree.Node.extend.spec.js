@@ -6,17 +6,18 @@
     if (typeof define === 'function' && define.amd) {
         define(['_tree', 'underscore'], factory);
     } else if (typeof exports === 'object') {
+        /* global module, require */
         module.exports = factory(require('../../src/_tree'), require('underscore'));
     } else {
         factory(root._tree, root._);
     }
-}(this, function (_tree, _) {
+}(this, function (_tree) {
     'use strict';
 
     describe('_tree.Node.extend', function () {
 
         it('returns something that smells like a Node', function () {
-            var cls, obj;
+            var cls;
             cls = _tree.Node.extend();
 
             expect(cls.prototype.children).toBeDefined();
@@ -34,16 +35,16 @@
         });
 
         it('calls the constructor', function () {
-            var cls, spy, tree, obj;
+            var Cls, spy, tree, obj;
             spy = jasmine.createSpy('spy');
 
             // spy constructor, does not satisfy parent constructor
             // requirement.
-            cls = _tree.Node.extend({'constructor': spy});
+            Cls = _tree.Node.extend({'constructor': spy});
 
             // dummy inflate method, just to have a valid root node
-            tree = _tree.inflate({}, function() { 
-                this.setNode(new cls(this.tree, 'data')); 
+            tree = _tree.inflate({}, function() {
+                this.setNode(new Cls(this.tree, 'data'));
             });
             obj = tree.root();
 
@@ -63,17 +64,17 @@
 
 
         it('requires the constructor to call the parent constructor', function () {
-            var cls, tree, obj;
+            var Cls, tree, obj;
 
             // trivial constructor, but meets basic constructor
             // requirement of calling the super constructor.
-            cls = _tree.Node.extend({'constructor': function() {
+            Cls = _tree.Node.extend({'constructor': function() {
                 _tree.Node.apply(this, arguments);
             }});
 
             // dummy inflate method, just to have a valid root node
-            tree = _tree.inflate('root data', null, {inflate: function(data) { 
-                this.setNode(new cls(this.tree, data)); 
+            tree = _tree.inflate('root data', null, {inflate: function(data) {
+                this.setNode(new Cls(this.tree, data));
             }});
             obj = tree.root();
 
@@ -88,35 +89,35 @@
         });
 
         it('lets the constructor modify the node', function () {
-            var cls, obj;
-            cls = _tree.Node.extend({
+            var Cls, obj;
+            Cls = _tree.Node.extend({
                 'constructor': function(tree) {
                     _tree.Node.call(this, tree);
                     this.blort = 12345;
                 }
             });
-            obj = new cls({});
+            obj = new Cls({});
             expect(obj.blort).toBe(12345);
         });
 
 
         it('allows for deep extension', function () {
-            var cls, cls2, obj;
-            cls = _tree.Node.extend({one: 1});
-            cls2 = cls.extend({two: 2});
-            obj = new cls2({});
+            var Cls, Cls2, obj;
+            Cls = _tree.Node.extend({one: 1});
+            Cls2 = Cls.extend({two: 2});
+            obj = new Cls2({});
 
-            expect(cls.prototype.one).toBe(1);
+            expect(Cls.prototype.one).toBe(1);
 
-            expect(cls2.prototype.two).toBe(2);
-            expect(cls2.prototype.one).toBe(1);
+            expect(Cls2.prototype.two).toBe(2);
+            expect(Cls2.prototype.one).toBe(1);
 
             expect(obj.one).toBe(1);
             expect(obj.two).toBe(2);
 
             expect(obj).toEqual(jasmine.any(_tree.Node));
-            expect(obj).toEqual(jasmine.any(cls));
-            expect(obj).toEqual(jasmine.any(cls2));
+            expect(obj).toEqual(jasmine.any(Cls));
+            expect(obj).toEqual(jasmine.any(Cls2));
         });
 
     });
