@@ -4,16 +4,11 @@
     'use strict';
 
     if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
         define(['_tree', 'underscore'], factory);
     } else if (typeof exports === 'object') {
-        // Node. Does not work with strict CommonJS, but
-        // only CommonJS-like enviroments that support module.exports,
-        // like Node.
         /* global module, require */
         module.exports = factory(require('../../src/_tree'), require('underscore'));
     } else {
-        // Browser globals (root is window)
         factory(root._tree, root._);
     }
 }(this, function (_tree, _) {
@@ -95,7 +90,24 @@
             expect(newTree.__nextNodeId).toBe(expectedNextId);
         });
 
+        it('works with node subclasses', function () {
+            var tmpTree, TreeCls, NodeCls, newTree;
+            TreeCls = _tree.Tree.extend({one: 1});
+            NodeCls = _tree.Node.extend({two: 2});
+            tmpTree = _tree.inflate('bort',function(obj) {this.setNode(new NodeCls(this.tree, obj));}, {treeClass: TreeCls});
+            
+            // adding a custom node to a standard tree
+            newTree = tree.root().addChildNode(tmpTree.root());
+            expect(newTree.one).toBeUndefined();
+            expect(newTree.root().children()[3].two).toBe(2);
 
+            // adding a standard node to a custom tree
+            newTree = tmpTree.root().addChildNode(tree.root());
+            expect(newTree.one).toBe(1);
+            expect(newTree.root().two).toBe(2);
+            expect(newTree.root().children()[0].two).toBeUndefined();
+            expect(newTree.root().children()[0].data()).toBe(1);
+        });
         
     });
 }));
