@@ -1,0 +1,35 @@
+{
+    "name": "_tree",
+    "version": "0.6.0",
+    "authors": [
+        "A.J. Heller"
+    ],
+    "description": "_tree is a Javascript library that helps you generate immutable tree data structures.",
+    "main": [
+        "dist/_tree.min.js",
+        "src/_tree.js"
+    ],
+    "keywords": [
+        "tree",
+        "data structure",
+        "graph"
+    ],
+    "dependencies": {
+        "underscore": "~1.6.0"
+    },
+    "license": "MIT",
+    "homepage": "http://tree.drfloob.com/",
+    "ignore": [
+        "bower_components",
+        "benchmark",
+        "coverage",
+        "docs",
+        "node_modules",
+        "test",
+        "_SpecRunner.html",
+        "test_server.py",
+        "COMPARISONS.md",
+        "TODO.md",
+        "**/.*"
+    ]
+}

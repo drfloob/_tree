@@ -2,7 +2,7 @@
   "name": "_tree",
   "main": "./dist/_tree.min.js",
   "version": "0.6.0",
-  "description": "An immutable tree data structure library, used standalone or as an object wrapper.",
+  "description": "_tree is a Javascript library that helps you generate immutable tree data structures.",
   "author": "A.J. Heller",
   "license": "MIT",
   "keywords": [
