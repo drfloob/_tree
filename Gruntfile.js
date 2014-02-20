@@ -31,7 +31,7 @@ module.exports = function(grunt) {
             tests: { src: ['test/spec/**/*.js'] }
         },
         jsonlint: {
-            'pkg': { src: ['package.json'] }
+            'pkg': { src: ['package.json', 'bower.json'] }
         },
         
         // for grunt-template-jasmine-requirejs
@@ -127,6 +127,14 @@ module.exports = function(grunt) {
                 files: [{src: 'README.md', dest: 'README.html'}],
                 options: { gfm: true, highlight: 'auto' }
             }
+        },
+        bump: {
+            options: {
+                files: ['bower.json', 'package.json'],
+                commit: false,
+                push: false,
+                createTag: false
+            }
         }
     });
     
@@ -142,6 +150,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-markdown');
     grunt.loadNpmTasks('grunt-jasmine-node');
+    grunt.loadNpmTasks('grunt-bump');
 
 
     grunt.registerTask('phantom_test', ['copy:vendor', 'connect:test', 'jasmine:run']);

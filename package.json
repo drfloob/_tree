@@ -1,7 +1,7 @@
 {
   "name": "_tree",
   "main": "./dist/_tree.min.js",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "_tree is a Javascript library that helps you generate immutable tree data structures.",
   "author": "A.J. Heller",
   "license": "MIT",
@@ -40,7 +40,8 @@
     "grunt-contrib-copy": "~0.4.1",
     "grunt-markdown": "~0.4.0",
     "grunt-jasmine-node": "~0.1.0",
-    "backbone": "~1.1.1"
+    "backbone": "~1.1.1",
+    "grunt-bump": "0.0.13"
   },
   "scripts": {
     "test": "grunt jasmine_node --verbose"
